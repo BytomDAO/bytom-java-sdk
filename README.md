@@ -29,7 +29,7 @@ Client client = TestUtils.generateClient();
     * [`Secondly sign the transaction`](#secondly-sign-the-transaction)
     * [`Finally submit the transaction`](#finally-submit-the-transaction)
 
-> For more details, see ![`API methods`](https://github.com/Bytom/java-sdk/blob/master/doc/index.md#api-methods)
+> For more details, see ![API methods](https://github.com/Bytom/java-sdk/blob/master/doc/index.md#api-methods)
 
 ## Create a key
 
