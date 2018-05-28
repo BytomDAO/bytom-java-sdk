@@ -11,22 +11,24 @@ import java.util.Map;
 
 public class Block {
 
-    public Integer bits;
-
-    public String difficulty;
-
     public String hash;
 
-    public Integer height;
+    public Integer size;
 
-    public Integer nonce;
+    public Integer version;
+
+    public Integer height;
 
     @SerializedName("previous_block_hash")
     public String previousBlockHash;
 
-    public Integer size;
-
     public Integer timestamp;
+
+    public Integer nonce;
+
+    public long bits;
+
+    public String difficulty;
 
     @SerializedName("transaction_merkle_root")
     public String transactionsMerkleRoot;
@@ -36,7 +38,6 @@ public class Block {
 
     public List<BlockTx> transactions;
 
-    public Integer version;
 
     private static Logger logger = Logger.getLogger(Block.class);
 
@@ -106,6 +107,7 @@ public class Block {
          * @throws BytomException
          */
         public Block getBlock(Client client) throws BytomException {
+
             Block block = client.request("get-block", this, Block.class);
 
             logger.info("get-block:");
@@ -197,11 +199,13 @@ public class Block {
         /**
          * List of specified inputs for a transaction.
          */
+        @SerializedName("inputs")
         private List<AnnotatedInput> inputs;
 
         /**
          * List of specified outputs for a transaction.
          */
+        @SerializedName("outputs")
         private List<AnnotatedOutput> outputs;
     }
 
@@ -221,7 +225,7 @@ public class Block {
          * The definition of the asset being issued or spent (possibly null).
          */
         @SerializedName("asset_definition")
-        private String assetDefinition;
+        private Map<String, Object> assetDefinition;
 
         /**
          * The id of the asset being issued or spent.
@@ -241,13 +245,13 @@ public class Block {
         /**
          * The number of units of the asset being controlled.
          */
-        private Integer amount;
+        private long amount;
 
         /**
          * The definition of the asset being controlled (possibly null).
          */
         @SerializedName("asset_definition")
-        private String assetDefinition;
+        private Map<String, Object> assetDefinition;
 
         /**
          * The id of the asset being controlled.
