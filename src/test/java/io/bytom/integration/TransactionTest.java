@@ -108,6 +108,8 @@ public class TransactionTest {
         Transaction.Template singer = new Transaction.SignerBuilder().sign(client,
                 controlAddress, "123456");
 
+        logger.info("rawTransaction:"+singer.rawTransaction);
+
         logger.info("singer:"+singer.toJson());
 
         Transaction.SubmitResponse txs = Transaction.submit(client, singer);
