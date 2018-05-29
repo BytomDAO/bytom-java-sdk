@@ -129,34 +129,34 @@ Transaction.SubmitResponse txs = Transaction.submit(client, singer);
 
 #### 1.createKey
 
-    ```java
-    Key create(Client client, Builder builder);
-    ```
+```java
+Key create(Client client, Builder builder);
+```
 
-    ##### Parameters
+##### Parameters
 
-    - `Client` - *client*, Client object that makes requests to the core.
-    - `Key.Builder` - *builder*, Builder object that builds request parameters.
+- `Client` - *client*, Client object that makes requests to the core.
+- `Key.Builder` - *builder*, Builder object that builds request parameters.
 
-    ##### Returns
+##### Returns
 
-    - `Key` - *key*, Key object.
+- `Key` - *key*, Key object.
 
 ----
 
 #### 2.listKeys
 
-    ```java
-    List<Key> list(Client client);
-    ```
+```java
+List<Key> list(Client client);
+```
 
-    ##### Parameters
+##### Parameters
 
-    - `Client` - *client*, Client object that makes requests to the core.
+- `Client` - *client*, Client object that makes requests to the core.
 
-    ##### Returns
+##### Returns
 
-    - `List of Key`, *List<Key>*, an ArrayList object contains Key objects.
+- `List of Key`, *List<Key>*, an ArrayList object contains Key objects.
 
 ----
 
