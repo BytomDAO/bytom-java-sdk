@@ -157,10 +157,18 @@ public class Transaction {
 
         public String txId;
 
+        public String accountId;
+
         public QueryBuilder setTxId(String txId) {
             this.txId = txId;
             return this;
         }
+
+        public QueryBuilder setAccountId(String accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
 
         /**
          * call list-transactions api
@@ -172,10 +180,49 @@ public class Transaction {
         public List<Transaction> list(Client client) throws BytomException {
 
             Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Transaction.class});
-            List<Transaction> transactionList = client.request("list-transactions", this, listType);
+            List<Transaction> transactionList = client.request("list-transactions", null, listType);
+
             logger.info("list-transactions:");
             logger.info("size of transactionList:" + transactionList.size());
-            logger.info(transactionList.get(0).toJson());
+            logger.info("all transactions:");
+            for (int i = 0; i < transactionList.size(); i++) {
+                logger.info(transactionList.get(i).toJson());
+            }
+
+            return transactionList;
+        }
+
+        public List<Transaction> listById(Client client) throws BytomException {
+            Map<String, Object> req = new HashMap<String, Object>();
+            req.put("tx_id", this.txId);
+            req.put("detail", true);
+
+            Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Transaction.class});
+            List<Transaction> transactionList = client.request("list-transactions", req, listType);
+
+            logger.info("list-transactions:");
+            logger.info("size of transactionList:" + transactionList.size());
+            logger.info("all transactions:");
+            for (int i = 0; i < transactionList.size(); i++) {
+                logger.info(transactionList.get(i).toJson());
+            }
+
+            return transactionList;
+        }
+
+        public List<Transaction> listByAccountId(Client client) throws BytomException {
+            Map<String, Object> req = new HashMap<String, Object>();
+            req.put("account_id", this.accountId);
+
+            Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Transaction.class});
+            List<Transaction> transactionList = client.request("list-transactions", req, listType);
+
+            logger.info("list-transactions:");
+            logger.info("size of transactionList:" + transactionList.size());
+            logger.info("all transactions:");
+            for (int i = 0; i < transactionList.size(); i++) {
+                logger.info(transactionList.get(i).toJson());
+            }
 
             return transactionList;
         }
@@ -188,10 +235,14 @@ public class Transaction {
          * @throws BytomException
          */
         public Transaction get(Client client) throws BytomException {
-            // TODO: 2018/5/23 need to test 
-            Transaction transaction = client.request("get-transaction", this, Transaction.class);
+            Map<String, Object> req = new HashMap<String, Object>();
+            req.put("tx_id", this.txId);
+
+            Transaction transaction = client.request("get-transaction", req, Transaction.class);
+
             logger.info("get-transaction:");
             logger.info(transaction.toJson());
+
             return transaction;
         }
 

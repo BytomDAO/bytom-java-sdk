@@ -2,4 +2,5 @@
 *.iml
 target/
 bytom.log
+bytom.log.*
 javadoc/

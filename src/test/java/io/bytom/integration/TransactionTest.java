@@ -123,17 +123,28 @@ public class TransactionTest {
     }
 
     @Test
-    public void testListTransactions() throws Exception {
-        String tx_id = "b9a1baa1ae391b502fe5543a9559e6d98dc6cf77f9327daaebcb7222c3bebda6";
+    public void testListByIdTransactions() throws Exception {
+        String tx_id = "f04d4d9b2580ff6496f9f08d903de5a2365975fb8d65b66ca4259f152c5dd134";
         List<Transaction> transactionList =
                 new Transaction.QueryBuilder().setTxId(tx_id).list(client);
         for (Transaction tx: transactionList
              ) {
             if (tx.txId.equalsIgnoreCase(tx_id)) {
+                logger.info("this transaction is :");
                 logger.info(tx.toJson());
             }
         }
     }
+
+    @Test
+    public void testListByAccountIdTransactions() throws Exception {
+        String account_id = "0E6KP8C100A02";
+        List<Transaction> transactionList =
+                new Transaction.QueryBuilder().setAccountId(account_id).list(client);
+    }
+
+
+
 
     public void testSenderKeyCreate() throws Exception {
         String alias = "sender-key";
