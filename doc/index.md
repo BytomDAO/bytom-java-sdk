@@ -122,7 +122,6 @@ Transaction.SubmitResponse txs = Transaction.submit(client, singer);
 * [`Wallet API`](#wallet-api)
 * [`Access Token API`](#access-token-api)
 * [`Block API`](#block-api)
-* [`Mining API`](#mining-api)
 * [`Other API`](#other-api)
 
 ## Key API
@@ -766,36 +765,6 @@ BlockHashRate getHashRate(Client client);
 
 - `BlockHashRate` - *blockHashRate*, a BlockHashRate object
 
-## Mining API
-
-
-#### isMining
-
-```java
-Boolean isMining(Client client);
-```
-
-##### Parameters
-
-- `Client` - *Client*, Client object that makes requests to the core.
-
-##### Returns
-
-- `Boolean` - *is_mining*, whether the node is mining.
-
-----
-
-#### setMining
-
-```java
-void setMining(Client client, Boolean isMining);
-```
-
-##### Parameters
-
-- `Client` - *Client*, Client object that makes requests to the core.
-- `Boolean` - *is_mining*, whether the node is mining.
-
 
 ## Other API
 
@@ -846,35 +815,3 @@ Boolean verifyMessage(Client client);
 
 - `Boolean` - *result*, verify result.
 
-----
-
-#### getWork
-
-```java
-MinerWork getWork(Client client);
-```
-
-##### Parameters
-
-- `Client` - *Client*, Client object that makes requests to the core.
-
-##### Returns
-
-- `MinerWork` - *minerWork*, a MinerWork object.
-
-----
-
-#### submitWork
-
-```java
-void submiWork(Client client, String blockHeader);
-```
-
-##### Parameters
-
-- `Client` - *Client*, Client object that makes requests to the core.
-- `String` - *block_header*, raw block header.
-
-##### Returns
-
-none if the work is submitted successfully.
