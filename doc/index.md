@@ -127,7 +127,7 @@ Transaction.SubmitResponse txs = Transaction.submit(client, singer);
 ## Key API
 
 
-#### createKey
+#### 1.createKey
 
 ```java
 Key create(Client client, Builder builder);
@@ -144,7 +144,7 @@ Key create(Client client, Builder builder);
 
 ----
 
-#### listKeys
+#### 2.listKeys
 
 ```java
 List<Key> list(Client client);
@@ -160,7 +160,7 @@ List<Key> list(Client client);
 
 ----
 
-#### deleteKey
+#### 3.deleteKey
 
 ```java
 void delete(Client client, String xpub, String password);
@@ -178,7 +178,7 @@ none if the key is deleted successfully.
 
 ----
 
-#### resetKeyPassword
+#### 4.resetKeyPassword
 
 ```java
 void resetPwd(Client client, String xpub, String oldPwd, String newPwd);
@@ -199,7 +199,7 @@ none if the key password is reset successfully.
 ## Account API
 
 
-#### createAccount
+#### 1.createAccount
 
 ```java
 Account create(Client client, Builder builder);
@@ -215,7 +215,7 @@ Account create(Client client, Builder builder);
 
 ----
 
-#### listAccounts
+#### 2.listAccounts
 
 ```java
 List<Account> list(Client client);
@@ -231,7 +231,7 @@ List<Account> list(Client client);
 
 ----
 
-#### deleteAccount
+#### 3.deleteAccount
 
 ```java
 void delete(Client client, String account_info);
@@ -248,7 +248,7 @@ none if the account is deleted successfully.
 
 ----
 
-#### createAccountReceiver
+#### 4.createAccountReceiver
 
 ```java
 Receiver create(Client client);
@@ -265,7 +265,7 @@ Receiver create(Client client);
 
 ----
 
-#### listAddresses
+#### 5.listAddresses
 
 ```java
 List<Address> list(Client client);
@@ -281,7 +281,7 @@ List<Address> list(Client client);
 
 ----
 
-#### validateAddress
+#### 6.validateAddress
 
 ```java
 Address validate(Client client, String address);
@@ -300,7 +300,7 @@ Address validate(Client client, String address);
 ## Asset API
 
 
-#### createAsset
+#### 1.createAsset
 
 ```java
 Asset create(Client client);
@@ -316,7 +316,7 @@ Asset create(Client client);
 
 ----
 
-#### getAsset
+#### 2.getAsset
 
 ```java
 Asset get(Client client);
@@ -332,7 +332,7 @@ Asset get(Client client);
 
 ----
 
-#### listAssets
+#### 3.listAssets
 
 ```java
 List<Asset> list(Client client);
@@ -348,7 +348,7 @@ List<Asset> list(Client client);
 
 ----
 
-#### updateAssetAlias
+#### 4.updateAssetAlias
 
 ```java
 void update(Client client);
@@ -364,7 +364,7 @@ none if the asset alias is updated success.
 
 ----
 
-#### listBalances
+#### 5.listBalances
 
 ```java
 List<Balance> list(Client client);
@@ -380,7 +380,7 @@ List<Balance> list(Client client);
 
 ----
 
-#### listUnspentOutPuts
+#### 6.listUnspentOutPuts
 
 ```java
 List<UnspentOutput> list(Client client);
