@@ -112,3 +112,5 @@ Transaction.Template singer = new Transaction.SignerBuilder().sign(client,
 ```java
 Transaction.SubmitResponse txs = Transaction.submit(client, singer);
 ```
+
+> For more details, see [API methods](https://github.com/Bytom/java-sdk/blob/master/doc/index.md#api-methods)
