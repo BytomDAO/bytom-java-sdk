@@ -398,7 +398,7 @@ List<UnspentOutput> list(Client client);
 ## Transaction API
 
 
-#### buildTransaction
+#### 1.buildTransaction
 
 ```java
 Template build(Client client);
@@ -414,7 +414,7 @@ Template build(Client client);
 
 ----
 
-#### signTransaction
+#### 2.signTransaction
 
 ```java
 Template sign(Client client, Template template, String password);
@@ -434,7 +434,7 @@ Template sign(Client client, Template template, String password);
 
 ----
 
-#### submitTransaction
+#### 3.submitTransaction
 
 ```java
 SubmitResponse submit(Client client, Template template);
@@ -451,7 +451,7 @@ SubmitResponse submit(Client client, Template template);
 
 ----
 
-#### estimateTransactionGas
+#### 4.estimateTransactionGas
 
 ```java
 TransactionGas estimateGas(Client client, Template template);
@@ -468,7 +468,7 @@ TransactionGas estimateGas(Client client, Template template);
 
 ----
 
-#### getTransaction
+#### 5.getTransaction
 
 ```java
 Transaction get(Client client);
@@ -484,7 +484,7 @@ Transaction get(Client client);
 
 ----
 
-#### listTransactions
+#### 6.listTransactions
 
 ```java
 List<Transaction> list(Client client);
@@ -507,7 +507,7 @@ List<Transaction> transactionList = new Transaction.QueryBuilder().list(client);
 
 ----
 
-#### listTransactionsById
+#### 7.listTransactionsById
 
 ```java
 List<Transaction> listById(Client client);
@@ -531,7 +531,7 @@ List<Transaction> transactionList = new Transaction.QueryBuilder().setTxId(tx_id
 
 ----
 
-#### listTransactionsByAccountId
+#### 8.listTransactionsByAccountId
 
 ```java
 List<Transaction> listByAccountId(Client client);
@@ -556,7 +556,7 @@ List<Transaction> transactionList = new Transaction.QueryBuilder().setAccountId(
 ## Wallet API
 
 
-#### backupWallet
+#### 1.backupWallet
 
 ```java
 Wallet backupWallet(Client client);
@@ -572,7 +572,7 @@ Wallet backupWallet(Client client);
 
 ----
 
-#### restoreWallet
+#### 2.restoreWallet
 
 ```java
 void restoreWallet(Client client ,Object accountImage, Object assetImage , Object keyImages);
@@ -603,7 +603,7 @@ String secret = "5e37378eb59de6b10e60f2247ebf71c4955002e75e0cd31ede3bf48813a0a79
 AccessToken.check(client, "sheng", secret);
 ```
 
-#### createAccessToken
+#### 1.createAccessToken
 
 ```java
 AccessToken create(Client client);
@@ -619,7 +619,7 @@ AccessToken create(Client client);
 
 ----
 
-#### listAccessTokens
+#### 2.listAccessTokens
 
 ```java
 List<AccessToken> list(Client client);
@@ -635,7 +635,7 @@ List<AccessToken> list(Client client);
 
 ----
 
-#### deleteAccessToken
+#### 3.deleteAccessToken
 
 ```java
 void delete(Client client, String id);
@@ -652,7 +652,7 @@ none if the access token is deleted successfully.
 
 ----
 
-#### checkAccessToken
+#### 4.checkAccessToken
 
 ```java
 void check(Client client, String id, String secret);
@@ -672,7 +672,7 @@ none if the access token is checked valid.
 ## Block API
 
 
-#### getBlockCount
+#### 1.getBlockCount
 
 ```java
 Integer getBlockCount(Client client);
@@ -688,7 +688,7 @@ none
 
 ----
 
-#### getBlockHash
+#### 2.getBlockHash
 
 ```java
 String getBlockHash(Client client);
@@ -704,8 +704,8 @@ none
 
 ----
 
-#### getBlock
-```php
+#### 3.getBlock
+```java
 Block getBlock(Client client);
 ```
 
@@ -719,7 +719,7 @@ Block getBlock(Client client);
 
 ----
 
-#### getBlockHeader
+#### 4.getBlockHeader
 
 ```java
 BlockHeader getBlockHeader(Client client);
@@ -735,7 +735,7 @@ BlockHeader getBlockHeader(Client client);
 
 ----
 
-#### getDifficulty
+#### 5.getDifficulty
 
 ```java
 BlockDifficulty getBlockDifficulty(Client client);
@@ -751,7 +751,7 @@ BlockDifficulty getBlockDifficulty(Client client);
 
 ----
 
-#### getHashRate
+#### 6.getHashRate
 
 ```java
 BlockHashRate getHashRate(Client client);
@@ -769,7 +769,7 @@ BlockHashRate getHashRate(Client client);
 ## Other API
 
 
-#### netInfo
+#### 1.netInfo
 
 ```java
 NetInfo getNetInfo(Client client);
@@ -785,7 +785,7 @@ NetInfo getNetInfo(Client client);
 
 ----
 
-#### gasRate
+#### 2.gasRate
 
 ```java
 Gas gasRate(Client client);
@@ -801,7 +801,7 @@ Gas gasRate(Client client);
 
 ----
 
-#### verifyMessage
+#### 3.verifyMessage
 
 ```java
 Boolean verifyMessage(Client client);
