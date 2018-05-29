@@ -111,8 +111,7 @@ public class Message {
         public Boolean verifyMessage(Client client) throws BytomException {
             Boolean result = client.requestGet("verify-message", this, "result", Boolean.class);
 
-            logger.info("verify-message:");
-            logger.info(result);
+            logger.info("verify-message:"+result);
 
             return result;
         }

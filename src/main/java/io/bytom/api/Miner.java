@@ -20,8 +20,11 @@ public class Miner {
      * @return
      * @throws BytomException
      */
-    public static boolean isMining(Client client) throws BytomException {
-        return client.requestGet("is-mining", null, "is_mining", Boolean.class);
+    public static Boolean isMining(Client client) throws BytomException {
+        Boolean isMining = client.requestGet("is-mining", null, "is_mining", Boolean.class);
+
+        logger.info("is-mining:"+isMining);
+        return isMining;
     }
 
     /**
