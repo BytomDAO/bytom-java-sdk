@@ -21,6 +21,7 @@ public class MinerTest {
     }
 
     static Miner miner;
+    static Miner.MinerWork minerWork;
 
     @Test
     public void testIsMining() throws Exception {
@@ -36,7 +37,10 @@ public class MinerTest {
         Assert.assertEquals(false, isMining);
     }
 
-
-
+    @Test
+    public void testGetWork() throws Exception {
+        minerWork = Miner.getWork(client);
+        Assert.assertNotNull(minerWork);
+    }
 
 }
