@@ -101,7 +101,7 @@ public class TransactionFeed {
         req.put("alias", alias);
         req.put("filter", filter);
         client.request("update-transaction-feed", req);
-        logger.info("update-transaction-feed");
+        logger.info("update-transaction-feed successfully");
     }
 
     /**
@@ -117,8 +117,9 @@ public class TransactionFeed {
 
         logger.info("list-transaction-feeds:");
         logger.info("size of transactionList:" + transactionFeedList.size());
-        logger.info(transactionFeedList.get(0).toJson());
-
+        for (int i =0 ;i < transactionFeedList.size();i++) {
+            logger.info(transactionFeedList.get(i).toJson());
+        }
         return transactionFeedList;
     }
 
@@ -133,7 +134,7 @@ public class TransactionFeed {
         Map<String, Object> req = new HashMap<String, Object>();
         req.put("alias", alias);
         client.request("delete-transaction-feed", req);
-        logger.info("delete-transaction-feed");
+        logger.info("delete-transaction-feed successfully");
     }
 
 

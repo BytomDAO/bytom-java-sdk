@@ -69,7 +69,7 @@ public class RawTransaction {
         /**
          * The number of units of the asset being issued or spent.
          */
-        private Integer amount;
+        private long amount;
 
         /**
          * The definition of the asset being issued or spent (possibly null).
@@ -113,7 +113,7 @@ public class RawTransaction {
         /**
          * The number of units of the asset being controlled.
          */
-        private Integer amount;
+        private long amount;
 
         /**
          * The definition of the asset being controlled (possibly null).
