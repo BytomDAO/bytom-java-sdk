@@ -123,6 +123,11 @@ public class TransactionTest {
     }
 
     @Test
+    public void testListTransactions() throws Exception {
+        List<Transaction> transactionList = new Transaction.QueryBuilder().list(client);
+    }
+
+    @Test
     public void testListByIdTransactions() throws Exception {
         String tx_id = "f04d4d9b2580ff6496f9f08d903de5a2365975fb8d65b66ca4259f152c5dd134";
         List<Transaction> transactionList =
