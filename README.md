@@ -1,7 +1,9 @@
 # Bytom java-sdk
 
 This page will document the API classes and ways to properly use the API.
-Subsequent new releases also maintain backward compatibility with this class approach. For more information, please see Bytom API reference documentation at [Bytom wiki](https://github.com/Bytom/bytom/wiki/API-Reference)
+Subsequent new releases also maintain backward compatibility with this class
+approach. For more information, please see Bytom API reference documentation
+at [Bytom wiki](https://github.com/Bytom/bytom/wiki/API-Reference)
 
 ## Basic Usage
 
