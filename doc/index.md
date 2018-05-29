@@ -499,6 +499,8 @@ List<Transaction> list(Client client);
 
 - `List of Transaction`, *List<Transaction>*, an ArrayList object contains Transaction objects.
 
+##### Example
+
 ```java
 //list all transactions
 List<Transaction> transactionList = new Transaction.QueryBuilder().list(client);
@@ -519,6 +521,8 @@ List<Transaction> listById(Client client);
 ##### Returns
 
 - `List of Transaction`, *List<Transaction>*, an ArrayList object contains Transaction objects.
+
+##### Example
 
 ```java
 String tx_id = "f04d4d9b2580ff6496f9f08d903de5a2365975fb8d65b66ca4259f152c5dd134";
@@ -541,6 +545,8 @@ List<Transaction> listByAccountId(Client client);
 ##### Returns
 
 - `List of Transaction`, *List<Transaction>*, an ArrayList object contains Transaction objects.
+
+##### Example
 
 ```java
 String account_id = "0E6KP8C100A02";
