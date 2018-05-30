@@ -2,7 +2,6 @@ package io.bytom.integration;
 
 import io.bytom.TestUtils;
 import io.bytom.api.Account;
-import io.bytom.api.Address;
 import io.bytom.api.Receiver;
 import io.bytom.http.Client;
 import org.junit.Test;
@@ -75,7 +74,7 @@ public class AccountTest {
         String id = accountList.get(accountList.size()-1).id;
 
         Account.AddressBuilder addressBuilder = new Account.AddressBuilder().setAccountId(id).setAccountAlias(alias);
-        List<Address> addressList = addressBuilder.list(client);
+        List<Account.Address> addressList = addressBuilder.list(client);
 
         assertNotNull(addressList);
     }
@@ -89,9 +88,9 @@ public class AccountTest {
         String id = accountList.get(accountList.size()-1).id;
 
         Account.AddressBuilder addressBuilder = new Account.AddressBuilder().setAccountId(id).setAccountAlias(alias);
-        List<Address> addressList = addressBuilder.list(client);
+        List<Account.Address> addressList = addressBuilder.list(client);
 
-        Address address = addressBuilder.validate(client, addressList.get(0).address);
+        Account.Address address = addressBuilder.validate(client, addressList.get(0).address);
         assertEquals(true, address.is_local);
     }
 

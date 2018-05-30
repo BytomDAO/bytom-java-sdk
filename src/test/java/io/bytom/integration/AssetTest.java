@@ -2,13 +2,10 @@ package io.bytom.integration;
 
 import io.bytom.TestUtils;
 import io.bytom.api.Account;
-import io.bytom.api.Address;
 import io.bytom.api.Asset;
-import io.bytom.api.Receiver;
 import io.bytom.http.Client;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

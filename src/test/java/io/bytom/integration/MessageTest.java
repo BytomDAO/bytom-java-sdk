@@ -1,16 +1,11 @@
 package io.bytom.integration;
 
 import io.bytom.TestUtils;
-import io.bytom.api.Account;
-import io.bytom.api.Address;
 import io.bytom.api.Message;
-import io.bytom.api.Wallet;
 import io.bytom.exception.BytomException;
 import io.bytom.http.Client;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.List;
 
 public class MessageTest {
 
