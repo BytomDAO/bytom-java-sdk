@@ -37,7 +37,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Client {
     private String url;
-    private AtomicInteger urlIndex;
     private String accessToken;
     private OkHttpClient httpClient;
 
@@ -59,7 +58,6 @@ public class Client {
     }
 
     public Client(Builder builder) throws ConfigurationException {
-        this.urlIndex = new AtomicInteger(0);
         this.url = builder.url;
         this.accessToken = builder.accessToken;
         this.httpClient = buildHttpClient(builder);
@@ -263,6 +261,10 @@ public class Client {
      */
     public String accessToken() {
         return accessToken;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     /**

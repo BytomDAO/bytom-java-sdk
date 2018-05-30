@@ -76,6 +76,7 @@ public class Key {
         req.put("xpub", xpub);
         req.put("password", password);
         client.request("delete-key", req);
+        logger.info("delete-key successfully.");
     }
 
     /**

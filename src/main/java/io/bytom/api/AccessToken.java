@@ -67,7 +67,7 @@ public class AccessToken {
         }
 
         /**
-         * @param type the type to set
+         * @param type the type to set, possibly null
          * @return Builder
          */
         public Builder setType(String type) {
@@ -96,7 +96,7 @@ public class AccessToken {
      * Call check-access-token api
      *
      * @param client client object that makes requests to the core
-     * @param id id
+     * @param id     id
      * @param secret secret
      * @throws BytomException
      */
@@ -104,22 +104,34 @@ public class AccessToken {
         Map<String, Object> req = new HashMap<String, Object>();
         req.put("id", id);
         req.put("secret", secret);
-        client.request("check-access-token", req);
-        logger.info("check-access-token.");
+        // add a native control
+        if (client.getUrl().equals("http://127.0.0.1:9888") ||
+                client.getUrl().equals("http://127.0.0.1:9888/")) {
+            client.request("check-access-token", req);
+            logger.info("check-access-token successfully.");
+        } else {
+            logger.info("this is a native method.");
+        }
     }
 
     /**
      * Call delete-access-token api
+     * native method, can't rpc
      *
      * @param client client object that makes requests to the core
-     * @param id id
+     * @param id     id
      * @throws BytomException
      */
     public static void delete(Client client, String id) throws BytomException {
         Map<String, Object> req = new HashMap<String, Object>();
         req.put("id", id);
-        client.request("delete-access-token", req);
-        logger.info("delete-access-token.");
+        if (client.getUrl().equals("http://127.0.0.1:9888") ||
+                client.getUrl().equals("http://127.0.0.1:9888/")) {
+            client.request("delete-access-token", req);
+            logger.info("delete-access-token.");
+        } else {
+            logger.info("this is a native method.");
+        }
     }
 
     /**
@@ -132,12 +144,16 @@ public class AccessToken {
      */
     public static List<AccessToken> list(Client client) throws BytomException {
         Type listType = new ParameterizedTypeImpl(List.class, new Class[]{AccessToken.class});
-        List<AccessToken> accessTokenList = client.request("list-access-tokens", null, listType);
-        // TODO: 2018/5/23 need to test
-        logger.info("list-access-tokens:");
-        logger.info("size of accessTokenList:" + accessTokenList.size());
-        logger.info(accessTokenList.get(0).toJson());
-        
+        List<AccessToken> accessTokenList = null;
+        if (client.getUrl().equals("http://127.0.0.1:9888") ||
+                client.getUrl().equals("http://127.0.0.1:9888/")) {
+            accessTokenList = client.request("list-access-tokens", null, listType);
+
+            logger.info("list-access-tokens:");
+            logger.info("size of accessTokenList:" + accessTokenList.size());
+            logger.info(accessTokenList.get(0).toJson());
+        }
+
         return accessTokenList;
     }
 
