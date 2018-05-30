@@ -5,6 +5,7 @@ import io.bytom.api.*;
 import io.bytom.exception.BytomException;
 import io.bytom.http.Client;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class TransactionTest {
     static Address receiverAddress;
     static Asset senderAsset;
     static Asset receiverAsset;
+
+    static Transaction.Feed transactionFeed;
 
     static {
         try {
@@ -147,9 +150,6 @@ public class TransactionTest {
         List<Transaction> transactionList =
                 new Transaction.QueryBuilder().setAccountId(account_id).list(client);
     }
-
-
-
 
     public void testSenderKeyCreate() throws Exception {
         String alias = "sender-key";
@@ -282,6 +282,45 @@ public class TransactionTest {
         logger.info(balanceList.get(0).toJson());
         logger.info(balanceList.get(1).toJson());
 
+    }
+
+    //TransactionFeed
+    @Test
+    public void testTXFeedCreate() throws Exception {
+        String filter = "asset_id='57fab05b689a2b8b6738cffb5cf6cffcd0bf6156a04b7d9ba0173e384fe38c8c' AND amount_lower_limit = 50 AND amount_upper_limit = 100";
+        String alias = "test1";
+        new Transaction.Feed.Builder()
+                .setAlias(alias)
+                .setFilter(filter)
+                .create(client);
+    }
+
+    @Test
+    public void testTXFeedGet() throws Exception {
+        String alias = "test2";
+        transactionFeed = Transaction.Feed.getByAlias(client, alias);
+
+        Assert.assertNotNull(transactionFeed);
+    }
+
+    @Test
+    public void testTXFeedUpdate() throws Exception {
+        String filter = "asset_id='57fab05b689a2b8b6738cffb5cf6cffcd0bf6156a04b7d9ba0173e384fe38c8c' AND amount_lower_limit = 50 AND amount_upper_limit = 100";
+        String alias = "test2";
+
+        Transaction.Feed.update(client, alias, filter);
+    }
+
+    @Test
+    public void testTXFeedList() throws Exception {
+        List<Transaction.Feed> txFeedList = Transaction.Feed.list(client);
+        Assert.assertNotNull(txFeedList);
+    }
+
+    @Test
+    public void testTXFeedDelete() throws Exception {
+        String alias = "test2";
+        Transaction.Feed.deleteByAlias(client, alias);
     }
 
 }
