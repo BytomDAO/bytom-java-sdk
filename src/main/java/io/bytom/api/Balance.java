@@ -7,6 +7,7 @@ import io.bytom.http.Client;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -68,14 +69,56 @@ public class Balance {
          */
         public List<Balance> list(Client client) throws BytomException {
 
-            // TODO: 2018/5/23 need tx and test
             Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Balance.class});
             List<Balance> balanceList = client.request("list-balances", null, listType);
             logger.info("list-balances:");
             logger.info("size of :" + balanceList.size());
-            logger.info(balanceList.get(0).toJson());
+            for (Balance result : balanceList) {
+                logger.info(result.toJson());
+            }
 
             return balanceList;
+        }
+
+        /**
+         * sum of all Asset alias amount
+         *
+         * @param client
+         * @param assetAlias
+         * @return
+         * @throws BytomException
+         */
+        public long listByAssetAlias(Client client, String assetAlias) throws BytomException {
+            List<Balance> balanceList = list(client);
+            Balance assetBalance = new Balance();
+            long amount = 0;
+            for (Balance result : balanceList) {
+                if (result.assetAlias.equals(assetAlias)) {
+                    amount += result.amount;
+                }
+            }
+            logger.info("amount:"+amount);
+            return amount;
+        }
+
+        /**
+         * sum of all Account alias amount
+         *
+         * @param client
+         * @param accountAlias
+         * @return
+         * @throws BytomException
+         */
+        public List<Balance> listByAccountAlias(Client client, String accountAlias) throws BytomException {
+            List<Balance> balanceList = list(client);
+            List<Balance> accountBalance = new ArrayList<>();
+            for (Balance result : balanceList) {
+                if (result.accountAlias.equals(accountAlias)) {
+                    accountBalance.add(result);
+                    logger.info(result.toJson());
+                }
+            }
+            return accountBalance;
         }
     }
 }

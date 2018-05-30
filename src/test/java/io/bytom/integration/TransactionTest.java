@@ -24,8 +24,8 @@ public class TransactionTest {
     static Account receiverAccount;
     static Receiver senderReceiver;
     static Receiver receiverReceiver;
-    static Address senderAddress;
-    static Address receiverAddress;
+    static Account.Address senderAddress;
+    static Account.Address receiverAddress;
     static Asset senderAsset;
     static Asset receiverAsset;
 
