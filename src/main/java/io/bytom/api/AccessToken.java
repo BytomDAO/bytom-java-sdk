@@ -125,6 +125,7 @@ public class AccessToken {
     public static void delete(Client client, String id) throws BytomException {
         Map<String, Object> req = new HashMap<String, Object>();
         req.put("id", id);
+        // add a native control
         if (client.getUrl().equals("http://127.0.0.1:9888") ||
                 client.getUrl().equals("http://127.0.0.1:9888/")) {
             client.request("delete-access-token", req);
@@ -152,6 +153,8 @@ public class AccessToken {
             logger.info("list-access-tokens:");
             logger.info("size of accessTokenList:" + accessTokenList.size());
             logger.info(accessTokenList.get(0).toJson());
+        } else {
+            logger.info("this is a native method.");
         }
 
         return accessTokenList;
