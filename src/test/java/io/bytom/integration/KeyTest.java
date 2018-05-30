@@ -47,11 +47,11 @@ public class KeyTest {
     }
 
     @Test
-    public void testClientKeyResetPwd() throws BytomException {
+    public void testClientKeyResetPassword() throws BytomException {
         client = TestUtils.generateClient();
         List<Key> keyList = Key.list(client);
         String xpub = keyList.get(keyList.size()-1).xpub;
-        Key.resetPwd(client, xpub, "123456", "123456789");
+        Key.resetPassword(client, xpub, "123456", "123456789");
         Key.delete(client, xpub, "123456789");
     }
 

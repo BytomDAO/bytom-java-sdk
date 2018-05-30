@@ -58,7 +58,7 @@ public class Key {
         Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Key.class});
         List<Key> keyList = client.request("list-keys", null, listType);
         logger.info("list-key:");
-        logger.info("size fo key:"+keyList.size());
+        logger.info("size of key:"+keyList.size());
         logger.info(keyList);
         return keyList;
     }
@@ -87,7 +87,7 @@ public class Key {
      * @param newPwd new password used to set
      * @throws BytomException BytomException
      */
-    public static void resetPwd(Client client, String xpub, String oldPwd, String newPwd) throws BytomException {
+    public static void resetPassword(Client client, String xpub, String oldPwd, String newPwd) throws BytomException {
         Map<String, String> req = new HashMap<>();
         req.put("xpub", xpub);
         req.put("old_password", oldPwd);
