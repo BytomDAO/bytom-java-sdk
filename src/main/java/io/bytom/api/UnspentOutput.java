@@ -116,12 +116,13 @@ public class UnspentOutput {
          */
         public List<UnspentOutput> list(Client client) throws BytomException {
 
-            // TODO: 2018/5/21 need to tx and test
             Type listType = new ParameterizedTypeImpl(List.class, new Class[]{UnspentOutput.class});
             List<UnspentOutput> unspentOutputList = client.request("list-unspent-outputs", this, listType);
             logger.info("list-unspent-outputs:");
             logger.info("size of unspentOutputList:" + unspentOutputList.size());
-            logger.info(unspentOutputList.get(0).toJson());
+            for (UnspentOutput UTXO : unspentOutputList) {
+                logger.info(UTXO.toJson());
+            }
 
             return unspentOutputList;
         }
