@@ -88,17 +88,22 @@ public class Balance {
          * @return
          * @throws BytomException
          */
-        public long listByAssetAlias(Client client, String assetAlias) throws BytomException {
+        public Balance listByAssetAlias(Client client, String assetAlias) throws BytomException {
             List<Balance> balanceList = list(client);
             Balance assetBalance = new Balance();
+            assetBalance.assetAlias = assetAlias;
             long amount = 0;
             for (Balance result : balanceList) {
                 if (result.assetAlias.equals(assetAlias)) {
                     amount += result.amount;
+                    assetBalance.assetId = result.assetId;
                 }
             }
-            logger.info("amount:"+amount);
-            return amount;
+            assetBalance.amount = amount;
+
+            logger.info(assetBalance.toJson());
+
+            return assetBalance;
         }
 
         /**

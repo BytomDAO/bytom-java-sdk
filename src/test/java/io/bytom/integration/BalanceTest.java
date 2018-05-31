@@ -33,8 +33,8 @@ public class BalanceTest {
 
     @Test
     public void testBalanceByAssetAlias() throws Exception {
-        long amount = new Balance.QueryBuilder().listByAssetAlias(client, "BTM");
-        Assert.assertNotNull(amount);
+        Balance balance = new Balance.QueryBuilder().listByAssetAlias(client, "BTM");
+        Assert.assertNotNull(balance);
     }
 
     @Test
