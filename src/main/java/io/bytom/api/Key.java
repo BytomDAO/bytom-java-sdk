@@ -1,6 +1,7 @@
 package io.bytom.api;
 
 import com.google.gson.annotations.SerializedName;
+import io.bytom.common.ParameterizedTypeImpl;
 import io.bytom.common.Utils;
 import io.bytom.exception.*;
 import io.bytom.http.Client;
@@ -57,9 +58,11 @@ public class Key {
     public static List<Key> list(Client client) throws BytomException {
         Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Key.class});
         List<Key> keyList = client.request("list-keys", null, listType);
+
         logger.info("list-key:");
         logger.info("size of key:"+keyList.size());
         logger.info(keyList);
+
         return keyList;
     }
 

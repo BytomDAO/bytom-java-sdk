@@ -2,6 +2,7 @@ package io.bytom.api;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import io.bytom.common.ParameterizedTypeImpl;
 import io.bytom.common.Utils;
 import io.bytom.exception.*;
 import io.bytom.http.Client;

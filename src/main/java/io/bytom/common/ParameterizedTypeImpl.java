@@ -1,4 +1,4 @@
-package io.bytom.api;
+package io.bytom.common;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
