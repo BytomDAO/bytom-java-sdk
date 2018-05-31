@@ -41,7 +41,7 @@ public class Client {
     private OkHttpClient httpClient;
 
     // Used to create empty, in-memory key stores.
-    private static final char[] DEFAULT_KEYSTORE_PASSWORD = "password".toCharArray();
+    private static final char[] DEFAULT_KEYSTORE_PASSWORD = "123456".toCharArray();
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static String version = "dev"; // updated in the static initializer
 
@@ -55,6 +55,18 @@ public class Client {
             InputStreamReader inr = new InputStreamReader(in);
             version = Utils.serializer.fromJson(inr, BuildProperties.class).version;
         }
+    }
+
+    public static Client generateClient() throws BytomException {
+
+        String coreURL = Configuration.getValue("bytom.api.url");
+        String accessToken = Configuration.getValue("client.access.token");
+
+        if (coreURL == null || coreURL.isEmpty()) {
+            coreURL = "http://127.0.0.1:9888/";
+        }
+
+        return new Client(coreURL, accessToken);
     }
 
     public Client(Builder builder) throws ConfigurationException {
