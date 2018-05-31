@@ -21,10 +21,18 @@ public class CoreConfigTest {
 
     static CoreConfig.NetInfo netInfo;
 
+    static Integer gasRate;
+
     @Test
     public void testNetInfo() throws Exception {
         netInfo = CoreConfig.getNetInfo(client);
         Assert.assertNotNull(netInfo);
+    }
+
+    @Test
+    public void testGasRate() throws Exception {
+        gasRate = CoreConfig.getGasRate(client);
+        Assert.assertNotNull(gasRate);
     }
 
 

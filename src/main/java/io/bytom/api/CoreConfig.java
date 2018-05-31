@@ -27,6 +27,22 @@ public class CoreConfig {
         return netInfo;
     }
 
+    /**
+     * Call gas-rate api
+     *
+     * @param client
+     * @return
+     * @throws BytomException
+     */
+    public static Integer getGasRate(Client client) throws BytomException {
+        Integer gas = client.requestGet("gas-rate", null, "gas_rate", Integer.class);
+
+        logger.info("gas-rate:");
+        logger.info(gas);
+
+        return gas;
+    }
+
     public static class NetInfo {
         /**
          * listening, whether the node is listening.
