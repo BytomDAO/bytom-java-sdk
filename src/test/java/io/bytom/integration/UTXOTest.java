@@ -1,7 +1,6 @@
 package io.bytom.integration;
 
 import io.bytom.TestUtils;
-import io.bytom.api.Balance;
 import io.bytom.api.UnspentOutput;
 import io.bytom.exception.BytomException;
 import io.bytom.http.Client;

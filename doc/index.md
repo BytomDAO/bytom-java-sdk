@@ -801,7 +801,7 @@ BlockHashRate getHashRate(Client client);
 ## Other API
 
 
-#### 1.netInfo
+#### 1.coreConfig
 
 ```java
 NetInfo getNetInfo(Client client);
@@ -813,7 +813,7 @@ NetInfo getNetInfo(Client client);
 
 ##### Returns
 
-- `NetInfo` - *netInfo*, a NetInfo object.
+- `NetInfo` - *coreConfig*, a NetInfo object.
 
 ----
 
