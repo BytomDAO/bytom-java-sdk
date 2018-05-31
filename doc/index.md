@@ -268,7 +268,7 @@ Receiver create(Client client);
 #### 5.listAddresses
 
 ```java
-List<Address> list(Client client);
+List<Account.Address> list(Client client);
 ```
 
 ##### Parameters
@@ -277,7 +277,7 @@ List<Address> list(Client client);
 
 ##### Returns
 
-- `List of Address`, *List<Address>*, an ArrayList object contains Address objects.
+- `List of Address`, *List<Account.Address>*, an ArrayList object contains Account.Address objects.
 
 ----
 
@@ -380,7 +380,39 @@ List<Balance> list(Client client);
 
 ----
 
-#### 6.listUnspentOutPuts
+#### 6.listBalancesByAssetAlias
+
+```java
+Balance listByAssetAlias(Client client);
+```
+
+##### Parameters
+
+- `Client` - *Client*, Client object that makes requests to the core.
+
+##### Returns
+
+- `Balance`, a Balance objects.
+
+----
+
+#### 7.listBalancesByAccountAlias
+
+```java
+List<alance> listByAccountAlias(Client client);
+```
+
+##### Parameters
+
+- `Client` - *Client*, Client object that makes requests to the core.
+
+##### Returns
+
+- `List of Balance`, an ArrayList object contains Balance objects.
+
+----
+
+#### 8.listUnspentOutPuts
 
 ```java
 List<UnspentOutput> list(Client client);
