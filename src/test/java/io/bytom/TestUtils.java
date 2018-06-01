@@ -21,7 +21,7 @@ public class TestUtils {
         String accessToken = Configuration.getValue("client.access.token");
 
         if (coreURL == null || coreURL.isEmpty()) {
-            coreURL = "http://127.0.0.1:9888/";
+            coreURL = "http://127.0.0.1:9888";
         }
 
         return new Client(coreURL, accessToken);
