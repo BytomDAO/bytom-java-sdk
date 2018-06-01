@@ -75,6 +75,10 @@ public class Client {
     }
 
     public Client(Builder builder) throws ConfigurationException {
+        if (builder.url.endsWith("/")) {
+            //split the last char "/"
+            builder.url = builder.url.substring(0, builder.url.length()-1);
+        }
         this.url = builder.url;
         this.accessToken = builder.accessToken;
         this.httpClient = buildHttpClient(builder);
