@@ -66,6 +66,11 @@ public class Client {
             coreURL = "http://127.0.0.1:9888";
         }
 
+        if (coreURL.endsWith("/")) {
+            //split the last char "/"
+            coreURL = coreURL.substring(0, coreURL.length()-1);
+        }
+
         return new Client(coreURL, accessToken);
     }
 

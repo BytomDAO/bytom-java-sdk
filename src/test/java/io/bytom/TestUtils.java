@@ -3,17 +3,14 @@ package io.bytom;
 import io.bytom.common.Configuration;
 import io.bytom.exception.BytomException;
 import io.bytom.http.Client;
+import org.apache.log4j.Logger;
 
 /**
  * TestUtils provides a simplified api for testing.
  */
 public class TestUtils {
-    public static Client generateClient_old() throws BytomException {
 
-        String coreURL = "http://127.0.0.1:9888";
-
-        return new Client(coreURL);
-    }
+    public static Logger logger = Logger.getLogger(TestUtils.class);
 
     public static Client generateClient() throws BytomException {
 
@@ -22,6 +19,11 @@ public class TestUtils {
 
         if (coreURL == null || coreURL.isEmpty()) {
             coreURL = "http://127.0.0.1:9888";
+        }
+
+        if (coreURL.endsWith("/")) {
+            //split the last char "/"
+            coreURL = coreURL.substring(0, coreURL.length()-1);
         }
 
         return new Client(coreURL, accessToken);
