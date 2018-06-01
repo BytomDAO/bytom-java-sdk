@@ -7,7 +7,7 @@ at [Bytom wiki](https://github.com/Bytom/bytom/wiki/API-Reference)
 
 ## Basic Usage
 
-```
+```java
 public static Client generateClient() throws BytomException {
     String coreURL = Configuration.getValue("bytom.api.url");
     String accessToken = Configuration.getValue("client.access.token");
@@ -81,6 +81,8 @@ receiverAsset = builder.create(client);
 ```
 
 ## Issue asset
+
+For more transaction details, see [transactions](https://github.com/Bytom/java-sdk/blob/master/doc/transactions.md)
 
 ### Firstly build the transaction
 

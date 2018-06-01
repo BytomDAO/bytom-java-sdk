@@ -6,6 +6,7 @@ import io.bytom.common.*;
 import io.bytom.exception.*;
 import com.google.gson.Gson;
 import com.squareup.okhttp.*;
+import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
@@ -45,6 +46,8 @@ public class Client {
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static String version = "dev"; // updated in the static initializer
 
+    public static Logger logger = Logger.getLogger(Client.class);
+
     private static class BuildProperties {
         public String version;
     }
@@ -69,6 +72,7 @@ public class Client {
         if (coreURL.endsWith("/")) {
             //split the last char "/"
             coreURL = coreURL.substring(0, coreURL.length()-1);
+            logger.info("check the coreURL is right.");
         }
 
         return new Client(coreURL, accessToken);
