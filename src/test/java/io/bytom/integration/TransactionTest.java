@@ -17,14 +17,12 @@ import static org.junit.Assert.assertNotNull;
 public class TransactionTest {
 
     static Client client;
+    static Client otherCoreClient;
 
     static Key senderKey;
     static Key receiverKey;
     static Account senderAccount;
     static Account receiverAccount;
-    static Receiver senderReceiver;
-    static Receiver receiverReceiver;
-    static Account.Address senderAddress;
     static Account.Address receiverAddress;
     static Asset senderAsset;
     static Asset receiverAsset;
@@ -34,6 +32,7 @@ public class TransactionTest {
     static {
         try {
             client = TestUtils.generateClient();
+            otherCoreClient = TestUtils.generateClient();
         } catch (BytomException e) {
             e.printStackTrace();
         }
@@ -42,46 +41,30 @@ public class TransactionTest {
 
     private static Logger logger = Logger.getLogger(TransactionTest.class);
 
-    @Test
-    public void testCreateAll() throws Exception {
-
-        testSenderKeyCreate();
-        testReceiverKeyCreate();
-
-        testSenderAccountCreate();
-        testReceiverAccountCreate();
-
-//        testSenderReceiverCreate();
-        testReceiverReceiverCreate();
-
-//        testSenderAssetCreate();
-//        testReceiverAssetCreate();
-
-    }
 
     @Test
     public void testGetAll() throws Exception {
 
         senderKey = Key.list(client).get(0);
         receiverKey = Key.list(client).get(1);
-        logger.info("senderKey:"+senderKey.toJson());
-        logger.info("receiverKey:"+receiverKey.toJson());
+        logger.info("senderKey:" + senderKey.toJson());
+        logger.info("receiverKey:" + receiverKey.toJson());
 
         senderAccount = Account.list(client).get(0);
         receiverAccount = Account.list(client).get(1);
-        logger.info("senderAccount:"+senderAccount.toJson());
-        logger.info("receiverAccount:"+receiverAccount.toJson());
+        logger.info("senderAccount:" + senderAccount.toJson());
+        logger.info("receiverAccount:" + receiverAccount.toJson());
 
         receiverAddress = new Account.AddressBuilder()
                 .setAccountAlias(receiverAccount.alias)
                 .setAccountId(receiverAccount.id)
                 .list(client).get(0);
-        logger.info("receiver-address:"+receiverAddress.toJson());
+        logger.info("receiver-address:" + receiverAddress.toJson());
 
         senderAsset = new Asset.QueryBuilder().list(client).get(0);
         receiverAsset = new Asset.QueryBuilder().list(client).get(1);
-        logger.info("senderAsset:"+senderAsset.toJson());
-        logger.info("receiverAsset:"+receiverAsset.toJson());
+        logger.info("senderAsset:" + senderAsset.toJson());
+        logger.info("receiverAsset:" + receiverAsset.toJson());
     }
 
     @Test
@@ -111,13 +94,13 @@ public class TransactionTest {
         Transaction.Template singer = new Transaction.SignerBuilder().sign(client,
                 controlAddress, "123456");
 
-        logger.info("rawTransaction:"+singer.rawTransaction);
+        logger.info("rawTransaction:" + singer.rawTransaction);
 
-        logger.info("singer:"+singer.toJson());
+        logger.info("singer:" + singer.toJson());
 
         Transaction.SubmitResponse txs = Transaction.submit(client, singer);
 
-        logger.info("txs:"+txs.toJson());
+        logger.info("txs:" + txs.toJson());
 
         logger.info("after transaction.");
 
@@ -125,163 +108,185 @@ public class TransactionTest {
 
     }
 
+    //Asset issuance
+    //Issue 1000 units of gold to Alice.
     @Test
-    public void testListTransactions() throws Exception {
-        List<Transaction> transactionList = new Transaction.QueryBuilder().list(client);
-    }
-
-    @Test
-    public void testListByIdTransactions() throws Exception {
-        String tx_id = "f04d4d9b2580ff6496f9f08d903de5a2365975fb8d65b66ca4259f152c5dd134";
-        List<Transaction> transactionList =
-                new Transaction.QueryBuilder().setTxId(tx_id).list(client);
-        for (Transaction tx: transactionList
-             ) {
-            if (tx.txId.equalsIgnoreCase(tx_id)) {
-                logger.info("this transaction is :");
-                logger.info(tx.toJson());
-            }
-        }
-    }
-
-    @Test
-    public void testListByAccountIdTransactions() throws Exception {
-        String account_id = "0E6KP8C100A02";
-        List<Transaction> transactionList =
-                new Transaction.QueryBuilder().setAccountId(account_id).list(client);
-    }
-
-    public void testSenderKeyCreate() throws Exception {
-        String alias = "sender-key";
-        String password = "123456";
-
-        Key.Builder builder = new Key.Builder().setAlias(alias).setPassword(password);
-        senderKey = Key.create(client, builder);
-
-        logger.info("create-sender-key:"+senderKey.toJson());
-    }
-
-    public void testReceiverKeyCreate() throws Exception {
-        String alias = "receiver-key";
-        String password = "123456";
-
-        Key.Builder builder = new Key.Builder().setAlias(alias).setPassword(password);
-        receiverKey = Key.create(client, builder);
-
-        logger.info("create-receiver-key:"+receiverKey.toJson());
-    }
-
-    public void testSenderAccountCreate() throws Exception {
-        String alias = "sender-account";
-        Integer quorum = 1;
-        List<String> root_xpubs = new ArrayList<String>();
-        root_xpubs.add(senderKey.xpub);
-
-        Account.Builder builder = new Account.Builder().setAlias(alias).setQuorum(quorum).setRootXpub(root_xpubs);
-
-        logger.info(builder.toString());
-
-        senderAccount = Account.create(client, builder);
-
-        logger.info("create-sender-account:"+senderAccount.toJson());
-    }
-
-    public void testReceiverAccountCreate() throws Exception {
-        String alias = "receiver-account";
-        Integer quorum = 1;
-        List<String> root_xpubs = new ArrayList<>();
-        root_xpubs.add(receiverKey.xpub);
-
-        Account.Builder builder = new Account.Builder().setAlias(alias).setQuorum(quorum).setRootXpub(root_xpubs);
-        receiverAccount = Account.create(client, builder);
-
-        logger.info("create-receiver-account:"+receiverAccount.toJson());
-    }
-
-    public void testSenderReceiverCreate() throws Exception {
-        String alias = senderAccount.alias;
-        String id = senderAccount.id;
-
-        Account.ReceiverBuilder receiverBuilder = new Account.ReceiverBuilder().setAccountAlias(alias).setAccountId(id);
-        senderReceiver = receiverBuilder.create(client);
-
-        logger.info("create-receiver:"+senderReceiver.toJson());
-        logger.info("receiver-address:"+senderReceiver.address);
-    }
-
-    public void testReceiverReceiverCreate() throws Exception {
-        String alias = receiverAccount.alias;
-        String id = receiverAccount.id;
-
-        Account.ReceiverBuilder receiverBuilder = new Account.ReceiverBuilder().setAccountAlias(alias).setAccountId(id);
-        receiverReceiver = receiverBuilder.create(client);
-
-        logger.info("create-receiver:"+receiverReceiver.toJson());
-        logger.info("receiver-address:"+receiverReceiver.address);
-    }
-
-    public void testSenderAssetCreate() throws Exception {
-        String alias = "sender-asset";
-
-        List<String> xpubs = senderAccount.xpubs;
-
-        Asset.Builder builder = new Asset.Builder()
-                .setAlias(alias)
-                .setQuorum(1)
-                .setRootXpubs(xpubs);
-        senderAsset = builder.create(client);
-
-        logger.info("create-sender-asset:"+senderAsset.toJson());
-    }
-
-    public void testReceiverAssetCreate() throws Exception {
-        String alias = "receiver-asset";
-
-        List<String> xpubs = receiverAccount.xpubs;
-
-        Asset.Builder builder = new Asset.Builder()
-                .setAlias(alias)
-                .setQuorum(1)
-                .setRootXpubs(xpubs);
-        receiverAsset = builder.create(client);
-
-        logger.info("create-receiver-asset:"+receiverAsset.toJson());
-    }
-
-    /**
-     * build + sign + submit transaction
-     *
-     * @throws BytomException
-     */
-    public void testBasicTransaction() throws BytomException {
-        logger.info("before transaction:");
-
-        List<Balance> balanceList = new Balance.QueryBuilder().list(client);
-
-        logger.info(balanceList.get(0).toJson());
-        logger.info(balanceList.get(1).toJson());
-
-        Transaction.Template controlAddress = new Transaction.Builder()
-                .addAction(
-                        new Transaction.Action.SpendFromAccount()
-                                .setAccountId(senderAccount.id)
-                                .setAssetId(senderAsset.id)
-                                .setAmount(300000000)
-                )
-                .addAction(
-                        new Transaction.Action.ControlWithAddress()
-                                .setAddress(receiverAddress.address)
-                                .setAssetId(receiverAsset.id)
-                                .setAmount(200000000)
+    public void testAssetIssue() throws BytomException {
+        Transaction.Template issuance = new Transaction.Builder()
+                .addAction(new Transaction.Action.Issue()
+                        .setAssetAlias("gold")
+                        .setAmount(1000)
+                ).addAction(
+                        new Transaction.Action.ControlWithAccount()
+                                .setAccountAlias("alice")
+                                .setAssetAlias("golad")
+                                .setAmount(1000)
                 ).build(client);
 
-        logger.info("after transaction.");
+        Transaction.Template signedIssuance = new Transaction.SignerBuilder().sign(client,
+                issuance, "123456");
 
-        balanceList = new Balance.QueryBuilder().list(client);
+        Transaction.submit(client, signedIssuance);
+    }
 
-        logger.info(balanceList.get(0).toJson());
-        logger.info(balanceList.get(1).toJson());
+    //Between two Chain Cores
+    @Test
+    public void testAssetIssueBetween() throws BytomException {
+        Receiver bobIssuanceReceiver = new Account.ReceiverBuilder()
+                .setAccountAlias("bob")
+                .create(otherCoreClient);
+        String bobIssuanceReceiverSerialized = bobIssuanceReceiver.toJson();
 
+
+        Transaction.Template issuanceToReceiver = new Transaction.Builder()
+                .addAction(new Transaction.Action.Issue()
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.ControlWithReceiver()
+                        .setReceiver(Receiver.fromJson(bobIssuanceReceiverSerialized))
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).build(client);
+
+        Transaction.Template signedIssuanceToReceiver = new Transaction.SignerBuilder().sign(client,
+                issuanceToReceiver, "123456");
+
+        Transaction.submit(client, signedIssuanceToReceiver);
+    }
+
+    //Simple payment
+    //Alice pays 10 units of gold to Bob.
+    @Test
+    public void testSimplePayment() throws BytomException {
+        Transaction.Template payment = new Transaction.Builder()
+                .addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.ControlWithAccount()
+                        .setAccountAlias("bob")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).build(client);
+
+        Transaction.Template signedPayment = new Transaction.SignerBuilder().sign(client,
+                payment, "123456");
+
+        Transaction.submit(client, signedPayment);
+    }
+
+    //Between two Chain Cores
+    @Test
+    public void testSimplePaymentBetween() throws BytomException {
+        Receiver bobPaymentReceiver = new Account.ReceiverBuilder()
+                .setAccountAlias("bob")
+                .create(otherCoreClient);
+        String bobPaymentReceiverSerialized = bobPaymentReceiver.toJson();
+
+
+        Transaction.Template paymentToReceiver = new Transaction.Builder()
+                .addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.ControlWithReceiver()
+                        .setReceiver(Receiver.fromJson(bobPaymentReceiverSerialized))
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).build(client);
+
+        Transaction.Template signedPaymentToReceiver = new Transaction.SignerBuilder().sign(client,
+                paymentToReceiver, "123456");
+
+        Transaction.submit(client, signedPaymentToReceiver);
+    }
+
+    //Multi-asset payment
+    //Alice pays 10 units of gold and 20 units of silver to Bob.
+    @Test
+    public void testMultiAssetPayment() throws BytomException {
+        Transaction.Template multiAssetPayment = new Transaction.Builder()
+                .addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("silver")
+                        .setAmount(20)
+                ).addAction(new Transaction.Action.ControlWithAccount()
+                        .setAccountAlias("bob")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.ControlWithAccount()
+                        .setAccountAlias("bob")
+                        .setAssetAlias("silver")
+                        .setAmount(20)
+                ).build(client);
+
+        Transaction.Template signedMultiAssetPayment = new Transaction.SignerBuilder().sign(client,
+                multiAssetPayment, "123456");
+
+        Transaction.submit(client, signedMultiAssetPayment);
+    }
+
+    //Between two Chain Cores
+    @Test
+    public void testMultiAssetPaymentBetween() throws BytomException {
+        Receiver bobGoldReceiver = new Account.ReceiverBuilder()
+                .setAccountAlias("bob")
+                .create(otherCoreClient);
+        String bobGoldReceiverSerialized = bobGoldReceiver.toJson();
+
+        Receiver bobSilverReceiver = new Account.ReceiverBuilder()
+                .setAccountAlias("bob")
+                .create(otherCoreClient);
+        String bobSilverReceiverSerialized = bobSilverReceiver.toJson();
+
+
+        Transaction.Template multiAssetToReceiver = new Transaction.Builder()
+                .addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("silver")
+                        .setAmount(20)
+                ).addAction(new Transaction.Action.ControlWithReceiver()
+                        .setReceiver(Receiver.fromJson(bobGoldReceiverSerialized))
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.ControlWithReceiver()
+                        .setReceiver(Receiver.fromJson(bobSilverReceiverSerialized))
+                        .setAssetAlias("silver")
+                        .setAmount(20)
+                ).build(client);
+
+        Transaction.Template signedMultiAssetToReceiver = new Transaction.SignerBuilder().sign(client,
+                multiAssetToReceiver, "123456");;
+
+        Transaction.submit(client, signedMultiAssetToReceiver);
+    }
+
+    //Asset retirement
+    //Alice retires 50 units of gold from her account.
+    @Test
+    public void testRetirement() throws BytomException {
+        Transaction.Template retirement = new Transaction.Builder()
+                .addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("gold")
+                        .setAmount(50)
+                ).addAction(new Transaction.Action.Retire()
+                        .setAssetAlias("gold")
+                        .setAmount(50)
+                ).build(client);
+
+        Transaction.Template signedRetirement = new Transaction.SignerBuilder().sign(client,
+                retirement, "123456");
+
+        Transaction.submit(client, signedRetirement);
     }
 
     //TransactionFeed
