@@ -5,6 +5,35 @@ Subsequent new releases also maintain backward compatibility with this class
 approach. For more information, please see Bytom API reference documentation
 at [Bytom wiki](https://github.com/Bytom/bytom/wiki/API-Reference)
 
+## Installation
+
+There are various ways to install and use this sdk. We'll provide three ways to get it. Note that the bytom-sdk requires JAVA 7 or newer.
+
+### Apache Maven
+
+```xml
+<dependency>
+    <groupId>io.bytom</groupId>
+    <artifactId>bytom-sdk</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### Gradle/Grails
+```xml
+compile 'io.bytom:bytom-sdk:1.0.0'
+```
+
+### Building from source code
+
+To clone, compile, and install in your local maven repository (or copy the artifacts from the target/ directory to wherever you need them):
+
+```shell
+git clone https://github.com/Bytom/bytom-java-sdk.git
+cd java-sdk
+mvn install -Dmaven.test.skip=true
+```
+
 ## Basic Usage
 
 ```java
@@ -33,7 +62,7 @@ Client client = TestUtils.generateClient();
 
 > For more details, see [API methods](https://github.com/Bytom/java-sdk/blob/master/doc/index.md#api-methods)
 
-## Create a key
+### Create a key
 
 ```java
 String alias = "test";
@@ -43,7 +72,7 @@ Key.Builder builder = new Key.Builder().setAlias(alias).setPassword(password);
 Key key = Key.create(client, builder);
 ```
 
-## Create an account
+### Create an account
 
 ```java
 String alias = "sender-account";
@@ -56,7 +85,7 @@ Account.Builder builder = new Account.Builder().setAlias(alias).setQuorum(quorum
 Account account = Account.create(client, builder);
 ```
 
-## Create an receiver
+### Create an receiver
 
 ```java
 String alias = receiverAccount.alias;
@@ -66,7 +95,7 @@ Account.ReceiverBuilder receiverBuilder = new Account.ReceiverBuilder().setAccou
 Receiver receiver = receiverBuilder.create(client);
 ```
 
-## Create an asset
+### Create an asset
 
 ```java
  String alias = "receiver-asset";
@@ -80,11 +109,11 @@ Asset.Builder builder = new Asset.Builder()
 receiverAsset = builder.create(client);
 ```
 
-## Issue asset
+### Issue asset
 
 For more transaction details, see [transactions](https://github.com/Bytom/java-sdk/blob/master/doc/transactions.md)
 
-### Firstly build the transaction
+#### Firstly build the transaction
 
 ```java
 Transaction.Template controlAddress = new Transaction.Builder()
@@ -102,14 +131,14 @@ Transaction.Template controlAddress = new Transaction.Builder()
         ).build(client);
 ```
 
-### Secondly sign the transaction
+#### Secondly sign the transaction
 
 ```java
 Transaction.Template singer = new Transaction.SignerBuilder().sign(client,
         controlAddress, "123456");
 ```
 
-### Finally submit the transaction
+#### Finally submit the transaction
 
 ```java
 Transaction.SubmitResponse txs = Transaction.submit(client, singer);
