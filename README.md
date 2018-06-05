@@ -46,8 +46,9 @@ public static Client generateClient() throws BytomException {
     return new Client(coreURL, accessToken);
 }
 
-Client client = TestUtils.generateClient();
+Client client = Client.generateClient();
 ```
+> Note: you can touch a file named config.properties in resources folder to config ```bytom.api.url``` and ```client.access.token``` by custom.
 
 ## Usage
 
