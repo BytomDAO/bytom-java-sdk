@@ -31,7 +31,8 @@ To clone, compile, and install in your local maven repository (or copy the artif
 ```shell
 git clone https://github.com/Bytom/bytom-java-sdk.git
 cd java-sdk
-mvn install -Dmaven.test.skip=true
+mvn package -Dmaven.test.skip=true
+mvn install
 ```
 
 ## Basic Usage
@@ -48,7 +49,7 @@ public static Client generateClient() throws BytomException {
 
 Client client = Client.generateClient();
 ```
-> Note: you can touch a file named config.properties in resources folder to config ```bytom.api.url``` and ```client.access.token``` by custom.
+> Note: you can touch a file named ```config.properties``` in resources folder to config ```bytom.api.url``` and ```client.access.token``` by custom.
 
 ## Usage
 
