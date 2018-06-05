@@ -216,7 +216,7 @@ public class Client {
                 new ResponseCreator<BatchResponse<T>>() {
                     public BatchResponse<T> create(Response response, Gson deserializer)
                             throws BytomException, IOException {
-                        return new BatchResponse<>(response, deserializer, tClass, eClass);
+                        return new BatchResponse<T>(response, deserializer, tClass, eClass);
                     }
                 };
         return post(action, body, rc);

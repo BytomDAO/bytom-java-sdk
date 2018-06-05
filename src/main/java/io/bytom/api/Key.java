@@ -75,7 +75,7 @@ public class Key {
      * @throws BytomException BytomException
      */
     public static void delete(Client client, String xpub, String password) throws BytomException {
-        Map<String, String> req = new HashMap<>();
+        Map<String, String> req = new HashMap<String, String>();
         req.put("xpub", xpub);
         req.put("password", password);
         client.request("delete-key", req);
