@@ -146,4 +146,15 @@ Transaction.Template singer = new Transaction.SignerBuilder().sign(client,
 Transaction.SubmitResponse txs = Transaction.submit(client, singer);
 ```
 
-> For more details, see [API methods](https://github.com/Bytom/java-sdk/blob/master/doc/index.md#api-methods)
+
+### All usage examples
+
+For more details you can see [doc](https://github.com/Bytom/bytom-java-sdk/blob/master/doc/index.md#api-methods). And you can find Test Cases at [Junit Test Cases](https://github.com/Bytom/bytom-java-sdk/tree/master/src/test/java/io/bytom/integration)
+
+## Support and Feedback
+
+If you find a bug, please submit the issue in Github directly by using [Issues](https://github.com/Bytom/bytom-java-sdk/issues)
+
+## License
+
+Bytom JAVA SDK is based on the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)  protocol.
