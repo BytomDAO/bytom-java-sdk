@@ -113,14 +113,17 @@ public class TransactionTest {
     @Test
     public void testAssetIssue() throws BytomException {
         Transaction.Template issuance = new Transaction.Builder()
-                .addAction(new Transaction.Action.Issue()
-                        .setAssetAlias("gold")
-                        .setAmount(1000)
-                ).addAction(
-                        new Transaction.Action.ControlWithAccount()
-                                .setAccountAlias("alice")
-                                .setAssetAlias("golad")
-                                .setAmount(1000)
+                .addAction(
+                        new Transaction.Action.SpendFromAccount()
+                                .setAccountId(senderAccount.id)
+                                .setAssetId(senderAsset.id)
+                                .setAmount(300000000)
+                )
+                .addAction(
+                        new Transaction.Action.ControlWithAddress()
+                                .setAddress(receiverAddress.address)
+                                .setAssetId(senderAsset.id)
+                                .setAmount(200000000)
                 ).build(client);
 
         Transaction.Template signedIssuance = new Transaction.SignerBuilder().sign(client,
@@ -163,8 +166,8 @@ public class TransactionTest {
                         .setAccountAlias("alice")
                         .setAssetAlias("gold")
                         .setAmount(10)
-                ).addAction(new Transaction.Action.ControlWithAccount()
-                        .setAccountAlias("bob")
+                ).addAction(new Transaction.Action.ControlWithAddress()
+                        .setAddress(receiverAddress.address)
                         .setAssetAlias("gold")
                         .setAmount(10)
                 ).build(client);
@@ -214,12 +217,12 @@ public class TransactionTest {
                         .setAccountAlias("alice")
                         .setAssetAlias("silver")
                         .setAmount(20)
-                ).addAction(new Transaction.Action.ControlWithAccount()
-                        .setAccountAlias("bob")
+                ).addAction(new Transaction.Action.ControlWithAddress()
+                        .setAddress(receiverAddress.address)
                         .setAssetAlias("gold")
                         .setAmount(10)
-                ).addAction(new Transaction.Action.ControlWithAccount()
-                        .setAccountAlias("bob")
+                ).addAction(new Transaction.Action.ControlWithAddress()
+                        .setAddress(receiverAddress.address)
                         .setAssetAlias("silver")
                         .setAmount(20)
                 ).build(client);

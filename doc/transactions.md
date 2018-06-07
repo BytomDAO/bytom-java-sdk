@@ -36,20 +36,24 @@ The Chain Core API does not return a response until either the transaction has b
 
 ### Asset issuance
 
-Issue 1000 units of gold to Alice.
+Issue 300000000 units of gold to Alice's address.
 
 #### Within a Chain Core
 
 ```java
-Transaction.Template issuance = new Transaction.Builder()
-  .addAction(new Transaction.Action.Issue()
-    .setAssetAlias("gold")
-    .setAmount(1000)
-  ).addAction(new Transaction.Action.ControlWithAccount()
-    .setAccountAlias("alice")
-    .setAssetAlias("gold")
-    .setAmount(1000)
-  ).build(client);
+Transaction.Template controlAddress = new Transaction.Builder()
+        .addAction(
+                new Transaction.Action.SpendFromAccount()
+                        .setAccountId(senderAccount.id)
+                        .setAssetId(senderAsset.id)
+                        .setAmount(300000000)
+        )
+        .addAction(
+                new Transaction.Action.ControlWithAddress()
+                        .setAddress(receiverAddress.address)
+                        .setAssetId(senderAsset.id)
+                        .setAmount(200000000)
+        ).build(client);
 
 Transaction.Template signedIssuance = new Transaction.SignerBuilder().sign(client,
                 issuance, "123456");
@@ -95,15 +99,15 @@ Alice pays 10 units of gold to Bob.
 
 ```java
 Transaction.Template payment = new Transaction.Builder()
-  .addAction(new Transaction.Action.SpendFromAccount()
-    .setAccountAlias("alice")
-    .setAssetAlias("gold")
-    .setAmount(10)
-  ).addAction(new Transaction.Action.ControlWithAccount()
-    .setAccountAlias("bob")
-    .setAssetAlias("gold")
-    .setAmount(10)
-  ).build(client);
+                .addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.ControlWithAddress()
+                        .setAddress(receiverAddress.address)
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).build(client);
 
 Transaction.Template signedPayment = new Transaction.SignerBuilder().sign(client,
                 payment, "123456");
@@ -150,23 +154,23 @@ Alice pays 10 units of gold and 20 units of silver to Bob.
 
 ```java
 Transaction.Template multiAssetPayment = new Transaction.Builder()
-  .addAction(new Transaction.Action.SpendFromAccount()
-    .setAccountAlias("alice")
-    .setAssetAlias("gold")
-    .setAmount(10)
-  ).addAction(new Transaction.Action.SpendFromAccount()
-    .setAccountAlias("alice")
-    .setAssetAlias("silver")
-    .setAmount(20)
-  ).addAction(new Transaction.Action.ControlWithAccount()
-    .setAccountAlias("bob")
-    .setAssetAlias("gold")
-    .setAmount(10)
-  ).addAction(new Transaction.Action.ControlWithAccount()
-    .setAccountAlias("bob")
-    .setAssetAlias("silver")
-    .setAmount(20)
-  ).build(client);
+                .addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.SpendFromAccount()
+                        .setAccountAlias("alice")
+                        .setAssetAlias("silver")
+                        .setAmount(20)
+                ).addAction(new Transaction.Action.ControlWithAddress()
+                        .setAddress(receiverAddress.address)
+                        .setAssetAlias("gold")
+                        .setAmount(10)
+                ).addAction(new Transaction.Action.ControlWithAddress()
+                        .setAddress(receiverAddress.address)
+                        .setAssetAlias("silver")
+                        .setAmount(20)
+                ).build(client);
 
 Transaction.Template signedMultiAssetPayment = new Transaction.SignerBuilder().sign(client,
                 multiAssetPayment, "123456");
