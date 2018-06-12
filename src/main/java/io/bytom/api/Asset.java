@@ -178,6 +178,7 @@ public class Asset {
             Asset asset = client.request("create-asset", this, Asset.class);
             logger.info("create-asset:");
             logger.info(asset.toString());
+            logger.info("Note: this asset is local, need to call Transaction class build() method to issue this asset.");
             return asset;
         }
 
