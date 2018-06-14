@@ -1,140 +1,114 @@
 package io.bytom.http;
 
-import io.bytom.exception.*;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.squareup.okhttp.Response;
+import io.bytom.common.Utils;
+import io.bytom.exception.BytomException;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 /**
  * BatchResponse provides a convenient interface for handling the results of
  * batched API calls. The response contains one success or error per outgoing
- * request item in the batch. Errors are always of type APIExcpetion.
+ * request item in the batch. Errors are always of type BytomException.
  */
 public class BatchResponse<T> {
-  private Response response;
-  private Map<Integer, T> successesByIndex = new LinkedHashMap<>();
-  private Map<Integer, APIException> errorsByIndex = new LinkedHashMap<>();
+    private Map<Integer, T> successesByIndex = new LinkedHashMap<>();
+    private Map<Integer, BytomException> errorsByIndex = new LinkedHashMap<>();
 
-  /**
-   * This constructor is used when deserializing a response from an API call.
-   */
-  public BatchResponse(Response response, Gson serializer, Type tClass, Type eClass)
-      throws BytomException, IOException {
-    this.response = response;
+    public String toJson() {
+        return Utils.serializer.toJson(this);
+    }
 
-    try {
-      JsonArray root = new JsonParser().parse(response.body().charStream()).getAsJsonArray();
-      for (int i = 0; i < root.size(); i++) {
-        JsonElement elem = root.get(i);
+    /**
+     * This constructor is used for synthetically generating a batch response
+     * object from a map of successes and a map of errors. It ensures that
+     * the successes and errors are stored in an order-preserving fashion.
+     */
+    public BatchResponse(Map<Integer, T> successes, Map<Integer, BytomException> errors) {
+        List<Integer> successIndexes = new ArrayList<>();
+        Iterator<Integer> successIter = successes.keySet().iterator();
+        while (successIter.hasNext()) {
+            successIndexes.add(successIter.next());
+        }
+        Collections.sort(successIndexes);
 
-        // Test for interleaved errors
-        APIException err = serializer.fromJson(elem, eClass);
-        if (err.code != null) {
-          errorsByIndex.put(i, err);
-          continue;
+        for (int i : successIndexes) {
+            successesByIndex.put(i, successes.get(i));
         }
 
-        successesByIndex.put(i, (T) serializer.fromJson(elem, tClass));
-      }
-    } catch (IllegalStateException e) {
-      throw new JSONException(
-          "Unable to read body: " + e.getMessage(), response.headers().get("Chain-Request-ID"));
+        List<Integer> errorIndexes = new ArrayList<>();
+        Iterator<Integer> errorIter = errors.keySet().iterator();
+        while (errorIter.hasNext()) {
+            errorIndexes.add(errorIter.next());
+        }
+        Collections.sort(errorIndexes);
+        for (int i : errorIndexes) {
+            errorsByIndex.put(i, errors.get(i));
+        }
     }
-  }
 
-  /**
-   * This constructor is used for synthetically generating a batch response
-   * object from a map of successes and a map of errors. It ensures that
-   * the successes and errors are stored in an order-preserving fashion.
-   */
-  public BatchResponse(Map<Integer, T> successes, Map<Integer, APIException> errors) {
-    List<Integer> successIndexes = new ArrayList<>();
-    Iterator<Integer> successIter = successes.keySet().iterator();
-    while (successIter.hasNext()) successIndexes.add(successIter.next());
-    Collections.sort(successIndexes);
-    for (int i : successIndexes) successesByIndex.put(i, successes.get(i));
+    /**
+     * Returns the total number of response objects. This should equal the number
+     * of request objects in the batch.
+     */
+    public int size() {
+        return successesByIndex.size() + errorsByIndex.size();
+    }
 
-    List<Integer> errorIndexes = new ArrayList<>();
-    Iterator<Integer> errorIter = errors.keySet().iterator();
-    while (errorIter.hasNext()) errorIndexes.add(errorIter.next());
-    Collections.sort(errorIndexes);
-    for (int i : errorIndexes) errorsByIndex.put(i, errors.get(i));
-  }
+    /**
+     * Returns whether the request object at the given index produced a success.
+     *
+     * @param index the index of the request object
+     */
+    public boolean isSuccess(int index) {
+        return successesByIndex.containsKey(index);
+    }
 
-  /**
-   * Returns the internal response object.
-   */
-  public Response response() {
-    return response;
-  }
+    /**
+     * Returns whether the request object at the given index produced an error.
+     *
+     * @param index the index of the request object
+     */
+    public boolean isError(int index) {
+        return errorsByIndex.containsKey(index);
+    }
 
-  /**
-   * Returns the total number of response objects. This should equal the number
-   * of request objects in the batch.
-   */
-  public int size() {
-    return successesByIndex.size() + errorsByIndex.size();
-  }
+    /**
+     * Returns a list of successful response objects in the batch. The order of
+     * the list corresponds to the order of the request objects that produced the
+     * successes.
+     */
+    public List<T> successes() {
+        List<T> res = new ArrayList<>();
+        res.addAll(successesByIndex.values());
+        return res;
+    }
 
-  /**
-   * Returns whether the request object at the given index produced a success.
-   * @param index the index of the request object
-   */
-  public boolean isSuccess(int index) {
-    return successesByIndex.containsKey(index);
-  }
+    /**
+     * Returns a list of error objects in the batch. The order of the list
+     * corresponds to the order of the request objects that produced the
+     * errors.
+     */
+    public List<BytomException> errors() {
+        List<BytomException> res = new ArrayList<>();
+        res.addAll(errorsByIndex.values());
+        return res;
+    }
 
-  /**
-   * Returns whether the request object at the given index produced an error.
-   * @param index the index of the request object
-   */
-  public boolean isError(int index) {
-    return errorsByIndex.containsKey(index);
-  }
+    /**
+     * Returns a map of success responses, keyed by the index of the request
+     * object that produced the success. The set of this map's keys is mutually
+     * exclusive of the keys returned by errorsByIndex.
+     */
+    public Map<Integer, T> successesByIndex() {
+        return successesByIndex;
+    }
 
-  /**
-   * Returns a list of successful response objects in the batch. The order of
-   * the list corresponds to the order of the request objects that produced the
-   * successes.
-   */
-  public List<T> successes() {
-    List<T> res = new ArrayList<>();
-    res.addAll(successesByIndex.values());
-    return res;
-  }
-
-  /**
-   * Returns a list of error objects in the batch. The order of the list
-   * corresponds to the order of the request objects that produced the
-   * errors.
-   */
-  public List<APIException> errors() {
-    List<APIException> res = new ArrayList<>();
-    res.addAll(errorsByIndex.values());
-    return res;
-  }
-
-  /**
-   * Returns a map of success responses, keyed by the index of the request
-   * object that produced the success. The set of this map's keys is mutually
-   * exclusive of the keys returned by errorsByIndex.
-   */
-  public Map<Integer, T> successesByIndex() {
-    return successesByIndex;
-  }
-
-  /**
-   * Returns a map of error responses, keyed by the index of the request
-   * object that produced the error. The set of this map's keys is mutually
-   * exclusive of the keys returned by successByIndex.
-   */
-  public Map<Integer, APIException> errorsByIndex() {
-    return errorsByIndex;
-  }
+    /**
+     * Returns a map of error responses, keyed by the index of the request
+     * object that produced the error. The set of this map's keys is mutually
+     * exclusive of the keys returned by successByIndex.
+     */
+    public Map<Integer, BytomException> errorsByIndex() {
+        return errorsByIndex;
+    }
 }

@@ -2,12 +2,15 @@ package io.bytom.api;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.bytom.common.ParameterizedTypeImpl;
 import io.bytom.common.Utils;
 import io.bytom.exception.*;
+import io.bytom.http.BatchResponse;
 import io.bytom.http.Client;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -40,7 +43,7 @@ public class Account {
     /**
      * create-account
      *
-     * @param client client object that makes requests to the core
+     * @param client  client object that makes requests to the core
      * @param builder Account.Builder to make parameters
      * @return Account return a account object
      * @throws BytomException BytomException
@@ -50,6 +53,62 @@ public class Account {
         logger.info("create-account");
         logger.info(account.toString());
         return account;
+    }
+
+    /**
+     * create-batch-account
+     * 
+     * @param client
+     * @param builders
+     * @return
+     */
+    public static BatchResponse<Account> createBatch(Client client, List<Builder> builders) {
+
+        Map<Integer, Account> successes = new HashMap<>();
+        Map<Integer, BytomException> errors = new HashMap<>();
+        //record create account sequence
+        Integer seq = 0;
+        for (Builder builder : builders) {
+            try {
+               Account account = client.request("create-account", builder, Account.class);
+               successes.put(seq, account);
+            } catch (BytomException bytomException) {
+                errors.put(seq, bytomException);
+                logger.info("Create No."+(seq+1) +" "+"account failed."+bytomException.getMessage());
+                logger.info("You can call create() method in Account class to create this account again.");
+            }
+            seq ++;
+        }
+        return new BatchResponse<>(successes, errors);
+    }
+
+    /**
+     * delete batch account
+     *
+     * @param client
+     * @param accountInfos
+     * @return
+     */
+    public static BatchResponse<Boolean> deleteBatch(Client client, List<String> accountInfos) {
+        Map<Integer, Boolean> successes = new HashMap<>();
+        Map<Integer, BytomException> errors = new HashMap<>();
+        //record delete account sequence
+        Integer seq = 0;
+        for (String accountInfo : accountInfos) {
+            try {
+                Map<String, String> req = new HashMap<>();
+                req.put("account_info", accountInfo);
+                client.request("delete-account", req);
+
+                successes.put(seq, Boolean.TRUE);
+            } catch (BytomException bytomException) {
+                errors.put(seq, bytomException);
+                logger.info("Delete No."+(seq+1) +" "+"account_info is "+accountInfo+" failed."+bytomException.getMessage());
+                logger.info("You can call delete() method in Account class to delete this account again.");
+            }
+            seq ++;
+        }
+        return new BatchResponse<>(successes, errors);
     }
 
     /**
@@ -63,14 +122,15 @@ public class Account {
         Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Account.class});
         List<Account> accountList = client.request("list-accounts", null, listType);
         logger.info("list-accounts:");
-        logger.info("size of accountList:"+accountList.size());
+        logger.info("size of accountList:" + accountList.size());
         logger.info(accountList);
         return accountList;
     }
 
     /**
      * delete-account
-     * @param client client object that makes requests to the core
+     *
+     * @param client       client object that makes requests to the core
      * @param account_info account_info
      * @throws BytomException BytomException
      */
@@ -82,11 +142,12 @@ public class Account {
 
     public static class Builder {
 
-        public List<String> root_xpubs;
+        public List<String> root_xpubs = new ArrayList<>();
 
         public String alias;
 
         public Integer quorum;
+
 
         /**
          * add a xpub to root_xpubs
@@ -112,6 +173,7 @@ public class Account {
 
         /**
          * set alias to alias
+         *
          * @param alias alias
          * @return this Builder object
          */
@@ -283,6 +345,7 @@ public class Account {
 
         /**
          * list-addresses
+         *
          * @param client client object that makes requests to the core
          * @return list of address object
          * @throws BytomException BytomException
@@ -299,7 +362,8 @@ public class Account {
 
         /**
          * validate-address
-         * @param client client object that makes requests to the core
+         *
+         * @param client  client object that makes requests to the core
          * @param address an address string
          * @return an address object
          * @throws BytomException BytomException

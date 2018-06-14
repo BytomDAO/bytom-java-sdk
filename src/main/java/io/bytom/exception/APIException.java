@@ -46,124 +46,133 @@ import com.google.gson.annotations.SerializedName;
  * CH761 - Some outputs are reserved; try again<br>
  */
 public class APIException extends BytomException {
-  /**
-   * Unique identifier for the error.
-   */
-  public String code;
+    /**
+     * Unique identifier for the error.
+     */
+    public String code;
 
-  /**
-   * Message describing the general nature of the error.
-   */
-  @SerializedName("message")
-  public String chainMessage;
+    /**
+     * Message describing the general nature of the error.
+     */
+    @SerializedName("message")
+    public String chainMessage;
 
-  /**
-   * Additional information about the error (possibly null).
-   */
-  public String detail;
+    /**
+     * Additional information about the error (possibly null).
+     */
+    public String detail;
 
-  /**
-   * Specifies whether the error is temporary, or a change to the request is necessary.
-   */
-  public boolean temporary;
+    /**
+     * Specifies whether the error is temporary, or a change to the request is necessary.
+     */
+    public boolean temporary;
 
-  /**
-   * Unique identifier of the request to the server.
-   */
-  public String requestId;
+    /**
+     * Unique identifier of the request to the server.
+     */
+    public String requestId;
 
-  /**
-   * HTTP status code returned by the server.
-   */
-  public int statusCode;
+    /**
+     * HTTP status code returned by the server.
+     */
+    public int statusCode;
 
-  /**
-   * Initializes exception with its message and requestId attributes.
-   * @param message error message
-   * @param requestId unique identifier of the request
-   */
-  public APIException(String message, String requestId) {
-    super(message);
-    this.requestId = requestId;
-  }
-
-  /**
-   * Intitializes exception with its code, message, detail &amp; temporary field set.
-   * @param code error code
-   * @param message error message
-   * @param detail additional error information
-   * @param temporary unique identifier of the request
-   */
-  public APIException(String code, String message, String detail, boolean temporary) {
-    super(message);
-    this.chainMessage = message;
-    this.code = code;
-    this.detail = detail;
-    this.temporary = temporary;
-  }
-
-  /**
-   * Initializes exception with its code, message, detail &amp; requestId attributes.
-   * @param code error code
-   * @param message error message
-   * @param detail additional error information
-   * @param requestId unique identifier of the request
-   */
-  public APIException(String code, String message, String detail, String requestId) {
-    super(message);
-    this.chainMessage = message;
-    this.code = code;
-    this.detail = detail;
-    this.requestId = requestId;
-  }
-
-  /**
-   * Initializes exception with all of its attributes.
-   * @param code error code
-   * @param message error message
-   * @param detail additional error information
-   * @param temporary specifies if the error is temporary
-   * @param requestId unique identifier of the request
-   * @param statusCode HTTP status code
-   */
-  public APIException(
-      String code,
-      String message,
-      String detail,
-      boolean temporary,
-      String requestId,
-      int statusCode) {
-    super(message);
-    this.chainMessage = message;
-    this.code = code;
-    this.detail = detail;
-    this.temporary = temporary;
-    this.requestId = requestId;
-    this.statusCode = statusCode;
-  }
-
-  /**
-   * Constructs a detailed message of the error.
-   * @return detailed error message
-   */
-  @Override
-  public String getMessage() {
-    String s = "";
-
-    if (this.code != null && this.code.length() > 0) {
-      s += "Code: " + this.code + " ";
+    public APIException(String message) {
+        super(message);
     }
 
-    s += "Message: " + this.chainMessage;
-
-    if (this.detail != null && this.detail.length() > 0) {
-      s += " Detail: " + this.detail;
+    /**
+     * Initializes exception with its message and requestId attributes.
+     *
+     * @param message   error message
+     * @param requestId unique identifier of the request
+     */
+    public APIException(String message, String requestId) {
+        super(message);
+        this.requestId = requestId;
     }
 
-    if (this.requestId != null) {
-      s += " Request-ID: " + this.requestId;
+    /**
+     * Intitializes exception with its code, message, detail &amp; temporary field set.
+     *
+     * @param code      error code
+     * @param message   error message
+     * @param detail    additional error information
+     * @param temporary unique identifier of the request
+     */
+    public APIException(String code, String message, String detail, boolean temporary) {
+        super(message);
+        this.chainMessage = message;
+        this.code = code;
+        this.detail = detail;
+        this.temporary = temporary;
     }
 
-    return s;
-  }
+    /**
+     * Initializes exception with its code, message, detail &amp; requestId attributes.
+     *
+     * @param code      error code
+     * @param message   error message
+     * @param detail    additional error information
+     * @param requestId unique identifier of the request
+     */
+    public APIException(String code, String message, String detail, String requestId) {
+        super(message);
+        this.chainMessage = message;
+        this.code = code;
+        this.detail = detail;
+        this.requestId = requestId;
+    }
+
+    /**
+     * Initializes exception with all of its attributes.
+     *
+     * @param code       error code
+     * @param message    error message
+     * @param detail     additional error information
+     * @param temporary  specifies if the error is temporary
+     * @param requestId  unique identifier of the request
+     * @param statusCode HTTP status code
+     */
+    public APIException(
+            String code,
+            String message,
+            String detail,
+            boolean temporary,
+            String requestId,
+            int statusCode) {
+        super(message);
+        this.chainMessage = message;
+        this.code = code;
+        this.detail = detail;
+        this.temporary = temporary;
+        this.requestId = requestId;
+        this.statusCode = statusCode;
+    }
+
+    /**
+     * Constructs a detailed message of the error.
+     *
+     * @return detailed error message
+     */
+    @Override
+    public String getMessage() {
+        String s = "";
+
+        if (this.code != null && this.code.length() > 0) {
+            s += "Code: " + this.code + " ";
+        }
+
+        s += "Message: " + this.chainMessage;
+
+        if (this.detail != null && this.detail.length() > 0) {
+            s += " Detail: " + this.detail;
+        }
+
+        if (this.requestId != null) {
+            s += " Request-ID: " + this.requestId;
+        }
+
+        return s;
+    }
 }

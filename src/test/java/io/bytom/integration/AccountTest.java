@@ -1,8 +1,10 @@
 package io.bytom.integration;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.bytom.TestUtils;
 import io.bytom.api.Account;
 import io.bytom.api.Receiver;
+import io.bytom.http.BatchResponse;
 import io.bytom.http.Client;
 import org.junit.Test;
 
@@ -38,6 +40,48 @@ public class AccountTest {
     }
 
     @Test
+    public void testAccountCreateBatch() throws Exception {
+        client = TestUtils.generateClient();
+        String xpub = "c7c5306236d4fcc491615c6cb8bbfb80f60582f44c6757252e84d744632fc0235015459db19e42e262530bffc91ebbc6fef949b0eefda657758b3c6c0e7824a4";
+        List<Account.Builder> builders = new ArrayList<>();
+        builders.add(new Account.Builder()
+                .setAlias("batch005")
+                .setQuorum(1)
+                .addRootXpub(xpub));
+        builders.add(new Account.Builder()
+                .setAlias("batch002")
+                .setQuorum(1)
+                .addRootXpub(xpub));
+        builders.add(new Account.Builder()
+                .setAlias("batch006")
+                .setQuorum(1)
+                .addRootXpub(xpub));
+        builders.add(new Account.Builder()
+                .setAlias("batch004")
+                .setQuorum(1)
+                .addRootXpub(xpub));
+        BatchResponse<Account> accountBatchResponse = Account.createBatch(client, builders);
+        System.out.println(accountBatchResponse.toJson());
+    }
+
+    @Test
+    public void testAccountDeleteBatch() throws Exception {
+        client = TestUtils.generateClient();
+        List<String> accountInfos = new ArrayList<>();
+        accountInfos.add("batch001");
+        accountInfos.add("batch002");
+        accountInfos.add("batch007");
+        accountInfos.add("batch004");
+        accountInfos.add("batch005");
+        accountInfos.add("batch006");
+        accountInfos.add("batch006");
+        accountInfos.add("batch003");
+
+        BatchResponse<Boolean> booleanBatchResponse = Account.deleteBatch(client, accountInfos);
+        System.out.println(booleanBatchResponse.toJson());
+    }
+
+    @Test
     public void testAccountList() throws Exception {
         client = TestUtils.generateClient();
         List<Account> accountList = Account.list(client);
@@ -47,7 +91,7 @@ public class AccountTest {
     public void testAccountDelete() throws Exception {
         client = TestUtils.generateClient();
         List<Account> accountList = Account.list(client);
-        String alias = accountList.get(accountList.size()-1).alias;
+        String alias = accountList.get(accountList.size() - 1).alias;
         //delete the last Account Object
         Account.delete(client, alias);
     }
@@ -56,8 +100,8 @@ public class AccountTest {
     public void testReceiverCreate() throws Exception {
         client = TestUtils.generateClient();
         List<Account> accountList = Account.list(client);
-        String alias = accountList.get(accountList.size()-1).alias;
-        String id = accountList.get(accountList.size()-1).id;
+        String alias = accountList.get(accountList.size() - 1).alias;
+        String id = accountList.get(accountList.size() - 1).id;
 
         Account.ReceiverBuilder receiverBuilder = new Account.ReceiverBuilder().setAccountAlias(alias).setAccountId(id);
         Receiver receiver = receiverBuilder.create(client);
@@ -70,8 +114,8 @@ public class AccountTest {
     public void testAddressList() throws Exception {
         client = TestUtils.generateClient();
         List<Account> accountList = Account.list(client);
-        String alias = accountList.get(accountList.size()-1).alias;
-        String id = accountList.get(accountList.size()-1).id;
+        String alias = accountList.get(accountList.size() - 1).alias;
+        String id = accountList.get(accountList.size() - 1).id;
 
         Account.AddressBuilder addressBuilder = new Account.AddressBuilder().setAccountId(id).setAccountAlias(alias);
         List<Account.Address> addressList = addressBuilder.list(client);
@@ -84,8 +128,8 @@ public class AccountTest {
         client = TestUtils.generateClient();
 
         List<Account> accountList = Account.list(client);
-        String alias = accountList.get(accountList.size()-1).alias;
-        String id = accountList.get(accountList.size()-1).id;
+        String alias = accountList.get(accountList.size() - 1).alias;
+        String id = accountList.get(accountList.size() - 1).id;
 
         Account.AddressBuilder addressBuilder = new Account.AddressBuilder().setAccountId(id).setAccountAlias(alias);
         List<Account.Address> addressList = addressBuilder.list(client);

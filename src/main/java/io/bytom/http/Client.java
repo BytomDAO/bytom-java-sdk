@@ -206,69 +206,39 @@ public class Client {
      * @param action The requested API action
      * @param body   Body payload sent to the API as JSON
      * @param tClass Type of object to be deserialized from the response JSON
-     * @param eClass Type of error object to be deserialized from the response JSON
      * @return the result of the post request
      * @throws BytomException
      */
-    public <T> BatchResponse<T> batchRequest(
-            String action, Object body, final Type tClass, final Type eClass) throws BytomException {
-        ResponseCreator<BatchResponse<T>> rc =
-                new ResponseCreator<BatchResponse<T>>() {
-                    public BatchResponse<T> create(Response response, Gson deserializer)
-                            throws BytomException, IOException {
-                        return new BatchResponse<T>(response, deserializer, tClass, eClass);
-                    }
-                };
-        return post(action, body, rc);
-    }
-
-    /**
-     * Perform a single HTTP POST request against the API for a specific action.
-     * Use this method if you want single-item semantics (creating single assets,
-     * building single transactions) but the API endpoint is implemented as a
-     * batch call.
-     * <p>
-     * Because request bodies for batch calls do not share a consistent format,
-     * this method does not perform any automatic arrayification of outgoing
-     * parameters. Remember to arrayify your request objects where appropriate.
-     *
-     * @param action The requested API action
-     * @param body   Body payload sent to the API as JSON
-     * @param tClass Type of object to be deserialized from the response JSON
-     * @return the result of the post request
-     * @throws BytomException
-     */
-    public <T> T singletonBatchRequest(
-            String action, Object body, final Type tClass, final Type eClass) throws BytomException {
+    /*
+    public <T> T requestBatch(String action, Object body, final Type tClass) throws BytomException {
         ResponseCreator<T> rc =
                 new ResponseCreator<T>() {
-                    public T create(Response response, Gson deserializer) throws BytomException, IOException {
-                        BatchResponse<T> batch = new BatchResponse<>(response, deserializer, tClass, eClass);
-
-                        List<APIException> errors = batch.errors();
-                        if (errors.size() == 1) {
-                            // This throw must occur within this lambda in order for APIClient's
-                            // retry logic to take effect.
-                            throw errors.get(0);
+                    public T create(Response response, Gson deserializer) throws IOException, BytomException {
+                        JsonElement root = new JsonParser().parse(response.body().charStream());
+                        JsonElement status = root.getAsJsonObject().get("status");
+                        JsonElement data = root.getAsJsonObject().get("data");
+                        if (status != null && status.toString().contains("fail")) {
+                            throw new BytomException(root.getAsJsonObject().get("msg").toString());
+                        } else if (data != null) {
+                            return deserializer.fromJson(data, tClass);
+                        } else {
+                            return deserializer.fromJson(response.body().charStream(), tClass);
                         }
-
-                        List<T> successes = batch.successes();
-                        if (successes.size() == 1) {
-                            return successes.get(0);
-                        }
-
-                        // We should never get here, unless there is a bug in either the SDK or
-                        // API code, causing a non-singleton response.
-                        /*
-                        throw new BytomException(
-                                "Invalid singleton response, request ID "
-                                        + batch.response().headers().get("Bytom-Request-ID"));
-                        */
-                        throw new BytomException("Invalid singleton response.");
                     }
                 };
+        //把object转换为json对象数组（有点难）
+
+        //根据数组的大小循环调用post()方法
+
+        //重写create()接口方法，对成功和失败做不同的处理
+
+        //调用BatchResponse(Map<Integer, T> successes, Map<Integer, APIException> errors)
+        //构造方法，最后返回BatchResponse实例对象
+
         return post(action, body, rc);
     }
+    */
+
 
     /**
      * Returns true if a client access token stored in the client.
