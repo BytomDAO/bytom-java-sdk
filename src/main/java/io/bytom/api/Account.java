@@ -214,8 +214,8 @@ public class Account {
         @SerializedName("change")
         public Boolean change;
 
-        @SerializedName("vaild")
-        public Boolean vaild;
+        @SerializedName("valid")
+        public Boolean valid;
 
         @SerializedName("is_local")
         public Boolean is_local;
