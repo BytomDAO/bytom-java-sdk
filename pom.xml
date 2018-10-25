@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.bytom</groupId>
-    <artifactId>bytom-sdk-all</artifactId>
+    <artifactId>bytom-java-sdk</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 

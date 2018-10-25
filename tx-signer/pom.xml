@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>io.bytom</groupId>
-        <artifactId>bytom-sdk-all</artifactId>
+        <artifactId>bytom-java-sdk</artifactId>
         <version>1.0.0</version>
     </parent>
 
@@ -121,4 +121,5 @@
             </plugins>
         </pluginManagement>
     </build>
+    <packaging>jar</packaging>
 </project>
