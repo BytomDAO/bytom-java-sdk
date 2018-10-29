@@ -119,109 +119,14 @@ public class SignTransactionTest {
         SignTransaction tx = SignTransaction.fromJson(txJson);
         SignTransactionImpl signImpl = new SignTransactionImpl();
 
-        //组装计算program、inputID、sourceID(muxID)、txID, json数据中这些字段的值为测试值,需重新计算
-        signImpl.buildData(tx);
-
-        //签名得到signatures
         BigInteger[] keys = new BigInteger[2];
         BigInteger key1 = new BigInteger("58627734430160897710546100937464200251109455274527146106473181212575120553961");//子私钥
         BigInteger key2 = new BigInteger("40205913350867552217212167676397244457827512592372060624640880098442502612286");//子私钥
         keys[0] = key1;
         keys[1] = key2;
-        signImpl.generateSignatures(tx,keys);
 
-        //开始序列化
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            stream.write(7);
-            // version
-            if (null != tx.version)
-                signImpl.writeVarint(tx.version, stream);
-            if (null != tx.timeRange)
-                signImpl.writeVarint(tx.timeRange, stream);
-            //inputs
-            if (null != tx.inputs && tx.inputs.size() > 0) {
-                signImpl.writeVarint(tx.inputs.size(), stream);
-                for (SignTransaction.AnnotatedInput input:tx.inputs) {
-                    //assertVersion
-                    signImpl.writeVarint(tx.version, stream); //AssetVersion是否默认为1
+        String txSign = signImpl.signTransaction(tx, keys);
 
-                    //inputCommitment
-                    ByteArrayOutputStream inputCommitStream = new ByteArrayOutputStream();
-                    //spend type flag
-                    signImpl.writeVarint(Constants.INPUT_TYPE_SPEND, inputCommitStream);
-                    //spendCommitment
-                    ByteArrayOutputStream spendCommitSteam = new ByteArrayOutputStream();
-                    spendCommitSteam.write(Hex.decode(input.sourceId)); //计算muxID
-                    spendCommitSteam.write(Hex.decode(input.assetId));
-                    signImpl.writeVarint(input.amount, spendCommitSteam);
-                    //sourcePosition
-                    signImpl.writeVarint(input.sourcePosition, spendCommitSteam); //db中获取position
-                    //vmVersion
-                    signImpl.writeVarint(1, spendCommitSteam); //db中获取vm_version
-                    //controlProgram
-                    signImpl.writeVarStr(Hex.decode(input.controlProgram), spendCommitSteam);
-
-                    byte[] dataSpendCommit = spendCommitSteam.toByteArray();
-                    signImpl.writeVarint(dataSpendCommit.length, inputCommitStream);
-                    inputCommitStream.write(dataSpendCommit);
-                    byte[] dataInputCommit = inputCommitStream.toByteArray();
-                    //inputCommit的length
-                    signImpl.writeVarint(dataInputCommit.length, stream);
-                    stream.write(dataInputCommit);
-
-
-                    //inputWitness
-                    ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
-                    //arguments
-                    int lenSigs = input.witnessComponent.signatures.length;
-                    //arguments的length: 应是qorum和sigs
-                    signImpl.writeVarint(lenSigs, witnessStream);
-                    for (int i =0; i<lenSigs; i++) {
-                        String sig = input.witnessComponent.signatures[i];
-                        signImpl.writeVarStr(Hex.decode(sig), witnessStream); //实际环境中注意替换为HEX.decode的方式
-                    }
-                    byte[] dataWitnessComponets = witnessStream.toByteArray();
-                    //witness的length
-                    signImpl.writeVarint(dataWitnessComponets.length, stream);
-                    stream.write(dataWitnessComponets);
-                }
-            }
-
-            //outputs
-            if (null != tx.outputs && tx.outputs.size() > 0) {
-                signImpl.writeVarint(tx.outputs.size(), stream);
-                for (SignTransaction.AnnotatedOutput output:tx.outputs) {
-                    //assertVersion
-                    signImpl.writeVarint(tx.version, stream); //AssetVersion是否默认为1
-                    //outputCommit
-                    ByteArrayOutputStream outputCommitSteam = new ByteArrayOutputStream();
-                    //assetId
-                    outputCommitSteam.write(Hex.decode(output.assetId));
-                    //amount
-                    signImpl.writeVarint(output.amount, outputCommitSteam);
-                    //vmVersion
-                    signImpl.writeVarint(1, outputCommitSteam); //db中获取vm_version
-                    //controlProgram
-                    signImpl.writeVarStr(Hex.decode(output.controlProgram), outputCommitSteam);
-
-                    byte[] dataOutputCommit = outputCommitSteam.toByteArray();
-                    //outputCommit的length
-                    signImpl.writeVarint(dataOutputCommit.length, stream);
-                    stream.write(dataOutputCommit);
-
-                    //outputWitness
-                    signImpl.writeVarint(0, stream);
-                }
-            }
-            //02013effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8c98d2b0f402011600144453a011caf735428d0291d82b186e976e286fc100013afffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff40301160014613908c28df499e3aa04e033100efaa24ca8fd0100
-            //02013effffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8c98d2b0f402011600144453a011caf735428d0291d82b186e976e286fc100013afffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff40301160014613908c28df499e3aa04e033100efaa24ca8fd0100
-            byte[] data = stream.toByteArray();
-            System.out.println(Hex.toHexString(data));
-
-            System.out.println("testSerializeSignTransaction success.");
-        } catch (IOException e) {
-            System.out.println("testSerializeSignTransaction failed.");
-        }
+        System.out.print(txSign);
     }
 }
