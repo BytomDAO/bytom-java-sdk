@@ -2,15 +2,15 @@ package io.bytom.api;
 
 import io.bytom.common.Constants;
 import io.bytom.common.ExpandedPrivateKey;
+import io.bytom.types.*;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.util.*;
 
-import org.bouncycastle.util.encoders.Hex;
 
 /**
  * Created by liqiang on 2018/10/24.
@@ -21,7 +21,7 @@ public class SignTransactionImpl {
 
         String txSign = null;
         //组装计算program、inputID、sourceID(muxID)、txID, json数据中这些字段的值为测试值,需重新计算
-        buildData(tx);
+        mapTransaction(tx);
 
         //签名得到signatures
         generateSignatures(tx,keys);
@@ -136,13 +136,75 @@ public class SignTransactionImpl {
         return digest256.digest(data);
     }
 
-    public SignTransaction buildData(SignTransaction signTransaction) {
-        //build program by address
+    public void mapTransaction(SignTransaction signTransaction) {
+        Map<Hash, Entry> entryMap = new HashMap<>();
+        ValueSource[] muxSources = new ValueSource[signTransaction.inputs.size()];
+        List<Spend> spends = new ArrayList<>();
 
-        //build sourceId(muxId), inputId, txId
+        try {
+            for (int i = 0; i < signTransaction.inputs.size(); i++) {
+                SignTransaction.AnnotatedInput input = signTransaction.inputs.get(i);
+                Program proc = new Program(1, Hex.decode(input.controlProgram));
 
-        return signTransaction;
+                AssetID assetID = new AssetID(input.assetId);
+                AssetAmount assetAmount = new AssetAmount(assetID, input.amount);
+
+                Hash sourceID = new Hash(input.sourceId);
+                ValueSource src = new ValueSource(sourceID, assetAmount, input.sourcePosition);
+                Output prevout = new Output(src, proc, 0);
+                Hash prevoutID = addEntry(entryMap, prevout);
+
+                input.spentOutputId = prevoutID.toString();
+
+                Spend spend = new Spend(prevoutID, i);
+                Hash spendID = addEntry(entryMap, spend);
+
+                input.inputID = spendID.toString();
+
+                muxSources[i] = new ValueSource(spendID, assetAmount, 0);
+                spends.add(spend);
+            }
+
+            Mux mux = new Mux(muxSources, new Program(1, new byte[]{0x51}));
+            Hash muxID = addEntry(entryMap, mux);
+
+            for (Spend spend : spends) {
+                Output spendOutput =  (Output) entryMap.get(spend.spentOutputID);
+                spend.setDestination(muxID, spendOutput.source.value, spend.ordinal);
+            }
+
+            List<Hash> resultIDList = new ArrayList<>();
+            for (int i = 0; i < signTransaction.outputs.size(); i++) {
+                SignTransaction.AnnotatedOutput output = signTransaction.outputs.get(i);
+
+                AssetAmount amount = new AssetAmount(new AssetID(output.assetId), output.amount);
+                ValueSource src = new ValueSource(muxID, amount, i);
+                Program prog = new Program(1, Hex.decode(output.controlProgram));
+                Output oup = new Output(src, prog, i);
+
+                Hash resultID = addEntry(entryMap, oup);
+                resultIDList.add(resultID);
+
+                output.id = resultID.toString();
+
+                ValueDestination destination = new ValueDestination(resultID, src.value, 0);
+                mux.witnessDestinations.add(destination);
+            }
+
+            TxHeader txHeader = new TxHeader(signTransaction.version, signTransaction.size, signTransaction.timeRange, resultIDList.toArray(new Hash[]{}));
+            Hash txID = addEntry(entryMap, txHeader);
+            signTransaction.txID = txID.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    private Hash addEntry(Map<Hash, Entry> entryMap, Entry entry) {
+        Hash id = entry.entryID();
+        entryMap.put(id, entry);
+        return id;
+    }
+
 
     public SignTransaction generateSignatures(SignTransaction signTransaction, BigInteger[] keys) {
         SignTransaction.AnnotatedInput input = signTransaction.inputs.get(0);
