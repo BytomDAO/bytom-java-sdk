@@ -166,6 +166,29 @@ public class SignTransactionImpl {
         return signTransaction;
     }
 
+    //分多次签名
+    public boolean generateSignature(SignTransaction signTransaction, BigInteger key, int index) {
+        boolean result = false;
+        SignTransaction.AnnotatedInput input = signTransaction.inputs.get(index);
+        if (null != input) {
+            try {
+                byte[] message = hashFn(Hex.decode(input.inputID), Hex.decode(signTransaction.txID));
+                byte[] expandedPrv = BigIntegerToBytes(key);
+                byte[] priKey = ExpandedPrivateKey.ExpandedPrivateKey(expandedPrv);
+                byte[] sig = Signer.Ed25519InnerSign(priKey, message);
+                input.witnessComponent.signatures[index] = Hex.toHexString(sig);
+                System.out.println("sig: " + Hex.toHexString(sig));
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = false;
+            }
+        } else {
+            System.out.println("generate signatures failed.");
+            result = false;
+        }
+        return result;
+    }
+
     public int writeVarint(long value, ByteArrayOutputStream stream) throws IOException {
         byte[] varint = new byte[9];
         int n = putUvarint(varint, value);

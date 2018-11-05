@@ -131,6 +131,8 @@ public class SignTransaction {
 
         public long sourcePosition;
 
+        public String chainPath;
+
         @SerializedName("witness_component")
         public InputWitnessComponent witnessComponent;
 
