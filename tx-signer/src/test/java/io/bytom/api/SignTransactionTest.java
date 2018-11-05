@@ -1,12 +1,9 @@
 package io.bytom.api;
 
-import io.bytom.common.Constants;
+import io.bytom.types.*;
 import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
-
 import org.bouncycastle.util.encoders.Hex;
 /**
  * Created by liqiang on 2018/10/24.
@@ -128,5 +125,127 @@ public class SignTransactionTest {
         String txSign = signImpl.signTransaction(tx, keys);
 
         System.out.print(txSign);
+    }
+
+    @Test
+    public void testMustWriteForHash() throws Exception {
+        Entry entry = new Entry() {
+            @Override
+            public String typ() {
+                return null;
+            }
+
+            @Override
+            public void writeForHash(ByteArrayOutputStream out) {
+
+            }
+        };
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        entry.mustWriteForHash(out, (byte) 2);
+        assert Hex.toHexString(out.toByteArray()).equals("02");
+
+        out.reset();
+        entry.mustWriteForHash(out, 1L);
+        assert Hex.toHexString(out.toByteArray()).equals("0100000000000000");
+
+        out.reset();
+        entry.mustWriteForHash(out, 0x3456584738473837L);
+        assert Hex.toHexString(out.toByteArray()).equals("3738473847585634");
+
+        out.reset();
+        entry.mustWriteForHash(out, new byte[]{0x12, 0x34, (byte) 0x85});
+        assert Hex.toHexString(out.toByteArray()).equals("03123485");
+
+        out.reset();
+        entry.mustWriteForHash(out, new byte[][]{{0x12, 0x34, (byte) 0x85}, {(byte) 0x86, 0x17, 0x40}});
+        assert Hex.toHexString(out.toByteArray()).equals("020312348503861740");
+
+        out.reset();
+        entry.mustWriteForHash(out, "hello, 世界");
+        assert Hex.toHexString(out.toByteArray()).equals("0d68656c6c6f2c20e4b896e7958c");
+
+        out.reset();
+        entry.mustWriteForHash(out, new String[]{"hi", "你好", "hello"});
+        assert Hex.toHexString(out.toByteArray()).equals("0302686906e4bda0e5a5bd0568656c6c6f");
+
+        out.reset();
+        String hash = "d8ab56a5c9296f591db071a8b63f395e1485b12d4b105b49fee287c03888331f";
+        entry.mustWriteForHash(out, new Hash(hash));
+        assert Hex.toHexString(out.toByteArray()).equals(hash);
+
+        out.reset();
+        ValueSource valueSource = new ValueSource(new Hash(hash), null, 1);
+        Program program = new Program(1, new byte[]{1});
+        Mux mux = new Mux();
+        mux.sources = new ValueSource[]{valueSource};
+        mux.program = program;
+        entry.mustWriteForHash(out, mux);
+        assert Hex.toHexString(out.toByteArray()).equals("01d8ab56a5c9296f591db071a8b63f395e1485b12d4b105b49fee287c03888331f010000000000000001000000000000000101");
+    }
+
+    @Test
+    public void testEntryID() throws Exception {
+        String hash = "d8ab56a5c9296f591db071a8b63f395e1485b12d4b105b49fee287c03888331f";
+        ValueSource valueSource = new ValueSource(new Hash(hash), null, 1);
+        Program program = new Program(1, new byte[]{1});
+        Mux mux = new Mux();
+        mux.sources = new ValueSource[]{valueSource};
+        mux.program = program;
+        String entryID = mux.entryID().toString();
+        assert  entryID.equals("ebd967df33a3373ab85521fba24c22bf993c73f46fa96254b0c86646093184e9");
+    }
+
+    @Test
+    public void testMapTransaction() throws Exception {
+        String txJson = "{\n" +
+                "        \"tx_id\": \"\",\n" +
+                "        \"version\": 1,\n" +
+                "        \"size\": 236,\n" +
+                "        \"time_range\": 1521625823,\n" +
+                "        \"inputs\": [\n" +
+                "            {\n" +
+                "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+                "                \"asset_definition\": {},\n" +
+                "                \"amount\": 200000000,\n" +
+                "                \"sourceId\": \"0e97230a7347967764fd77c8cfa96b38ec6ff08465300a01900c645dfb694f24\",\n" +
+                "                \"sourcePosition\": 1,\n" +
+                "                \"control_program\": \"00140d074bc86bd388a45f1c8911a41b8f0705d9058b\",\n" +
+                "                \"address\": \"bm1qp5r5hjrt6wy2ghcu3yg6gxu0quzajpvtsm2gnc\",\n" +
+                "                \"spent_output_id\": \"\",\n" +
+                "                \"input_id\": \"\",\n" +
+                "                \"witness_component\": \n" +
+                "                    {\n" +
+                "                                \"signatures\": []\n" +
+                "                    }\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"outputs\": [\n" +
+                "            {\n" +
+                "                \"id\": \"\",\n" +
+                "                \"position\": 0,\n" +
+                "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+                "                \"asset_definition\": {},\n" +
+                "                \"amount\": 10000000,\n" +
+                "                \"control_program\": \"0014687148664db6d4ae3151939a70a35f2004a58c55\",\n" +
+                "                \"address\": \"bm1qdpc5sejdkm22uv23jwd8pg6lyqz2trz4trgxh0\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"type\": \"control\",\n" +
+                "                \"id\": \"\",\n" +
+                "                \"position\": 1,\n" +
+                "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+                "                \"asset_definition\": {},\n" +
+                "                \"amount\": 185000000,\n" +
+                "                \"control_program\": \"00140d074bc86bd388a45f1c8911a41b8f0705d9058b\",\n" +
+                "                \"address\": \"bm1qp5r5hjrt6wy2ghcu3yg6gxu0quzajpvtsm2gnc\"\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    }";
+
+        SignTransaction transaction = SignTransaction.fromJson(txJson);
+        SignTransactionImpl signTransactionImpl = new SignTransactionImpl();
+        signTransactionImpl.mapTransaction(transaction);
+        assert transaction.txID.equals("4cb066e3d10e72b9c79b39109b69f142fc120e54f4a5ef3e5195a443b497f9d5");
     }
 }
