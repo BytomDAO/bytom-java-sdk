@@ -113,6 +113,96 @@ public class SignTransactionTest {
         //                 02  01      3c       ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff 80ade20401160014687148664db6d4ae3151939a70a35f2004a58c5500 01 3c   ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff c0c09b58011600140d074bc86bd388a45f1c8911a41b8f0705d9058b00
         //           outputlen version serialen assetid
 
+        txJson = "{\n" +
+            "        \"tx_id\": \"6c846ae763c64b69040f9bad0402e1a34f5a2065f67622bc9d849a1547af0092\",\n" +
+            "        \"version\": 1,\n" +
+            "        \"size\": 236,\n" +
+            "        \"time_range\": 1521625823,\n" +
+            "        \"inputs\": [\n" +
+            "            {\n" +
+            "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+            "                \"asset_definition\": {},\n" +
+            "                \"amount\": 200000000,\n" +
+            "                \"sourceId\": \"45729e2c2211128049f44d35d2ea782ef0a1cdc363bd0ca37e4028db82504499\",\n" +
+            "                \"sourcePosition\": 1,\n" +
+            "                \"control_program\": \"0014e18654db91f9d0f4e4a86271b189dc79b0be6adf\",\n" +
+            "                \"address\": \"bm1quxr9fku3l8g0fe9gvfcmrzwu0xctu6klf0xf7j\",\n" +
+            "                \"spent_output_id\": \"\",\n" +
+            "                \"input_id\": \"3b36453f7dc03b13523d6431afd7e544f60339daed52ba8fca7ebf88cd5e5939\",\n" +
+            "                \"witness_component\": \n" +
+            "                    {\n" +
+            "                                \"signatures\": []\n" +
+            "                    }\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"outputs\": [\n" +
+            "            {\n" +
+            "                \"id\": \"8a511581e2fb6986abc3be3bbd842434f642db7c56a1fc5c4c7adf93c750e9a4\",\n" +
+            "                \"position\": 0,\n" +
+            "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+            "                \"asset_definition\": {},\n" +
+            "                \"amount\": 10000000,\n" +
+            "                \"control_program\": \"0014adf7d56795abb622edaece42d5ea193463ddf06a\",\n" +
+            "                \"address\": \"bm1q4hma2eu44wmz9mdweepdt6sex33amur25rwjre\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"type\": \"control\",\n" +
+            "                \"id\": \"03b6ac529c2d1c7d422a7c063d74893e8ca2003b2b3368c27d0ede2d2f6ea3ba\",\n" +
+            "                \"position\": 1,\n" +
+            "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+            "                \"asset_definition\": {},\n" +
+            "                \"amount\": 185000000,\n" +
+            "                \"control_program\": \"0014e18654db91f9d0f4e4a86271b189dc79b0be6adf\",\n" +
+            "                \"address\": \"bm1quxr9fku3l8g0fe9gvfcmrzwu0xctu6klf0xf7j\"\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    }";
+
+        String rawJson = "{\n" +
+            "        \"tx_id\": \"6c846ae763c64b69040f9bad0402e1a34f5a2065f67622bc9d849a1547af0092\",\n" +
+            "        \"version\": 1,\n" +
+            "        \"size\": 236,\n" +
+            "        \"time_range\": 0,\n" +
+            "        \"inputs\": [\n" +
+            "            {\n" +
+            "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+            "                \"asset_definition\": {},\n" +
+            "                \"amount\": 100000000,\n" +
+            "                \"sourceId\": \"4971509ca7729013fcd699a79bf2a823050ed34690d820872aa43d38954d706e\",\n" +
+            "                \"sourcePosition\": 1,\n" +
+            "                \"control_program\": \"0014405f72b55a5a1d9fc2ede25a7e568a8ca91fc9c0\",\n" +
+            "                \"address\": \"bm1qgp0h9d26tgwelshdufd8u4523j53ljwqxkazhc\",\n" +
+            "                \"spent_output_id\": \"\",\n" +
+            "                \"input_id\": \"3b36453f7dc03b13523d6431afd7e544f60339daed52ba8fca7ebf88cd5e5939\",\n" +
+            "                \"witness_component\": \n" +
+            "                    {\n" +
+            "                                \"signatures\": []\n" +
+            "                    }\n" +
+            "            }\n" +
+            "        ],\n" +
+            "        \"outputs\": [\n" +
+            "            {\n" +
+            "                \"id\": \"8a511581e2fb6986abc3be3bbd842434f642db7c56a1fc5c4c7adf93c750e9a4\",\n" +
+            "                \"position\": 0,\n" +
+            "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+            "                \"asset_definition\": {},\n" +
+            "                \"amount\": 2000000,\n" +
+            "                \"control_program\": \"001412d988a2086c084eeac343277709ff8d24eb9f98\",\n" +
+            "                \"address\": \"bm1qztvc3gsgdsyya6krgvnhwz0l35jwh8ucqe3uzw\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"type\": \"control\",\n" +
+            "                \"id\": \"03b6ac529c2d1c7d422a7c063d74893e8ca2003b2b3368c27d0ede2d2f6ea3ba\",\n" +
+            "                \"position\": 1,\n" +
+            "                \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
+            "                \"asset_definition\": {},\n" +
+            "                \"amount\": 93000000,\n" +
+            "                \"control_program\": \"0014405f72b55a5a1d9fc2ede25a7e568a8ca91fc9c0\",\n" +
+            "                \"address\": \"bm1qgp0h9d26tgwelshdufd8u4523j53ljwqxkazhc\"\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    }";
+
         SignTransaction tx = SignTransaction.fromJson(txJson);
         SignTransactionImpl signImpl = new SignTransactionImpl();
 
@@ -121,9 +211,13 @@ public class SignTransactionTest {
         BigInteger key2 = new BigInteger("40205913350867552217212167676397244457827512592372060624640880098442502612286");//子私钥
         keys[0] = key1;
         keys[1] = key2;
+        String priKey = "e089bf65a759318960225c7b03954a606c39260f4773213b044e9e2df52cb556f75e6e31880a3418d06b6c578415a3b57c0d925ca2151f5313e5afc88c324a35";
 
-        String txSign = signImpl.signTransaction(tx, keys);
+        signImpl.signTransaction(tx, priKey);
 
+        String txSign = signImpl.serializeTransaction(tx);
+
+        //0701dfd5c8d50501015f015d45729e2c2211128049f44d35d2ea782ef0a1cdc363bd0ca37e4028db82504499ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8084af5f0101160014e18654db91f9d0f4e4a86271b189dc79b0be6adf6302407ca47a522ae0035a3c4aaa7406c1fbecbf4fc6c66cdcffe6dddcaf309f4b2a68f1e90e78dbf88b6c9af67f451a43df338f9073741bfc75cf674573453d528c03205b9adf91a5d20f4d45cabe72f21077335152b3f1acf6f7ffee9e1ed975550ed702013cffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff80ade20401160014adf7d56795abb622edaece42d5ea193463ddf06a00013cffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc0c09b5801160014e18654db91f9d0f4e4a86271b189dc79b0be6adf00
         System.out.print(txSign);
     }
 

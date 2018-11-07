@@ -72,7 +72,7 @@ public class Client {
         String accessToken = Configuration.getValue("client.access.token");
 
         if (coreURL == null || coreURL.isEmpty()) {
-            coreURL = "http://127.0.0.1:9888";
+            coreURL = "http://47.91.254.104:8888";
         }
 
         if (coreURL.endsWith("/")) {

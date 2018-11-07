@@ -203,5 +203,7 @@ public class SignTransaction {
          * "signature").
          */
         public String[] signatures;
+
+        public String pubKey;
     }
 }

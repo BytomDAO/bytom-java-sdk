@@ -1,5 +1,6 @@
 package io.bytom.api;
 
+import com.google.common.base.Preconditions;
 import io.bytom.common.Constants;
 import io.bytom.common.ExpandedPrivateKey;
 import io.bytom.types.*;
@@ -8,6 +9,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -17,14 +19,20 @@ import java.util.*;
  */
 public class SignTransactionImpl {
 
-    public String signTransaction(SignTransaction tx, BigInteger[] keys) {
+    public boolean signTransaction(SignTransaction tx, String priKey) {
 
-        String txSign = null;
         //组装计算program、inputID、sourceID(muxID)、txID, json数据中这些字段的值为测试值,需重新计算
         mapTransaction(tx);
 
         //签名得到signatures
-        generateSignatures(tx,keys);
+        generateSignature(tx,priKey);
+
+        return true;
+    }
+
+    public String serializeTransaction(SignTransaction tx) {
+
+        String txSign = null;
 
         //开始序列化
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -66,6 +74,7 @@ public class SignTransactionImpl {
                     writeVarint(dataInputCommit.length, stream);
                     stream.write(dataInputCommit);
 
+                    System.out.println("serialize1: " + Hex.toHexString(stream.toByteArray()));
 
                     //inputWitness
                     ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
@@ -75,12 +84,20 @@ public class SignTransactionImpl {
                     writeVarint(lenSigs, witnessStream);
                     for (int i =0; i<lenSigs; i++) {
                         String sig = input.witnessComponent.signatures[i];
-                       writeVarStr(Hex.decode(sig), witnessStream); //实际环境中注意替换为HEX.decode的方式
+                        writeVarStr(Hex.decode(sig), witnessStream); //实际环境中注意替换为HEX.decode的方式
                     }
                     byte[] dataWitnessComponets = witnessStream.toByteArray();
+
+                    System.out.println("witnessStream: " + Hex.toHexString(dataWitnessComponets));
+
                     //witness的length
                     writeVarint(dataWitnessComponets.length, stream);
+
+                    System.out.println("serialize witnessLen: " + dataWitnessComponets.length);
+
                     stream.write(dataWitnessComponets);
+
+                    System.out.println("serialize2: " + Hex.toHexString(stream.toByteArray()));
                 }
             }
 
@@ -207,6 +224,8 @@ public class SignTransactionImpl {
 
 
     public SignTransaction generateSignatures(SignTransaction signTransaction, BigInteger[] keys) {
+
+        String[] keyArray = {"819e1f2b7e01ce55594fa1ef9f676517099e5a8b1b4b1628abc34b74e0e8f7e9","58e3bd92f34faac04bc0b00190841180f76ded55105056ad24b36566d4be253e"};
         SignTransaction.AnnotatedInput input = signTransaction.inputs.get(0);
         input.witnessComponent.signatures = new String[keys.length];
         for (int i=0; i<keys.length; i++) {
@@ -225,6 +244,28 @@ public class SignTransactionImpl {
                 System.out.println("generate signatures failed.");
             }
         }
+        return signTransaction;
+    }
+
+    public SignTransaction generateSignature(SignTransaction signTransaction, String priKey) {
+
+        SignTransaction.AnnotatedInput input = signTransaction.inputs.get(0);
+        input.witnessComponent.signatures = new String[2];
+            if (null != input) {
+                try {
+                    byte[] message = hashFn(Hex.decode(input.inputID), Hex.decode(signTransaction.txID));
+                    System.out.println(Hex.toHexString(message));
+                    byte[] key = Hex.decode(priKey);
+                    byte[] sig = Signer.Ed25519InnerSign(key, message);
+                    input.witnessComponent.signatures[0] = Hex.toHexString(sig);
+                    input.witnessComponent.signatures[1] = "5b9adf91a5d20f4d45cabe72f21077335152b3f1acf6f7ffee9e1ed975550ed7";
+                    System.out.println("sig: " + Hex.toHexString(sig));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("generate signatures failed.");
+            }
         return signTransaction;
     }
 
@@ -250,6 +291,17 @@ public class SignTransactionImpl {
         }
         return result;
     }
+//
+//    public void writeVarint(long data, OutputStream out) throws IOException {
+//        byte[] buf = new byte[9];
+//        int n = putUvarint(buf, data);
+//        out.write(buf, 0, n);
+//    }
+//
+//    public void writeVarStr(byte[] str, OutputStream out) throws IOException {
+//        writeVarint(str.length, out);
+//        out.write(str);
+//    }
 
     public int writeVarint(long value, ByteArrayOutputStream stream) throws IOException {
         byte[] varint = new byte[9];
@@ -296,5 +348,26 @@ public class SignTransactionImpl {
 
             return data;
         }
+    }
+
+    public static byte[] bigIntegerToBytes(BigInteger b, int numBytes) {
+        Preconditions.checkArgument(b.signum() >= 0, "b must be positive or zero");
+        Preconditions.checkArgument(numBytes > 0, "numBytes must be positive");
+        byte[] src = b.toByteArray();
+        byte[] dest = new byte[numBytes];
+        boolean isFirstByteOnlyForSign = src[0] == 0;
+        int length = isFirstByteOnlyForSign ? src.length - 1 : src.length;
+        Preconditions.checkArgument(length <= numBytes, "The given number does not fit in " + numBytes);
+        int srcPos = isFirstByteOnlyForSign ? 1 : 0;
+        int destPos = numBytes - length;
+        System.arraycopy(src, srcPos, dest, destPos, length);
+        return dest;
+    }
+
+    public static byte[] pruneIntermediateScalar(byte[] f) {
+        f[0] &= 248;
+        f[31] &= 31; // clear top 3 bits
+        f[31] |= 64; // set second highest bit
+        return f;
     }
 }
