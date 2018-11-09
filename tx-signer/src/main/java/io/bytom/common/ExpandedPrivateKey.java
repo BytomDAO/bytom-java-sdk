@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 public class ExpandedPrivateKey {
-    private static byte[] HMacSha512(byte[] data, byte[] key)
+    public static byte[] HMacSha512(byte[] data, byte[] key)
             throws SignatureException, NoSuchAlgorithmException, InvalidKeyException
     {
         SecretKeySpec signingKey = new SecretKeySpec(key, "HmacSHA512");
