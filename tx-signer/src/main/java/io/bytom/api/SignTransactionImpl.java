@@ -129,19 +129,21 @@ public class SignTransactionImpl {
                     stream.write(dataInputCommit);
 
                     //inputWitness
-                    ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
-                    //arguments
-                    int lenSigs = input.witnessComponent.signatures.length;
-                    //arguments的length
-                    Utils.writeVarint(lenSigs, witnessStream);
-                    for (int i =0; i<lenSigs; i++) {
-                        String sig = input.witnessComponent.signatures[i];
-                        Utils.writeVarStr(Hex.decode(sig), witnessStream);
+                    if (null != input.witnessComponent) {
+                        ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
+                        //arguments
+                        int lenSigs = input.witnessComponent.signatures.length;
+                        //arguments的length
+                        Utils.writeVarint(lenSigs, witnessStream);
+                        for (int i =0; i<lenSigs; i++) {
+                            String sig = input.witnessComponent.signatures[i];
+                            Utils.writeVarStr(Hex.decode(sig), witnessStream);
+                        }
+                        byte[] dataWitnessComponets = witnessStream.toByteArray();
+                        //witness的length
+                        Utils.writeVarint(dataWitnessComponets.length, stream);
+                        stream.write(dataWitnessComponets);
                     }
-                    byte[] dataWitnessComponets = witnessStream.toByteArray();
-                    //witness的length
-                    Utils.writeVarint(dataWitnessComponets.length, stream);
-                    stream.write(dataWitnessComponets);
                 }
             }
 
@@ -181,10 +183,17 @@ public class SignTransactionImpl {
         return txSign;
     }
 
+    public Integer getTransactionSize(SignTransaction tx) {
+        String result = serializeTransaction(tx);
+        return Hex.decode(result).length;
+    }
+
     //签名组装witness
     public SignTransaction buildWitness(SignTransaction signTransaction, int index, String priKey, String pubKey) {
 
         SignTransaction.AnnotatedInput input = signTransaction.inputs.get(index);
+        if (null == input.witnessComponent)
+            input.witnessComponent = new SignTransaction.InputWitnessComponent();
         input.witnessComponent.signatures = new String[2];
         if (null != input) {
             try {
