@@ -1,0 +1,83 @@
+package com.github.bytom.integration;
+
+import com.github.bytom.TestUtils;
+import com.github.bytom.api.Block;
+import com.github.bytom.exception.BytomException;
+import com.github.bytom.http.Client;
+import org.junit.Assert;
+import org.junit.Test;
+
+public class BlockTest {
+
+    static Client client;
+
+    static {
+        try {
+            client = TestUtils.generateClient();
+        } catch (BytomException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static Block block;
+    static Block.BlockHeader blockHeader;
+    static Block.BlockDifficulty blockDifficulty;
+    static Block.BlockHashRate blockHashRate;
+
+    @Test
+    public void testBlockCountGet() throws Exception {
+        int count = Block.getBlockCount(client);
+        Assert.assertEquals(158, count);
+    }
+
+    @Test
+    public void testBlockHashGet() throws Exception {
+        String blockHash = Block.getBlockHash(client);
+        Assert.assertNotNull(blockHash);
+    }
+
+    @Test
+    public void testBlockGet() throws Exception {
+        int height = Block.getBlockCount(client);
+        String blockHash = Block.getBlockHash(client);
+
+        block = new Block.QueryBuilder()
+                .setBlockHeight(height)
+                .setBlockHash(blockHash)
+                .getBlock(client);
+    }
+
+    @Test
+    public void testBlockHeader() throws Exception {
+        int height = Block.getBlockCount(client);
+        String blockHash = Block.getBlockHash(client);
+
+        blockHeader = new Block.QueryBuilder()
+                .setBlockHeight(height)
+                .setBlockHash(blockHash)
+                .getBlockHeader(client);
+    }
+
+    @Test
+    public void testBlockDifficulty() throws Exception {
+        int height = Block.getBlockCount(client);
+        String blockHash = Block.getBlockHash(client);
+
+        blockDifficulty = new Block.QueryBuilder()
+                .setBlockHeight(height)
+                .setBlockHash(blockHash)
+                .getBlockDifficulty(client);
+    }
+
+    @Test
+    public void testBlockHashRate() throws Exception {
+        int height = Block.getBlockCount(client);
+        String blockHash = Block.getBlockHash(client);
+
+        blockHashRate = new Block.QueryBuilder()
+                .setBlockHeight(height)
+                .setBlockHash(blockHash)
+                .getHashRate(client);
+    }
+
+}

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.bytom</groupId>
+    <groupId>com.github.bytom</groupId>
     <artifactId>bytom-sdk</artifactId>
     <version>1.0.0</version>
     <build>
@@ -23,7 +23,7 @@
 
     <name>bytom-sdk-java</name>
     <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <url>https://github.com/Bytom/bytom-java-sdk</url>
     <description>SDK for Bytom project in github.</description>
 
     <licenses>
@@ -42,9 +42,9 @@
 
     <developers>
         <developer>
-            <name>successli</name>
-            <email>successli@outlook.com</email>
-            <url>https://github.com/successli</url>
+            <name>wyjDoraemon</name>
+            <email>wyjDoraemon@163.com</email>
+            <url>https://github.com/wyjDoraemon</url>
         </developer>
     </developers>
 
@@ -140,7 +140,7 @@
                     </plugin>
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.3</version>
+                        <version>3.1.0</version>
                         <configuration>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
