@@ -824,7 +824,14 @@ public class Transaction {
                 this.put("asset_id", id);
                 return this;
             }
-
+            /**
+             * @param arbitrary message to be on the chain (must be hexadecimal)
+             * @return updated action object
+             */
+            public Retire setArbitrary(String arbitrary){
+                this.put("arbitrary",arbitrary);
+                return this;
+            }
             public Retire setAccountAlias(String alias) {
                 this.put("account_alias", alias);
                 return this;

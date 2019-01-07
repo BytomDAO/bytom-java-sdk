@@ -6,7 +6,7 @@
 
     <groupId>io.bytom</groupId>
     <artifactId>bytom-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <build>
         <plugins>
             <plugin>
@@ -22,8 +22,7 @@
     <packaging>jar</packaging>
 
     <name>bytom-sdk-java</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <url>https://github.com/Bytom</url>
     <description>SDK for Bytom project in github.</description>
 
     <licenses>
