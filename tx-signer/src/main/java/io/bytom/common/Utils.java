@@ -89,4 +89,16 @@ public class Utils {
         expandedKeys.setPubKey(Hex.toHexString(hashPubKey));
         return expandedKeys;
     }
+
+    public static String pushDataInt(int n) {
+        if (n==0){
+            return "00";
+        }else if (n>=1&&n<=15){
+            return "5"+Integer.toString(n,16);
+        }else if(n==16){
+            return "60";
+        }
+        return null;
+
+    }
 }

@@ -19,6 +19,10 @@ import java.security.SignatureException;
  * Created by liqiang on 2018/10/24.
  */
 public class SignTransaction {
+
+    private final String OP_TXSIGHASH = "ae";
+    private final String OP_CHECKMULTISIG  = "ad";
+
     public String serializeTransaction(Transaction tx) {
         String txSign = null;
         //开始序列化
@@ -170,7 +174,7 @@ public class SignTransaction {
     }
 
     //签名组装witness
-    public Transaction buildWitness(Transaction transaction, int index, String priKey) {
+    public Transaction buildWitness(Transaction transaction, int index, byte[] privateKeyBytes) {
 
         Transaction.AnnotatedInput input = transaction.inputs.get(index);
         if (null == input.witnessComponent)
@@ -179,15 +183,14 @@ public class SignTransaction {
                 try {
                     input.witnessComponent = new Transaction.InputWitnessComponent();
                     byte[] message = hashFn(Hex.decode(input.inputID), Hex.decode(transaction.txID));
-                    byte[] key = Hex.decode(priKey);
-                    byte[] expandedPrivateKey = ExpandedPrivateKey.ExpandedPrivateKey(key);
+                    byte[] expandedPrivateKey = ExpandedPrivateKey.ExpandedPrivateKey(privateKeyBytes);
                     byte[] sig = Signer.Ed25519InnerSign(expandedPrivateKey, message);
 
                     switch (input.type) {
                         case 1: {
                             input.witnessComponent.signatures = new String[2];
                             input.witnessComponent.signatures[0] = Hex.toHexString(sig);
-                            byte[] deriveXpub = DeriveXpub.deriveXpub(Hex.decode(priKey));
+                            byte[] deriveXpub = DeriveXpub.deriveXpub(privateKeyBytes);
                             String pubKey = Hex.toHexString(deriveXpub).substring(0, 64);
                             input.witnessComponent.signatures[1] = pubKey;
                             break;
@@ -208,7 +211,7 @@ public class SignTransaction {
         return transaction;
     }
 
-    //多签spend
+    //多签单输入
     public void buildWitness(Transaction transaction, int index, String[] privateKeys) {
         Transaction.AnnotatedInput input = transaction.inputs.get(index);
         if (null == input.witnessComponent)
@@ -216,21 +219,23 @@ public class SignTransaction {
         try {
 
             //TODO 多签issue
-            StringBuilder sb = new StringBuilder("ae");
+            StringBuilder sb = new StringBuilder(OP_TXSIGHASH);
             input.witnessComponent.signatures = new String[privateKeys.length + 1];
             for (int i = 0; i < privateKeys.length; i++) {
-                byte[] key = DerivePrivateKey.derivePrivateKey(privateKeys[i], 1, false, input.getControlProgramIndex());
+                System.out.println(input.isChange());
+                byte[] key = DerivePrivateKey.derivePrivateKey(privateKeys[i], 1, input.isChange(), input.getControlProgramIndex());
                 byte[] message = hashFn(Hex.decode(input.inputID), Hex.decode(transaction.txID));
                 byte[] expandedPrivateKey = ExpandedPrivateKey.ExpandedPrivateKey(key);
                 byte[] sig = Signer.Ed25519InnerSign(expandedPrivateKey, message);
                 input.witnessComponent.signatures[i] = Hex.toHexString(sig);
-                byte[] deriveXpub = DeriveXpub.deriveXpub(key);
+                byte[] deriveXpub = DeriveXpub.deriveXpub(expandedPrivateKey);
                 String publicKey = Hex.toHexString(deriveXpub).substring(0, 64);
-                sb.append("20").append(publicKey);
+                sb.append(Integer.toString(Hex.decode(publicKey).length,16)).append(publicKey);
             }
-            //签名数跟公钥数相同
             //TODO 签名数跟公钥数量不同
-            sb.append("5").append(privateKeys.length).append("5").append(privateKeys.length).append("ad");
+            sb.append(Utils.pushDataInt(privateKeys.length)); //should be nrequired
+            sb.append(Utils.pushDataInt(privateKeys.length));
+            sb.append(OP_CHECKMULTISIG);
             input.witnessComponent.signatures[privateKeys.length] = sb.toString();
 
         } catch (Exception e) {
@@ -239,7 +244,7 @@ public class SignTransaction {
 
     }
 
-    private byte[] hashFn(byte[] hashedInputHex, byte[] txID) {
+    public static byte[] hashFn(byte[] hashedInputHex, byte[] txID) {
 
         SHA3.Digest256 digest256 = new SHA3.Digest256();
         // data = hashedInputHex + txID
@@ -282,7 +287,7 @@ public class SignTransaction {
             } else {
                 privateChild = DerivePrivateKey.derivePrivateKey(rootPrivateKey, tx.inputs.get(i).getKeyIndex());
             }
-            buildWitness(tx, i, Hex.toHexString(privateChild));
+            buildWitness(tx, i, privateChild);
         }
         return serializeTransaction(tx);
     }

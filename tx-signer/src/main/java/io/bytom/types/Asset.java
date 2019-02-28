@@ -71,6 +71,7 @@ public class Asset {
     private String computeIssueProgram(String rootKey, int keyIndex) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         byte[] derivePrivateKey = DerivePrivateKey.derivePrivateKey(rootKey, keyIndex);
         byte[] deriveXpub = DeriveXpub.deriveXpub(derivePrivateKey);
+
         String issueProgram = "ae20" + Hex.toHexString(deriveXpub).substring(0, 64) + "5151ad";
         return issueProgram;
     }

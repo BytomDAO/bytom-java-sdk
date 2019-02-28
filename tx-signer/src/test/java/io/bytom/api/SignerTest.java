@@ -1,5 +1,8 @@
 package io.bytom.api;
 
+import io.bytom.common.DerivePrivateKey;
+import io.bytom.common.DeriveXpub;
+import io.bytom.common.ExpandedPrivateKey;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
@@ -17,8 +20,6 @@ public class SignerTest {
         String hashedMessage = "99ab9ebdba106466371467b036d56a0e54ad2a6035e365a6103ba97ab553fd52";
         byte[] sig = Signer.Ed25519InnerSign(Hex.decode(expandedXprv), Hex.decode(hashedMessage));
         System.out.println("sig:" + Hex.toHexString(sig));
-        //expected: 38b11090e8dd5372018acc24ea4db2c3d82cf01ed5c69a0fae95bff2379c1630f8c8f96937b22685142b4181e6ef5072e7945c101eb81814a20d90cb1d1f0c08
-        //          38b11090e8dd5372018acc24ea4db2c3d82cf01ed5c69a0fae95bff2379c1630f8c8f96937b22685142b4181e6ef5072e7945c101eb81814a20d90cb1d1f0c08
+        //expected: e628e980c690d9ef4ca8a2edee1654a6b401edc4f1af7bda3ffd97fe412522c3bab671dd4e51d0aeeb64f8d761fbdb03e296ab0c1dcbed4eafa504f412a98100
     }
-
 }

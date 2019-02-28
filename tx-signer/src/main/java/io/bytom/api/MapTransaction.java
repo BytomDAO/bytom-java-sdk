@@ -78,7 +78,7 @@ public class MapTransaction {
                 AssetAmount amount = new AssetAmount(new AssetID(output.assetId), output.amount);
                 ValueSource src = new ValueSource(muxID, amount, i);
                 Hash resultID;
-                if (output.controlProgram.startsWith("6a")) {
+                if (output.controlProgram.startsWith("6a")&&output.controlProgram.length()>0) {
                     Retirement retirement = new Retirement(src, i);
                     resultID = addEntry(entryMap, retirement);
                 } else {
