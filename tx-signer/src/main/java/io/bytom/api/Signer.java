@@ -10,8 +10,7 @@ import java.util.Arrays;
 
 public class Signer {
 
-    public static byte[] Ed25519InnerSign(byte[] privateKey, byte[] message)
-            throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+    public static byte[] ed25519InnerSign(byte[] privateKey, byte[] message) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         byte[] digestData = new byte[32 + message.length];
         int digestDataIndex = 0;

@@ -2,7 +2,7 @@ package io.bytom.types;
 
 import java.io.ByteArrayOutputStream;
 
-public class Output extends Entry {
+public class OutputEntry extends Entry {
 
     public ValueSource source;
 
@@ -10,13 +10,13 @@ public class Output extends Entry {
 
     public Integer ordinal;
 
-    public Output() {
+    public OutputEntry() {
         this.source = new ValueSource();
         this.controlProgram = new Program();
     }
 
 
-    public Output(ValueSource source, Program controlProgram, Integer ordinal) {
+    public OutputEntry(ValueSource source, Program controlProgram, Integer ordinal) {
         this.source = source;
         this.controlProgram = controlProgram;
         this.ordinal = ordinal;

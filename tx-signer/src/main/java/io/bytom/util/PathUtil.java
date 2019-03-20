@@ -32,23 +32,27 @@ public class PathUtil {
         if (change) {
             changeStr = "01000000";
         }
-        byte[][] paths = new byte[][]{
+        return new byte[][]{
                 Hex.decode("2c000000"),
                 Hex.decode("99000000"),
                 Hex.decode(accountIndexStr),
                 Hex.decode(changeStr),
                 Hex.decode(programIndexStr),
         };
-        return paths;
     }
 
-    public static byte[][] getBip32Path(int accountIndex) {
+    public static byte[][] getBip32Path(byte keySpace, long accountIndex, long ...itemIndexes) {
         byte[] signerPath = new byte[9];
-        byte[] path = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putInt(accountIndex).array();
+        signerPath[0] = keySpace;
+        byte[] path = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(accountIndex).array();
         System.arraycopy(path, 0, signerPath, 1, 8);
-        byte[][] paths = new byte[][]{
-                signerPath
-        };
-        return paths;
+
+        byte[][] res = new byte[1 + itemIndexes.length][];
+        res[0] = signerPath;
+        for (int i = 0; i < itemIndexes.length; i++) {
+            path = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN).putLong(itemIndexes[i]).array();
+            res[i + 1] = path;
+        }
+        return res;
     }
 }

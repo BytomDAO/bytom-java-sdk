@@ -889,7 +889,7 @@ public final class Ed25519 {
      * Input:
      * s[0]+256*s[1]+...+256^63*s[63] = s
      * <p>
-     * Output:
+     * OutputEntry:
      * s[0]+256*s[1]+...+256^31*s[31] = s mod l
      * where l = 2^252 + 27742317777372353535851937790883648493.
      * Overwrites s in place.
@@ -1250,7 +1250,7 @@ public final class Ed25519 {
      * b[0]+256*b[1]+...+256^31*b[31] = b
      * c[0]+256*c[1]+...+256^31*c[31] = c
      * <p>
-     * Output:
+     * OutputEntry:
      * s[0]+256*s[1]+...+256^31*s[31] = (ab+c) mod l
      * where l = 2^252 + 27742317777372353535851937790883648493.
      */

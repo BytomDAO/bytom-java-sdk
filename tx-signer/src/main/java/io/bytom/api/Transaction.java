@@ -1,14 +1,11 @@
 package io.bytom.api;
 
-import com.google.gson.annotations.SerializedName;
-import io.bytom.common.ParameterizedTypeImpl;
-import io.bytom.common.SuccessRespon;
 import io.bytom.common.Utils;
-import io.bytom.exception.BytomException;
-import io.bytom.http.Client;
-import org.apache.log4j.Logger;
+import io.bytom.types.*;
+import org.bouncycastle.util.encoders.Hex;
 
-import java.lang.reflect.Type;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +17,6 @@ import java.util.Map;
 
 public class Transaction {
 
-    @SerializedName("tx_id")
     public String txID;
     /**
      * version
@@ -33,321 +29,170 @@ public class Transaction {
     /**
      * time_range
      */
-    @SerializedName("time_range")
     public Integer timeRange;
-
-    /**
-     * status
-     */
-    public Integer fee;
 
     /**
      * List of specified inputs for a transaction.
      */
-    public List<AnnotatedInput> inputs;
+    public List<BaseInput> inputs;
 
     /**
      * List of specified outputs for a transaction.
      */
-    public List<AnnotatedOutput> outputs;
+    public List<Output> outputs;
 
-    //    public InputWitnessComponent inputWitnessComponent;
-    private static Logger logger = Logger.getLogger(Transaction.class);
-
-    public String toJson() {
-        return Utils.serializer.toJson(this);
-    }
-
-    public static Transaction fromJson(String json) {
-        return Utils.serializer.fromJson(json, Transaction.class);
-    }
-
-    public static Transaction fromSuccessRespon(String json) {
-        Type responType = new ParameterizedTypeImpl(SuccessRespon.class, new Class[]{Transaction.class});
-        SuccessRespon<Transaction> result = Utils.serializer.fromJson(json, responType);
-        return result.dataObject;
-    }
-
-    public static Transaction decode(Client client, String txId) throws BytomException {
-        Map<String, Object> req = new HashMap<String, Object>();
-        req.put("raw_transaction", txId);
-        Transaction Transaction =
-                client.request("decode-raw-transaction", req, Transaction.class);
-
-        logger.info("decode-raw-transaction:");
-        logger.info(Transaction.toJson());
-
-        return Transaction;
+    public Transaction(Builder builder) {
+        this.inputs = builder.inputs;
+        this.outputs = builder.outputs;
+        this.version = builder.version;
+        this.size = builder.size;
+        this.timeRange = builder.timeRange;
+        mapTx();
+        sign();
     }
 
     public static class Builder {
-        @SerializedName("tx_id")
-        public String txID;
-        public Integer version;
-        public Integer size;
-        @SerializedName("time_range")
-        public Integer timeRange;
 
-        Transaction tx;
-        List<AnnotatedInput> inputs;
-        List<AnnotatedOutput> outputs;
+        private String txID;
+
+        private Integer version = 1;
+
+        private Integer size = 0;
+
+        private Integer timeRange;
+
+        private List<BaseInput> inputs;
+        private List<Output> outputs;
 
         public Builder() {
             this.inputs = new ArrayList<>();
             this.outputs = new ArrayList<>();
         }
 
-        public Builder addInput(AnnotatedInput input) {
+        public Builder addInput(BaseInput input) {
             this.inputs.add(input);
             return this;
         }
 
-        public Builder addOutput(AnnotatedOutput output) {
+        public Builder addOutput(Output output) {
             this.outputs.add(output);
             return this;
         }
 
-
-        public Transaction build(Integer version, Integer timeRange, Integer size) {
-            tx = new Transaction();
-            tx.inputs = this.inputs;
-            tx.outputs = this.outputs;
-            tx.version = version;
-            tx.timeRange = timeRange;
-            tx.size = size;
-            return tx;
+        public Builder setTimeRange(int timeRange) {
+            this.timeRange = timeRange;
+            return this;
         }
 
-        public Transaction build(int timeRange) {
-            tx = new Transaction();
-            tx.inputs = this.inputs;
-            tx.outputs = this.outputs;
-            tx.version = 1;
-            tx.size = 0;
-            tx.timeRange = timeRange;
-            return tx;
+        public Transaction build() {
+            return new Transaction(this);
         }
     }
 
-    public static class AnnotatedInput {
-
-        @SerializedName("input_id")
-        public String inputID;
-        /**
-         * address
-         */
-        public String address;
-
-        /**
-         * The number of units of the asset being issued or spent.
-         */
-        public long amount;
-
-        //        /**
-//         * The definition of the asset being issued or spent (possibly null).
-//         */
-//        @SerializedName("asset_definition")
-//        private Map<String, Object> assetDefinition;
-        @SerializedName("asset_definition")
-        public String assetDefinition;
-
-        /**
-         * The id of the asset being issued or spent.
-         */
-        @SerializedName("asset_id")
-        public String assetId;
-
-        /**
-         * The control program which must be satisfied to transfer this output.
-         */
-        @SerializedName("control_program")
-        public String controlProgram;
-
-        /**
-         * The id of the output consumed by this input. Null if the input is an
-         * issuance.
-         */
-        @SerializedName("spent_output_id")
-        public String spentOutputId;
-
-        /**
-         * The type of the input.<br>
-         * Possible values are "issue" and "spend".
-         */
-        public int type;
-
-        public String sourceId;
-
-        public long sourcePosition;
-
-        public String nonce;
-
-        private int controlProgramIndex;
-        private boolean change;
-
-        public int keyIndex;
-        public String chainPath;
-
-        @SerializedName("witness_component")
-        public InputWitnessComponent witnessComponent;
-
-        @Override
-        public String toString() {
-            return Utils.serializer.toJson(this);
-        }
-
-        public int getControlProgramIndex() {
-            return controlProgramIndex;
-        }
-
-        public AnnotatedInput setControlProgramIndex(int controlProgramIndex) {
-            this.controlProgramIndex = controlProgramIndex;
-            return this;
-        }
-
-        public boolean isChange() {
-            return change;
-        }
-
-        public AnnotatedInput setChange(boolean change) {
-            this.change = change;
-            return this;
-        }
-
-        public AnnotatedInput setAmount(long amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public AnnotatedInput setAssetId(String assetId) {
-            this.assetId = assetId;
-            return this;
-        }
-
-        public AnnotatedInput setControlProgram(String controlProgram) {
-            this.controlProgram = controlProgram;
-            return this;
-        }
-
-        public AnnotatedInput setType(int type) {
-            this.type = type;
-            return this;
-        }
-
-        public AnnotatedInput setSourceId(String sourceId) {
-            this.sourceId = sourceId;
-            return this;
-        }
-
-        public AnnotatedInput setSourcePosition(long sourcePosition) {
-            this.sourcePosition = sourcePosition;
-            return this;
-        }
-
-        public AnnotatedInput setNonce(String nonce) {
-            this.nonce = nonce;
-            return this;
-        }
-
-        public AnnotatedInput setAssetDefinition(String assetDefinition) {
-            this.assetDefinition = assetDefinition;
-            return this;
-        }
-
-        public int getKeyIndex() {
-            return keyIndex;
-        }
-
-        public AnnotatedInput setKeyIndex(int keyIndex) {
-            this.keyIndex = keyIndex;
-            return this;
-        }
-
-    }
-
-    public static class AnnotatedOutput {
-
-        /**
-         * address
-         */
-        public String address;
-
-        /**
-         * The number of units of the asset being controlled.
-         */
-        public long amount;
-
-        /**
-         * The definition of the asset being controlled (possibly null).
-         */
-        @SerializedName("asset_definition")
-        public Map<String, Object> assetDefinition;
-
-        /**
-         * The id of the asset being controlled.
-         */
-        @SerializedName("asset_id")
-        public String assetId;
-
-        /**
-         * The control program which must be satisfied to transfer this output.
-         */
-        @SerializedName("control_program")
-        public String controlProgram;
-
-        /**
-         * The id of the output.
-         */
-        @SerializedName("id")
-        public String id;
-
-        /**
-         * The output's position in a transaction's list of outputs.
-         */
-        public Integer position;
-
-        /**
-         * The type the output.<br>
-         * Possible values are "control" and "retire".
-         */
-        public String type;
-
-        public AnnotatedOutput setAddress(String address) {
-            this.address = address;
-            return this;
-        }
-
-        public AnnotatedOutput setAmount(long amount) {
-            this.amount = amount;
-            return this;
-        }
-
-        public AnnotatedOutput setAssetId(String assetId) {
-            this.assetId = assetId;
-            return this;
-        }
-
-        public AnnotatedOutput setControlProgram(String controlProgram) {
-            this.controlProgram = controlProgram;
-            return this;
-        }
-
-        public AnnotatedOutput setPosition(Integer position) {
-            this.position = position;
-            return this;
+    private void sign() {
+        for (BaseInput input : inputs) {
+            try {
+                input.buildWitness(txID);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    /**
-     * A single witness component, holding information that will become the input
-     * witness.
-     */
-    public static class InputWitnessComponent {
+    public String rawTransaction() {
+        String rawTransaction;
+        //开始序列化
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            stream.write(7);
+            // version
+            if (null != version)
+                Utils.writeVarint(version, stream);
+            if (null != timeRange)
+                Utils.writeVarint(timeRange, stream);
+            //inputs
+            if (null != inputs && inputs.size() > 0) {
+                Utils.writeVarint(inputs.size(), stream);
+                for (BaseInput input : inputs) {
+                    System.out.println(Hex.toHexString(input.serializeInput()));
+                    stream.write(input.serializeInput());
+                }
+            }
 
-        /**
-         * The list of signatures made with the specified keys (null unless type is
-         * "signature").
-         */
-        public String[] signatures;
+            //outputs
+            if (null != outputs && outputs.size() > 0) {
+                Utils.writeVarint(outputs.size(), stream);
+                for (Output output : outputs) {
+                    stream.write(output.serializeOutput());
+                }
+            }
+            byte[] data = stream.toByteArray();
+            rawTransaction = Hex.toHexString(data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return rawTransaction;
+    }
+
+    private void mapTx() {
+        Map<Hash, Entry> entryMap = new HashMap<>();
+        ValueSource[] muxSources = new ValueSource[inputs.size()];
+        List<InputEntry> inputEntries = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < inputs.size(); i++) {
+                BaseInput input = inputs.get(i);
+                InputEntry inputEntry =  input.convertInputEntry(entryMap, i);
+                Hash spendID = addEntry(entryMap, inputEntry);
+                input.setInputID(spendID.toString());
+
+                muxSources[i] = new ValueSource(spendID, input.getAssetAmount(), 0);
+                inputEntries.add(inputEntry);
+            }
+
+            Mux mux = new Mux(muxSources, new Program(1, new byte[]{0x51}));
+            Hash muxID = addEntry(entryMap, mux);
+            for (InputEntry inputEntry : inputEntries) {
+                inputEntry.setDestination(muxID, inputEntry.ordinal, entryMap);
+            }
+
+            List<Hash> resultIDList = new ArrayList<>();
+            for (int i = 0; i < outputs.size(); i++) {
+                Output output = outputs.get(i);
+
+                AssetAmount amount = new AssetAmount(new AssetID(output.assetId), output.amount);
+                ValueSource src = new ValueSource(muxID, amount, i);
+
+                Hash resultID;
+                if (output.controlProgram.startsWith("6a")) {
+                    Retirement retirement = new Retirement(src, i);
+                    resultID = addEntry(entryMap, retirement);
+                } else {
+                    Program prog = new Program(1, Hex.decode(output.controlProgram));
+                    OutputEntry oup = new OutputEntry(src, prog, i);
+                    resultID = addEntry(entryMap, oup);
+                }
+
+                resultIDList.add(resultID);
+                output.id = resultID.toString();
+
+                ValueDestination destination = new ValueDestination(resultID, src.value, 0);
+                mux.witnessDestinations.add(destination);
+            }
+
+            TxHeader txHeader = new TxHeader(version, size, timeRange, resultIDList.toArray(new Hash[]{}));
+            Hash txID = addEntry(entryMap, txHeader);
+            this.txID = txID.toString();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Hash addEntry(Map<Hash, Entry> entryMap, Entry entry) {
+        Hash id = entry.entryID();
+        entryMap.put(id, entry);
+        return id;
     }
 }

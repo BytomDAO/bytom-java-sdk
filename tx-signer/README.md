@@ -76,7 +76,7 @@ Need 3 Parameters:
 
 ```java
 
-//utxo json to input public Transaction.AnnotatedInput btmUtxoToInput() {  
+AnnotatedBaseInput
     String utxoJson = "{\n" +  
             " \"id\": \"cf2f5c7340490d33d535a680dc8d95bb66fcccbf1045706484621cc067b982ae\",\n" +  
             " \"amount\": 70000000,\n" +  

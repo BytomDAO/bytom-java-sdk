@@ -3,6 +3,7 @@ package io.bytom.common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.bytom.types.ExpandedKeys;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
@@ -76,7 +77,7 @@ public class Utils {
     }
 
     public static ExpandedKeys expandedPriKey(String priKey, String key) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        byte[] hashPriKey = ExpandedPrivateKey.HMacSha512(Hex.decode(priKey), key.getBytes());
+        byte[] hashPriKey = ExpandedPrivateKey.hmacSha512(Hex.decode(priKey), key.getBytes());
         //begin operate res[:32]
         byte[] f = new byte[hashPriKey.length / 2];
         System.arraycopy(hashPriKey, 0, f, 0, hashPriKey.length / 2);
@@ -100,5 +101,16 @@ public class Utils {
         }
         return null;
 
+    }
+
+    public static byte[] hashFn(byte[] hashedInputHex, byte[] txID) {
+
+        SHA3.Digest256 digest256 = new SHA3.Digest256();
+        // data = hashedInputHex + txID
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        out.write(hashedInputHex, 0, hashedInputHex.length);
+        out.write(txID, 0, txID.length);
+        byte[] data = out.toByteArray();
+        return digest256.digest(data);
     }
 }

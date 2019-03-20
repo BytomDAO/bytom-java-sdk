@@ -1,11 +1,11 @@
 package io.bytom.types;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 
-public class Issue extends Entry {
+public class Issue extends InputEntry {
     public Hash nonceHash;
     public AssetAmount assetAmount;
-    public int ordinal;
     public AssetDefinition assetDefinition;
     public ValueDestination witnessDestination;
 
@@ -15,8 +15,9 @@ public class Issue extends Entry {
         this.ordinal = ordinal;
     }
 
-    public void setDestination(Hash id, AssetAmount val, long pos) {
-        this.witnessDestination = new ValueDestination(id, val, pos);
+    @Override
+    public void setDestination(Hash id, long pos, Map<Hash, Entry> entryMap) {
+        this.witnessDestination = new ValueDestination(id, this.assetAmount, pos);
     }
 
     @Override

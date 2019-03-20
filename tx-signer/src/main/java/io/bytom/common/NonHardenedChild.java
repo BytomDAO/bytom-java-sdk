@@ -11,7 +11,7 @@ import java.security.SignatureException;
 
 public class NonHardenedChild {
 
-    private static byte[] HMacSha512(byte[] data, byte[] key)
+    private static byte[] hmacSha512(byte[] data, byte[] key)
             throws NoSuchAlgorithmException, InvalidKeyException {
         SecretKeySpec signingKey = new SecretKeySpec(key, "HmacSHA512");
         Mac mac = Mac.getInstance("HmacSHA512");
@@ -19,7 +19,7 @@ public class NonHardenedChild {
         return mac.doFinal(data);
     }
 
-    public static byte[] NHchild(byte[] path, byte[] xprv, byte[] xpub) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+    public static byte[] nhChild(byte[] path, byte[] xprv, byte[] xpub) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         // begin build data
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write('N');
@@ -34,7 +34,7 @@ public class NonHardenedChild {
         // end build key
 
         // doFinal()
-        byte[] res = HMacSha512(data, key);
+        byte[] res = hmacSha512(data, key);
 
         //begin operate res[:32]
         byte[] f = new byte[res.length / 2];
@@ -76,7 +76,7 @@ public class NonHardenedChild {
         byte[] res = xprv;
         for (int i = 0; i < hpaths.length; i++) {
             byte[] xpub = DeriveXpub.deriveXpub(res);
-            res = NonHardenedChild.NHchild(paths[i], res, xpub);
+            res = NonHardenedChild.nhChild(paths[i], res, xpub);
         }
         return res;
     }

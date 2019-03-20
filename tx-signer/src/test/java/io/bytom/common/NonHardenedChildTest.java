@@ -24,9 +24,8 @@ public class NonHardenedChildTest {
         for (int i = 0; i < hpaths.length; i++) {
             byte[] xpub = DeriveXpub.deriveXpub(res);
 //            System.out.println("xpub: "+Hex.toHexString(xpub));
-            res = NonHardenedChild.NHchild(paths[i], res, xpub);
+            res = NonHardenedChild.nhChild(paths[i], res, xpub);
         }
-        System.out.println("res: " + Hex.toHexString(res));
         //expected: e8c0965af60563c4cabcf2e947b1cd955c4f501eb946ffc8c3447e5ec8a6335398a3720b3f96077fa187fdde48fe7dc293984b196f5e292ef8ed78fdbd8ed954
         //          e8c0965af60563c4cabcf2e947b1cd955c4f501eb946ffc8c3447e5ec8a6335398a3720b3f96077fa187fdde48fe7dc293984b196f5e292ef8ed78fdbd8ed954
     }
@@ -36,7 +35,6 @@ public class NonHardenedChildTest {
         String hxprv = "10fdbc41a4d3b8e5a0f50dd3905c1660e7476d4db3dbd9454fa4347500a633531c487e8174ffc0cfa76c3be6833111a9b8cd94446e37a76ee18bb21a7d6ea66b";
         String[] hpaths = {"010400000000000000", "0100000000000000"};
         byte[] childXprv = NonHardenedChild.child(Hex.decode(hxprv), hpaths);
-        System.out.println("childXprv: " + Hex.toHexString(childXprv));
         //expected: e8c0965af60563c4cabcf2e947b1cd955c4f501eb946ffc8c3447e5ec8a6335398a3720b3f96077fa187fdde48fe7dc293984b196f5e292ef8ed78fdbd8ed954
         //          e8c0965af60563c4cabcf2e947b1cd955c4f501eb946ffc8c3447e5ec8a6335398a3720b3f96077fa187fdde48fe7dc293984b196f5e292ef8ed78fdbd8ed954
     }

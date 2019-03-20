@@ -61,15 +61,15 @@ public class UTXO {
         return Utils.serializer.fromJson(json, UTXO.class);
     }
 
-    public static Transaction.AnnotatedInput utxoToAnnotatedInput(UTXO utxo) {
-        Transaction.AnnotatedInput annotatedInput = new Transaction.AnnotatedInput();
-        annotatedInput.setAmount(utxo.amount);
-        annotatedInput.setControlProgram(utxo.program);
-        annotatedInput.setChange(utxo.change);
-        annotatedInput.setAssetId(utxo.assetId);
-        annotatedInput.setControlProgramIndex(utxo.controlProgramIndex);
-        annotatedInput.setSourceId(utxo.sourceId);
-        annotatedInput.setSourcePosition(utxo.sourcePos);
-        return annotatedInput;
+    public SpendInput toSpendAnnotatedInput() {
+        SpendInput spendInput = new SpendInput();
+        spendInput.setAmount(amount);
+        spendInput.setProgram(program);
+        spendInput.setChange(change);
+        spendInput.setAssetId(assetId);
+        spendInput.setControlProgramIndex(controlProgramIndex);
+        spendInput.setSourceId(sourceId);
+        spendInput.setSourcePosition(sourcePos);
+        return spendInput;
     }
 }

@@ -1,8 +1,9 @@
 package io.bytom.types;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
 
-public class Spend extends Entry {
+public class Spend extends InputEntry {
 
     public Hash spentOutputID;
 
@@ -17,8 +18,10 @@ public class Spend extends Entry {
         this.ordinal = ordinal;
     }
 
-    public void setDestination(Hash id, AssetAmount val, long pos) {
-        this.witnessDestination = new ValueDestination(id, val, pos);
+    @Override
+    public void setDestination(Hash id, long pos, Map<Hash, Entry> entryMap) {
+        OutputEntry spendOutput = (OutputEntry) entryMap.get(this.spentOutputID);
+        this.witnessDestination = new ValueDestination(id, spendOutput.source.value, pos);
     }
 
     @Override

@@ -69,7 +69,7 @@ public class Asset {
     }
 
     private String computeIssueProgram(String rootKey, int keyIndex) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        byte[] derivePrivateKey = DerivePrivateKey.derivePrivateKey(rootKey, keyIndex);
+        byte[] derivePrivateKey = DerivePrivateKey.bip32derivePrvKey(rootKey, keyIndex, (byte) 0, 1);
         byte[] deriveXpub = DeriveXpub.deriveXpub(derivePrivateKey);
 
         String issueProgram = "ae20" + Hex.toHexString(deriveXpub).substring(0, 64) + "5151ad";

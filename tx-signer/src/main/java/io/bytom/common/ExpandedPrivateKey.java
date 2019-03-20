@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 public class ExpandedPrivateKey {
-    public static byte[] HMacSha512(byte[] data, byte[] key)
+    public static byte[] hmacSha512(byte[] data, byte[] key)
             throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         SecretKeySpec signingKey = new SecretKeySpec(key, "HmacSHA512");
         Mac mac = Mac.getInstance("HmacSHA512");
@@ -17,10 +17,10 @@ public class ExpandedPrivateKey {
         return mac.doFinal(data);
     }
 
-    public static byte[] ExpandedPrivateKey(byte[] data)
+    public static byte[] expandedPrivateKey(byte[] data)
             throws SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         // "457870616e64" is "Expand" hex.
-        byte[] res = HMacSha512(data, Hex.decode("457870616e64"));
+        byte[] res = hmacSha512(data, Hex.decode("457870616e64"));
         for (int i = 0; i <= 31; i++) {
             res[i] = data[i];
         }
