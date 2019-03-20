@@ -2,6 +2,7 @@ package io.bytom.api;
 
 import io.bytom.common.DerivePrivateKey;
 import io.bytom.common.ExpandedPrivateKey;
+import io.bytom.common.Signer;
 import io.bytom.common.Utils;
 import io.bytom.types.*;
 import io.bytom.util.SHA3Util;
@@ -15,9 +16,21 @@ public class IssuanceInput extends BaseInput {
 
     private String nonce;
 
-    private String assetDefinition;
+    private String rawAssetDefinition;
 
     public IssuanceInput() {}
+
+    public IssuanceInput(String assetID, Long amount, String issuanceProgram) {
+        this.setAssetId(assetID);
+        this.setAmount(amount);
+        this.setProgram(issuanceProgram);
+    }
+
+    public IssuanceInput(String assetID, Long amount, String issuanceProgram, String nonce, String rawAssetDefinition) {
+        this(assetID, amount, issuanceProgram);
+        this.nonce = nonce;
+        this.rawAssetDefinition = rawAssetDefinition;
+    }
 
     @Override
     public InputEntry convertInputEntry(Map<Hash, Entry> entryMap, int index) {
@@ -29,7 +42,7 @@ public class IssuanceInput extends BaseInput {
         }
 
         Hash nonceHash = new Hash(SHA3Util.hashSha256(Hex.decode(this.nonce)));
-        Hash assetDefHash = new Hash(this.assetDefinition);
+        Hash assetDefHash = new Hash(this.rawAssetDefinition);
         AssetAmount value = this.getAssetAmount();
 
         Issue issuance = new Issue(nonceHash, value, index);
@@ -58,25 +71,23 @@ public class IssuanceInput extends BaseInput {
         //未知
         Utils.writeVarint(1, issueInfo1);
         //写入assetDefine
-        Utils.writeVarStr(Hex.decode(assetDefinition), issueInfo1);
+        Utils.writeVarStr(Hex.decode(rawAssetDefinition), issueInfo1);
         //vm.version
         Utils.writeVarint(1, issueInfo1);
         //controlProgram
         Utils.writeVarStr(Hex.decode(getProgram()), issueInfo1);
 
         //inputWitness
-        if (null != getWitnessComponent()) {
-            ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
-            //arguments
-            int witnessSize = getWitnessComponent().size();
-            //arguments的length
-            Utils.writeVarint(witnessSize, witnessStream);
-            for (int i = 0; i < witnessSize; i++) {
-                String witness = getWitnessComponent().getWitness(i);
-                Utils.writeVarStr(Hex.decode(witness), witnessStream);
-            }
-            issueInfo1.write(witnessStream.toByteArray());
+        ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
+        //arguments
+        int witnessSize = witnessComponent.size();
+        //arguments的length
+        Utils.writeVarint(witnessSize, witnessStream);
+        for (int i = 0; i < witnessSize; i++) {
+            String witness = witnessComponent.getWitness(i);
+            Utils.writeVarStr(Hex.decode(witness), witnessStream);
         }
+        issueInfo1.write(witnessStream.toByteArray());
         stream.write(issueInfo1.toByteArray().length - 1);
         stream.write(issueInfo1.toByteArray());
         return stream.toByteArray();
@@ -84,21 +95,40 @@ public class IssuanceInput extends BaseInput {
 
     @Override
     public void buildWitness(String txID) throws Exception {
-        String rootPrivateKey = getWitnessComponent().getRootPrivateKey();
-        byte[] childPrivateKey = DerivePrivateKey.bip32derivePrvKey(rootPrivateKey, getKeyIndex(), TransactionSigner.AssetKeySpace);
+        String rootPrivateKey = witnessComponent.getRootPrivateKey();
+        byte[] childPrivateKey = DerivePrivateKey.bip32derivePrvKey(rootPrivateKey, getKeyIndex(), AssetKeySpace);
 
         byte[] message = Utils.hashFn(Hex.decode(getInputID()), Hex.decode(txID));
         byte[] expandedPrivateKey = ExpandedPrivateKey.expandedPrivateKey(childPrivateKey);
         byte[] sig = Signer.ed25519InnerSign(expandedPrivateKey, message);
 
-        getWitnessComponent().appendWitness(Hex.toHexString(sig));
+        witnessComponent.appendWitness(Hex.toHexString(sig));
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+        if (nonce == null) {
+            throw new IllegalArgumentException("the nonce of issuance input must be specified.");
+        }
+        if (rawAssetDefinition == null) {
+            throw new IllegalArgumentException("the nonce of issuance input must be specified.");
+        }
+    }
+
+    public String getNonce() {
+        return nonce;
     }
 
     public void setNonce(String nonce) {
         this.nonce = nonce;
     }
 
-    public void setAssetDefinition(String assetDefinition) {
-        this.assetDefinition = assetDefinition;
+    public String getRawAssetDefinition() {
+        return rawAssetDefinition;
+    }
+
+    public void setRawAssetDefinition(String rawAssetDefinition) {
+        this.rawAssetDefinition = rawAssetDefinition;
     }
 }

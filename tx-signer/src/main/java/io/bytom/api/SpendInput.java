@@ -9,15 +9,15 @@ import java.util.Map;
 
 public class SpendInput extends BaseInput {
 
-    private String sourceId;
+    private String sourceID;
 
-    private long sourcePosition;
+    private Integer sourcePosition;
 
-    private boolean change;
+    private Boolean change;
 
-    private int controlProgramIndex;
+    private Integer controlProgramIndex;
 
-    private BIPProtocol bipProtocol;
+    private BIPProtocol bipProtocol = BIPProtocol.BIP44;
 
     public SpendInput() {}
 
@@ -25,14 +25,19 @@ public class SpendInput extends BaseInput {
         this.setAssetId(assetID);
         this.setAmount(amount);
         this.setProgram(controlProgram);
-        this.bipProtocol = BIPProtocol.BIP44;
+    }
+
+    public SpendInput(String assetID, long amount, String controlProgram, String sourceID, Integer sourcePosition) {
+        this(assetID, amount, controlProgram);
+        this.sourceID = sourceID;
+        this.sourcePosition = sourcePosition;
     }
 
     @Override
     public InputEntry convertInputEntry(Map<Hash, Entry> entryMap, int index) {
         Program pro = new Program(this.getVmVersion(), Hex.decode(this.getProgram()));
         AssetAmount assetAmount = this.getAssetAmount();
-        Hash sourceID = new Hash(this.sourceId);
+        Hash sourceID = new Hash(this.sourceID);
         ValueSource src = new ValueSource(sourceID, assetAmount, this.sourcePosition);
 
         OutputEntry prevout = new OutputEntry(src, pro, 0);
@@ -53,7 +58,7 @@ public class SpendInput extends BaseInput {
         Utils.writeVarint(SPEND_INPUT_TYPE, inputCommitStream);
         //spendCommitment
         ByteArrayOutputStream spendCommitSteam = new ByteArrayOutputStream();
-        spendCommitSteam.write(Hex.decode(sourceId)); //计算muxID
+        spendCommitSteam.write(Hex.decode(sourceID)); //计算muxID
         spendCommitSteam.write(Hex.decode(getAssetId()));
         Utils.writeVarint(getAmount(), spendCommitSteam);
         //sourcePosition
@@ -73,52 +78,67 @@ public class SpendInput extends BaseInput {
         stream.write(dataInputCommit);
 
         //inputWitness
-        if (null != getWitnessComponent()) {
-            ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
-            //arguments
-            int witnessSize = getWitnessComponent().size();
-            //arguments的length
-            Utils.writeVarint(witnessSize, witnessStream);
-            for (int i = 0; i < witnessSize; i++) {
-                String witness = getWitnessComponent().getWitness(i);
-                Utils.writeVarStr(Hex.decode(witness), witnessStream);
-            }
-            byte[] dataWitnessComponents = witnessStream.toByteArray();
-            //witness的length
-            Utils.writeVarint(dataWitnessComponents.length, stream);
-            stream.write(dataWitnessComponents);
+        ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
+        //arguments
+        int witnessSize = witnessComponent.size();
+        //arguments的length
+        Utils.writeVarint(witnessSize, witnessStream);
+        for (int i = 0; i < witnessSize; i++) {
+            String witness = witnessComponent.getWitness(i);
+            Utils.writeVarStr(Hex.decode(witness), witnessStream);
         }
+        byte[] dataWitnessComponents = witnessStream.toByteArray();
+        //witness的length
+        Utils.writeVarint(dataWitnessComponents.length, stream);
+        stream.write(dataWitnessComponents);
         return stream.toByteArray();
     }
 
     @Override
     public void buildWitness(String txID) throws Exception {
-        String rootPrvKey = getWitnessComponent().getRootPrivateKey();
+        String rootPrvKey = witnessComponent.getRootPrivateKey();
 
         byte[] privateChild;
         if (bipProtocol == BIPProtocol.BIP44) {
-            privateChild = DerivePrivateKey.bip44derivePrvKey(rootPrvKey, TransactionSigner.AccountKeySpace, change, controlProgramIndex);
+            privateChild = DerivePrivateKey.bip44derivePrvKey(rootPrvKey, AccountKeySpace, change, controlProgramIndex);
         } else {
-            privateChild = DerivePrivateKey.bip32derivePrvKey(rootPrvKey, getKeyIndex(), TransactionSigner.AccountKeySpace, controlProgramIndex);
+            privateChild = DerivePrivateKey.bip32derivePrvKey(rootPrvKey, getKeyIndex(), AccountKeySpace, controlProgramIndex);
         }
 
         byte[] message = Utils.hashFn(Hex.decode(getInputID()), Hex.decode(txID));
         byte[] expandedPrivateKey = ExpandedPrivateKey.expandedPrivateKey(privateChild);
         byte[] sig = Signer.ed25519InnerSign(expandedPrivateKey, message);
 
-        getWitnessComponent().appendWitness(Hex.toHexString(sig));
+        witnessComponent.appendWitness(Hex.toHexString(sig));
 
         byte[] deriveXpub = DeriveXpub.deriveXpub(privateChild);
         String pubKey = Hex.toHexString(deriveXpub).substring(0, 64);
 
-        getWitnessComponent().appendWitness(pubKey);
+        witnessComponent.appendWitness(pubKey);
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
+    @Override
+    public void validate() {
+        super.validate();
+        if (sourceID == null) {
+            throw new IllegalArgumentException("the source id of spend input must be specified.");
+        }
+        if (sourcePosition == null) {
+            throw new IllegalArgumentException("the source position of spend input must be specified.");
+        }
+        if (change == null) {
+            throw new IllegalArgumentException("the change of spend input must be specified.");
+        }
+        if (controlProgramIndex == null) {
+            throw new IllegalArgumentException("the control program index of spend input must be specified.");
+        }
     }
 
-    public void setSourcePosition(long sourcePosition) {
+    public void setSourceID(String sourceID) {
+        this.sourceID = sourceID;
+    }
+
+    public void setSourcePosition(int sourcePosition) {
         this.sourcePosition = sourcePosition;
     }
 

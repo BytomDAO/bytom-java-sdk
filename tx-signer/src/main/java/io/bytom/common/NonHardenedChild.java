@@ -7,7 +7,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 
 public class NonHardenedChild {
 
@@ -19,7 +18,7 @@ public class NonHardenedChild {
         return mac.doFinal(data);
     }
 
-    public static byte[] nhChild(byte[] path, byte[] xprv, byte[] xpub) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+    public static byte[] nhChild(byte[] path, byte[] xprv, byte[] xpub) throws NoSuchAlgorithmException, InvalidKeyException {
         // begin build data
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write('N');
@@ -68,7 +67,7 @@ public class NonHardenedChild {
         return f;
     }
 
-    public static byte[] child(byte[] xprv, String[] hpaths) throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+    public static byte[] child(byte[] xprv, String[] hpaths) throws NoSuchAlgorithmException, InvalidKeyException {
         byte[][] paths = new byte[][]{
                 Hex.decode(hpaths[0]),
                 Hex.decode(hpaths[1])

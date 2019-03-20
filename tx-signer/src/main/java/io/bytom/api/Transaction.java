@@ -1,9 +1,11 @@
 package io.bytom.api;
 
 import io.bytom.common.Utils;
+import io.bytom.exception.MapTransactionException;
+import io.bytom.exception.SerializeTransactionException;
+import io.bytom.exception.SignTransactionException;
 import io.bytom.types.*;
 import org.bouncycastle.util.encoders.Hex;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,29 +19,29 @@ import java.util.Map;
 
 public class Transaction {
 
-    public String txID;
+    private String txID;
     /**
      * version
      */
-    public Integer version;
+    private Integer version;
     /**
      * size
      */
-    public Integer size;
+    private Integer size;
     /**
      * time_range
      */
-    public Integer timeRange;
+    private Integer timeRange;
 
     /**
      * List of specified inputs for a transaction.
      */
-    public List<BaseInput> inputs;
+    private List<BaseInput> inputs;
 
     /**
      * List of specified outputs for a transaction.
      */
-    public List<Output> outputs;
+    private List<Output> outputs;
 
     public Transaction(Builder builder) {
         this.inputs = builder.inputs;
@@ -47,13 +49,13 @@ public class Transaction {
         this.version = builder.version;
         this.size = builder.size;
         this.timeRange = builder.timeRange;
-        mapTx();
-        sign();
+
+        this.validate();
+        this.mapTransaction();
+        this.sign();
     }
 
     public static class Builder {
-
-        private String txID;
 
         private Integer version = 1;
 
@@ -95,47 +97,51 @@ public class Transaction {
                 input.buildWitness(txID);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RuntimeException(e);
+                throw new SignTransactionException(e);
             }
         }
     }
 
     public String rawTransaction() {
-        String rawTransaction;
-        //开始序列化
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             stream.write(7);
-            // version
-            if (null != version)
-                Utils.writeVarint(version, stream);
-            if (null != timeRange)
-                Utils.writeVarint(timeRange, stream);
-            //inputs
-            if (null != inputs && inputs.size() > 0) {
-                Utils.writeVarint(inputs.size(), stream);
-                for (BaseInput input : inputs) {
-                    System.out.println(Hex.toHexString(input.serializeInput()));
-                    stream.write(input.serializeInput());
-                }
+
+            Utils.writeVarint(version, stream);
+
+            Utils.writeVarint(timeRange, stream);
+
+            Utils.writeVarint(inputs.size(), stream);
+            for (BaseInput input : inputs) {
+                stream.write(input.serializeInput());
             }
 
-            //outputs
-            if (null != outputs && outputs.size() > 0) {
-                Utils.writeVarint(outputs.size(), stream);
-                for (Output output : outputs) {
-                    stream.write(output.serializeOutput());
-                }
+            Utils.writeVarint(outputs.size(), stream);
+            for (Output output : outputs) {
+                stream.write(output.serializeOutput());
             }
-            byte[] data = stream.toByteArray();
-            rawTransaction = Hex.toHexString(data);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new SerializeTransactionException(e);
         }
-        return rawTransaction;
+        return Hex.toHexString(stream.toByteArray());
     }
 
-    private void mapTx() {
+    private void validate() {
+        if (version == null) {
+            throw new IllegalArgumentException("the version of transaction must be specified.");
+        }
+        if (timeRange == null) {
+            throw new IllegalArgumentException("the time range of transaction must be specified.");
+        }
+        if (size == null) {
+            throw new IllegalArgumentException("the size range of transaction must be specified.");
+        }
+
+        inputs.forEach(BaseInput::validate);
+    }
+
+    private void mapTransaction() {
         Map<Hash, Entry> entryMap = new HashMap<>();
         ValueSource[] muxSources = new ValueSource[inputs.size()];
         List<InputEntry> inputEntries = new ArrayList<>();
@@ -186,7 +192,7 @@ public class Transaction {
             this.txID = txID.toString();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new MapTransactionException(e);
         }
     }
 
@@ -194,5 +200,29 @@ public class Transaction {
         Hash id = entry.entryID();
         entryMap.put(id, entry);
         return id;
+    }
+
+    public String getTxID() {
+        return txID;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public Integer getTimeRange() {
+        return timeRange;
+    }
+
+    public List<BaseInput> getInputs() {
+        return inputs;
+    }
+
+    public List<Output> getOutputs() {
+        return outputs;
     }
 }

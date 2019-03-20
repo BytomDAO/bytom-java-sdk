@@ -4,24 +4,13 @@ import io.bytom.common.Utils;
 import org.bouncycastle.util.encoders.Hex;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Map;
 
 public class Output {
 
     /**
-     * address
-     */
-    public String address;
-
-    /**
      * The number of units of the asset being controlled.
      */
-    public long amount;
-
-    /**
-     * The definition of the asset being controlled (possibly null).
-     */
-    public Map<String, Object> assetDefinition;
+    public Long amount;
 
     /**
      * The id of the asset being controlled.
@@ -43,7 +32,7 @@ public class Output {
      */
     public Integer position;
 
-    public Output(String assetId, long amount, String controlProgram) {
+    public Output(String assetId, Long amount, String controlProgram) {
         this.assetId = assetId;
         this.amount = amount;
         this.controlProgram = controlProgram;
@@ -75,34 +64,39 @@ public class Output {
         return stream.toByteArray();
     }
 
-    /**
-     * The type the output.<br>
-     * Possible values are "control" and "retire".
-     */
-    public String type;
-
-    public Output setAddress(String address) {
-        this.address = address;
-        return this;
+    public Long getAmount() {
+        return amount;
     }
 
-    public Output setAmount(long amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
-        return this;
     }
 
-    public Output setAssetId(String assetId) {
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
         this.assetId = assetId;
-        return this;
     }
 
-    public Output setControlProgram(String controlProgram) {
+    public String getControlProgram() {
+        return controlProgram;
+    }
+
+    public void setControlProgram(String controlProgram) {
         this.controlProgram = controlProgram;
-        return this;
     }
 
-    public Output setPosition(Integer position) {
+    public String getId() {
+        return id;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
         this.position = position;
-        return this;
     }
 }

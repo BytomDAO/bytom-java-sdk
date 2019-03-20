@@ -1,11 +1,7 @@
-package io.bytom.api;
+package io.bytom.common;
 
-import io.bytom.common.DeriveXpub;
-
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.util.Arrays;
 
 public class Signer {

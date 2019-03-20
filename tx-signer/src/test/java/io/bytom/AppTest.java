@@ -13,7 +13,7 @@ public class AppTest {
     public void testSpendBIP44() {
         SpendInput input = new SpendInput(btmAssetID, 9800000000L, "0014cb9f2391bafe2bc1159b2c4c8a0f17ba1b4dd94e");
         input.setSourcePosition(2);
-        input.setSourceId("4b5cb973f5bef4eadde4c89b92ee73312b940e84164da0594149554cc8a2adea");
+        input.setSourceID("4b5cb973f5bef4eadde4c89b92ee73312b940e84164da0594149554cc8a2adea");
         input.setChange(true);
         input.setControlProgramIndex(457);
         input.setKeyIndex(1);
@@ -33,7 +33,7 @@ public class AppTest {
     @Test
     public void testSpendBIP32() {
         SpendInput input = new SpendInput(btmAssetID, 11718900000L, "0014085a02ecdf934a56343aa59a3dec9d9feb86ee43");
-        input.setSourceId("5ac79a73db78e5c9215b37cb752f0147d1157c542bb4884908ceb97abc33fe0a");
+        input.setSourceID("5ac79a73db78e5c9215b37cb752f0147d1157c542bb4884908ceb97abc33fe0a");
         input.setSourcePosition(0);
         input.setRootPrivateKey("4864bae85cf38bfbb347684abdbc01e311a24f99e2c7fe94f3c071d9c83d8a5a349722316972e382c339b79b7e1d83a565c6b3e7cf46847733a47044ae493257");
         input.setChange(true);
@@ -61,14 +61,14 @@ public class AppTest {
         issuanceInput.setProgram("ae2054a71277cc162eb3eb21b5bd9fe54402829a53b294deaed91692a2cd8a081f9c5151ad");
         issuanceInput.setNonce("ac9d5a527f5ab00a");
         issuanceInput.setKeyIndex(5);
-        issuanceInput.setAssetDefinition("7b0a202022646563696d616c73223a20382c0a2020226465736372697074696f6e223a207b7d2c0a2020226e616d65223a2022222c0a20202273796d626f6c223a2022220a7d");
+        issuanceInput.setRawAssetDefinition("7b0a202022646563696d616c73223a20382c0a2020226465736372697074696f6e223a207b7d2c0a2020226e616d65223a2022222c0a20202273796d626f6c223a2022220a7d");
         issuanceInput.setRootPrivateKey("4864bae85cf38bfbb347684abdbc01e311a24f99e2c7fe94f3c071d9c83d8a5a349722316972e382c339b79b7e1d83a565c6b3e7cf46847733a47044ae493257");
 
         SpendInput spendInput = new SpendInput(btmAssetID, 9800000000L, "0014cb9f2391bafe2bc1159b2c4c8a0f17ba1b4dd94e");
         spendInput.setBipProtocol(BIPProtocol.BIP32);
         spendInput.setKeyIndex(1);
         spendInput.setChange(true);
-        spendInput.setSourceId("4b5cb973f5bef4eadde4c89b92ee73312b940e84164da0594149554cc8a2adea");
+        spendInput.setSourceID("4b5cb973f5bef4eadde4c89b92ee73312b940e84164da0594149554cc8a2adea");
         spendInput.setSourcePosition(2);
         spendInput.setControlProgramIndex(457);
         spendInput.setRootPrivateKey("4864bae85cf38bfbb347684abdbc01e311a24f99e2c7fe94f3c071d9c83d8a5a349722316972e382c339b79b7e1d83a565c6b3e7cf46847733a47044ae493257");
@@ -93,21 +93,21 @@ public class AppTest {
         String retireControlProgram = "6a"+Integer.toString(Hex.decode(arbitrary).length,16)+arbitrary;
         String assetId1 = "207265909236260b30942a6b00e30ceb769e0e58156b6482bac64117619c9dcf";
 
-        SpendInput input1 = new SpendInput(btmAssetID, 289100000, "0014f1dc52048f439ac7fd74f8106a21da78f00de48f");
+        SpendInput input1 = new SpendInput(btmAssetID, 289100000L, "0014f1dc52048f439ac7fd74f8106a21da78f00de48f");
         input1.setRootPrivateKey(rootKey);
         input1.setChange(true);
         input1.setControlProgramIndex(41);
-        input1.setSourceId("0b2cff11d1d056d95237a5f2d06059e5395e86f60e69c1e8201ea624911c0c65");
+        input1.setSourceID("0b2cff11d1d056d95237a5f2d06059e5395e86f60e69c1e8201ea624911c0c65");
         input1.setSourcePosition(0);
 
         SpendInput input2 = new SpendInput(assetId1, 70000000000L, "0014bb8a039726df1b649738e9973db14a4b4fd4becf");
         input2.setRootPrivateKey(rootKey);
         input2.setChange(true);
         input2.setControlProgramIndex(26);
-        input2.setSourceId("be0ac837e832c34a02968e54dab4f95cbeceb9fb01cd378310f6ea32219ee29b");
+        input2.setSourceID("be0ac837e832c34a02968e54dab4f95cbeceb9fb01cd378310f6ea32219ee29b");
         input2.setSourcePosition(1);
 
-        Output output1 = new Output(btmAssetID, 279100000, "001414d362694eacfa110dc20dec77d610d22340f95b");
+        Output output1 = new Output(btmAssetID, 279100000L, "001414d362694eacfa110dc20dec77d610d22340f95b");
         Output output2 = new Output(assetId1, 10000000000L, retireControlProgram);
         Output output3 = new Output(assetId1, 60000000000L, "0014bb8a039726df1b649738e9973db14a4b4fd4becf");
 
@@ -122,30 +122,5 @@ public class AppTest {
 
         String rawTransaction = transaction.rawTransaction();
         assert  rawTransaction.equals("070180897a020160015e0b2cff11d1d056d95237a5f2d06059e5395e86f60e69c1e8201ea624911c0c65ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0a1ed89010001160014f1dc52048f439ac7fd74f8106a21da78f00de48f6302401660121218ab96d9f22cce712541ca34c53f4da40450669854341ca9624ad1cf10d1bfc96449fad5406224afd253ccfbdeab683f7ec7f9ee8f45e47a0c58500f2031ecc1bdd5fb9b40016358340b87646ea39faf55c0c105205cfdfdc6184725f40161015fbe0ac837e832c34a02968e54dab4f95cbeceb9fb01cd378310f6ea32219ee29b207265909236260b30942a6b00e30ceb769e0e58156b6482bac64117619c9dcf80f8cce284020101160014bb8a039726df1b649738e9973db14a4b4fd4becf630240d7b7f1c2ca1048fd6798234f2a1e895762f83e802507a008eff52605611b67390a74eaf228b76f5589ff109b2c20eaa65fad6de2e5ab8a25b54267b607df970b20a71547e1064b5edaad92cdce6b0ace832836ba28fdeaf0b83010bed247fe927c03013dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0f48a85010116001414d362694eacfa110dc20dec77d610d22340f95b00014b207265909236260b30942a6b00e30ceb769e0e58156b6482bac64117619c9dcf80c8afa02501246a2277656c636f6d65efbc8ce6aca2e8bf8ee69da5e588b0e58e9fe5ad90e4b896e7958c00013e207265909236260b30942a6b00e30ceb769e0e58156b6482bac64117619c9dcf80b09dc2df0101160014bb8a039726df1b649738e9973db14a4b4fd4becf00");
-    }
-
-
-    //utxo
-    private SpendInput btmUtxoToInput() {
-        String utxoJson = "\n" +
-                "{\n" +
-                "  \"id\": \"687e3c3ca1ee8139e57f43697db6aaeac95b10c75b828ef2fad30abe7d047e6a\",\n" +
-                "  \"amount\": 10000000,\n" +
-                "  \"address\": \"tm1qznfky62w4napzrwzphk804ss6g35p72mcw53q7\",\n" +
-                "  \"program\": \"001414d362694eacfa110dc20dec77d610d22340f95b\",\n" +
-                "  \"change\": false,\n" +
-                "  \"highest\": 141905,\n" +
-                "  \"account_alias\": \"wyjbtm\",\n" +
-                "  \"asset_id\": \"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\",\n" +
-                "  \"asset_alias\": \"BTM\",\n" +
-                "  \"account_id\": \"0NNSS39M00A02\",\n" +
-                "  \"control_program_index\": 2,\n" +
-                "  \"source_id\": \"535b88d3f6b449fdba678b00b84d4b516df1da73104d689d41f964389f5a9217\",\n" +
-                "  \"source_pos\": 1,\n" +
-                "  \"valid_height\": 0,\n" +
-                "  \"derive_rule\": 0\n" +
-                "}";
-        UTXO utxo = UTXO.fromJson(utxoJson);
-        return utxo.toSpendAnnotatedInput();
     }
 }
