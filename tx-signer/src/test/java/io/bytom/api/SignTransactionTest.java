@@ -1,7 +1,7 @@
 
 package io.bytom.api;
 
-import io.bytom.types.*;
+import io.bytom.offline.types.*;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 

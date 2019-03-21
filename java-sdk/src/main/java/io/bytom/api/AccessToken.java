@@ -1,9 +1,9 @@
 package io.bytom.api;
 
 import com.google.gson.annotations.SerializedName;
-import io.bytom.common.ParameterizedTypeImpl;
-import io.bytom.common.Utils;
-import io.bytom.exception.BytomException;
+import io.bytom.offline.common.ParameterizedTypeImpl;
+import io.bytom.offline.common.Utils;
+import io.bytom.offline.exception.BytomException;
 import io.bytom.http.Client;
 import org.apache.log4j.Logger;
 

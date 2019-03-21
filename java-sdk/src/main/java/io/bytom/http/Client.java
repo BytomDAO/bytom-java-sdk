@@ -2,8 +2,8 @@ package io.bytom.http;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import io.bytom.common.*;
-import io.bytom.exception.*;
+import io.bytom.offline.common.*;
+import io.bytom.offline.exception.*;
 import com.google.gson.Gson;
 import com.squareup.okhttp.*;
 import org.apache.log4j.Logger;

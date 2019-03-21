@@ -2,7 +2,7 @@ package io.bytom.integration;
 
 import io.bytom.TestUtils;
 import io.bytom.api.*;
-import io.bytom.exception.BytomException;
+import io.bytom.offline.exception.BytomException;
 import io.bytom.http.Client;
 import org.apache.log4j.Logger;
 import org.junit.Assert;

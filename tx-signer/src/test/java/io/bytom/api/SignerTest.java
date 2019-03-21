@@ -1,6 +1,6 @@
 package io.bytom.api;
 
-import io.bytom.common.Signer;
+import io.bytom.offline.common.Signer;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 

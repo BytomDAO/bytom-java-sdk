@@ -2,7 +2,7 @@ package io.bytom.integration;
 
 import io.bytom.TestUtils;
 import io.bytom.api.CoreConfig;
-import io.bytom.exception.BytomException;
+import io.bytom.offline.exception.BytomException;
 import io.bytom.http.Client;
 import org.junit.Assert;
 import org.junit.Test;
