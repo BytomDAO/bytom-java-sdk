@@ -4,3 +4,4 @@ target/
 bytom.log
 bytom.log.*
 javadoc/
+.DS_Store
