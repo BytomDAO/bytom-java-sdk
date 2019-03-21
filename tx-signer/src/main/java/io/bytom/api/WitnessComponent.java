@@ -1,5 +1,7 @@
 package io.bytom.api;
 
+import org.bouncycastle.util.encoders.Hex;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +23,12 @@ public class WitnessComponent {
         witnesses = new ArrayList<>();
     }
 
-    public int size() {
-        return witnesses.size();
+    public byte[][] toByteArray() {
+        byte[][] byteArray = new byte[witnesses.size()][];
+        for (int i = 0; i < witnesses.size(); i++) {
+            byteArray[i] = Hex.decode(witnesses.get(i));
+        }
+        return byteArray;
     }
 
     public String getWitness(int index) {

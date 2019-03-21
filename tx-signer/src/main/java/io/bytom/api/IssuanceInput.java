@@ -33,7 +33,7 @@ public class IssuanceInput extends BaseInput {
     }
 
     @Override
-    public InputEntry convertInputEntry(Map<Hash, Entry> entryMap, int index) {
+    public InputEntry toInputEntry(Map<Hash, Entry> entryMap, int index) {
         if (this.nonce == null) {
             SecureRandom sr = new SecureRandom();
             byte[] randBytes = new byte[8];
@@ -45,45 +45,8 @@ public class IssuanceInput extends BaseInput {
         Hash assetDefHash = new Hash(this.rawAssetDefinition);
         AssetAmount value = this.getAssetAmount();
 
-        Program pro = new Program(this.getVmVersion(), Hex.decode(this.getProgram()));
-        return new Issue(nonceHash, value, index, new AssetDefinition(assetDefHash, pro));
-    }
-
-    @Override
-    public byte[] serializeInput() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        //assetVersion
-        Utils.writeVarint(1, stream);
-
-        ByteArrayOutputStream issueInfo = new ByteArrayOutputStream();
-        Utils.writeVarint(ISSUANCE_INPUT_TYPE, issueInfo);
-        Utils.writeVarStr(Hex.decode(nonce), issueInfo);
-        issueInfo.write(Hex.decode(getAssetId()));
-        Utils.writeVarint(getAmount(), issueInfo);
-        stream.write(issueInfo.toByteArray().length);
-        stream.write(issueInfo.toByteArray());
-
-        ByteArrayOutputStream issueInfo1 = new ByteArrayOutputStream();
-        Utils.writeVarint(1, issueInfo1);
-        Utils.writeVarStr(Hex.decode(rawAssetDefinition), issueInfo1);
-        // vm version
-        Utils.writeVarint(1, issueInfo1);
-        Utils.writeVarStr(Hex.decode(getProgram()), issueInfo1);
-
-        //inputWitness
-        ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
-        //arguments
-        int witnessSize = witnessComponent.size();
-        //arguments的length
-        Utils.writeVarint(witnessSize, witnessStream);
-        for (int i = 0; i < witnessSize; i++) {
-            String witness = witnessComponent.getWitness(i);
-            Utils.writeVarStr(Hex.decode(witness), witnessStream);
-        }
-        issueInfo1.write(witnessStream.toByteArray());
-        stream.write(issueInfo1.toByteArray().length - 1);
-        stream.write(issueInfo1.toByteArray());
-        return stream.toByteArray();
+        Program program = new Program(this.getVmVersion(), Hex.decode(this.getProgram()));
+        return new Issue(nonceHash, value, index, new AssetDefinition(assetDefHash, program));
     }
 
     @Override
@@ -96,6 +59,27 @@ public class IssuanceInput extends BaseInput {
         byte[] sig = Signer.ed25519InnerSign(expandedPrivateKey, message);
 
         witnessComponent.appendWitness(Hex.toHexString(sig));
+    }
+
+    @Override
+    public byte[] serializeInputCommitment() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Utils.writeVarint(ISSUANCE_INPUT_TYPE, stream);
+        Utils.writeVarStr(Hex.decode(nonce), stream);
+        stream.write(Hex.decode(getAssetId()));
+        Utils.writeVarint(getAmount(), stream);
+        return stream.toByteArray();
+    }
+
+    @Override
+    public byte[] serializeInputWitness() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Utils.writeVarStr(Hex.decode(rawAssetDefinition), stream);
+        // vm version
+        Utils.writeVarint(1, stream);
+        Utils.writeVarStr(Hex.decode(getProgram()), stream);
+        Utils.writeVarList(witnessComponent.toByteArray(), stream);
+        return new byte[0];
     }
 
     @Override

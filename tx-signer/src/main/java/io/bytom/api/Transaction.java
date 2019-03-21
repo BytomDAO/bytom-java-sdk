@@ -151,7 +151,7 @@ public class Transaction {
         try {
             for (int i = 0; i < inputs.size(); i++) {
                 BaseInput input = inputs.get(i);
-                InputEntry inputEntry =  input.convertInputEntry(entryMap, i);
+                InputEntry inputEntry =  input.toInputEntry(entryMap, i);
                 Hash spendID = addEntry(entryMap, inputEntry);
                 input.setInputID(spendID.toString());
 

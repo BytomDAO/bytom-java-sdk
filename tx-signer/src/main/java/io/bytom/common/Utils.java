@@ -36,6 +36,20 @@ public class Utils {
         return n + (buf.length);
     }
 
+    public static int writeVarList(byte[][] list, ByteArrayOutputStream stream) throws IOException {
+        int n = writeVarint(list.length, stream);
+        for (byte[] bytes : list) {
+            n += writeVarStr(bytes, stream);
+        }
+        return n;
+    }
+
+    public static int writeExtensibleString(byte[] bytes, ByteArrayOutputStream stream) throws IOException {
+        int n = writeVarint(bytes.length, stream);
+        stream.write(bytes);
+        return n + bytes.length;
+    }
+
     public static int getLengthVarInt(long x) {
         byte[] varint = new byte[9];
         int n = putUvarint(varint, x);

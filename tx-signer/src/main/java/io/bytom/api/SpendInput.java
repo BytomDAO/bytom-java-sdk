@@ -34,64 +34,16 @@ public class SpendInput extends BaseInput {
     }
 
     @Override
-    public InputEntry convertInputEntry(Map<Hash, Entry> entryMap, int index) {
+    public InputEntry toInputEntry(Map<Hash, Entry> entryMap, int index) {
         Program pro = new Program(this.getVmVersion(), Hex.decode(this.getProgram()));
         AssetAmount assetAmount = this.getAssetAmount();
         Hash sourceID = new Hash(this.sourceID);
         ValueSource src = new ValueSource(sourceID, assetAmount, this.sourcePosition);
 
-        OutputEntry prevout = new OutputEntry(src, pro, 0);
-        Hash prevOutID = prevout.entryID();
-        entryMap.put(prevOutID, prevout);
+        OutputEntry prevOut = new OutputEntry(src, pro, 0);
+        Hash prevOutID = prevOut.entryID();
+        entryMap.put(prevOutID, prevOut);
         return new Spend(prevOutID, index);
-    }
-
-    @Override
-    public byte[] serializeInput() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        //assetVersion
-        Utils.writeVarint(1, stream); //AssetVersion是否默认为1
-
-        //inputCommitment
-        ByteArrayOutputStream inputCommitStream = new ByteArrayOutputStream();
-        //spend type flag
-        Utils.writeVarint(SPEND_INPUT_TYPE, inputCommitStream);
-        //spendCommitment
-        ByteArrayOutputStream spendCommitSteam = new ByteArrayOutputStream();
-        spendCommitSteam.write(Hex.decode(sourceID)); //计算muxID
-        spendCommitSteam.write(Hex.decode(getAssetId()));
-        Utils.writeVarint(getAmount(), spendCommitSteam);
-        //sourcePosition
-        Utils.writeVarint(sourcePosition, spendCommitSteam); //db中获取position
-        //vmVersion
-        Utils.writeVarint(1, spendCommitSteam); //db中获取vm_version
-        //controlProgram
-        Utils.writeVarStr(Hex.decode(getProgram()), spendCommitSteam);
-
-        byte[] dataSpendCommit = spendCommitSteam.toByteArray();
-
-        Utils.writeVarint(dataSpendCommit.length, inputCommitStream);
-        inputCommitStream.write(dataSpendCommit);
-        byte[] dataInputCommit = inputCommitStream.toByteArray();
-        //inputCommit的length
-        Utils.writeVarint(dataInputCommit.length, stream);
-        stream.write(dataInputCommit);
-
-        //inputWitness
-        ByteArrayOutputStream witnessStream = new ByteArrayOutputStream();
-        //arguments
-        int witnessSize = witnessComponent.size();
-        //arguments的length
-        Utils.writeVarint(witnessSize, witnessStream);
-        for (int i = 0; i < witnessSize; i++) {
-            String witness = witnessComponent.getWitness(i);
-            Utils.writeVarStr(Hex.decode(witness), witnessStream);
-        }
-        byte[] dataWitnessComponents = witnessStream.toByteArray();
-        //witness的length
-        Utils.writeVarint(dataWitnessComponents.length, stream);
-        stream.write(dataWitnessComponents);
-        return stream.toByteArray();
     }
 
     @Override
@@ -115,6 +67,30 @@ public class SpendInput extends BaseInput {
         String pubKey = Hex.toHexString(deriveXpub).substring(0, 64);
 
         witnessComponent.appendWitness(pubKey);
+    }
+
+    @Override
+    public byte[] serializeInputCommitment() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Utils.writeVarint(SPEND_INPUT_TYPE, stream);
+
+        ByteArrayOutputStream spendCommitSteam = new ByteArrayOutputStream();
+        spendCommitSteam.write(Hex.decode(sourceID));
+        spendCommitSteam.write(Hex.decode(getAssetId()));
+        Utils.writeVarint(getAmount(), spendCommitSteam);
+        Utils.writeVarint(sourcePosition, spendCommitSteam);
+        // vm version
+        Utils.writeVarint(1, spendCommitSteam);
+        Utils.writeVarStr(Hex.decode(getProgram()), spendCommitSteam);
+        Utils.writeExtensibleString(spendCommitSteam.toByteArray(), stream);
+        return stream.toByteArray();
+    }
+
+    @Override
+    public byte[] serializeInputWitness() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Utils.writeVarList(witnessComponent.toByteArray(), stream);
+        return stream.toByteArray();
     }
 
     @Override

@@ -54,10 +54,7 @@ public class Output {
         //controlProgram
         Utils.writeVarStr(Hex.decode(controlProgram), outputCommitSteam);
 
-        byte[] dataOutputCommit = outputCommitSteam.toByteArray();
-        //outputCommit的length
-        Utils.writeVarint(dataOutputCommit.length, stream);
-        stream.write(dataOutputCommit);
+        Utils.writeExtensibleString(outputCommitSteam.toByteArray(), stream);
 
         //outputWitness
         Utils.writeVarint(0, stream);

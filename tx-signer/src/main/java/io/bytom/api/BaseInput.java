@@ -1,6 +1,9 @@
 package io.bytom.api;
 
+import io.bytom.common.Utils;
 import io.bytom.types.*;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -42,9 +45,20 @@ public abstract class BaseInput {
 
     public BaseInput() {}
 
-    public abstract InputEntry convertInputEntry(Map<Hash, Entry> entryMap, int index);
-    public abstract byte[] serializeInput() throws IOException;
+    public abstract InputEntry toInputEntry(Map<Hash, Entry> entryMap, int index);
     public abstract void buildWitness(String txID) throws Exception;
+    public abstract byte[] serializeInputCommitment() throws IOException;
+    public abstract byte[] serializeInputWitness() throws IOException;
+
+    public byte[] serializeInput() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        // assert version
+        Utils.writeVarint(1, stream);
+        Utils.writeExtensibleString(serializeInputCommitment(), stream);
+        Utils.writeExtensibleString(serializeInputWitness(), stream);
+        return stream.toByteArray();
+    }
+
 
     public void validate() {
         if (assetId == null) {
