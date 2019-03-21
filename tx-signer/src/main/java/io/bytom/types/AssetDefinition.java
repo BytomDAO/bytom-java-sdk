@@ -3,8 +3,9 @@ package io.bytom.types;
 import java.io.ByteArrayOutputStream;
 
 public class AssetDefinition extends Entry {
-    public Hash assetDefHash;
-    public Program program;
+
+    private Hash assetDefHash;
+    private Program program;
 
     public AssetDefinition(Hash assetDefHash, Program program) {
         this.assetDefHash = assetDefHash;
@@ -20,5 +21,21 @@ public class AssetDefinition extends Entry {
     public void writeForHash(ByteArrayOutputStream out) {
         mustWriteForHash(out, this.program);
         mustWriteForHash(out, this.assetDefHash);
+    }
+
+    public Hash getAssetDefHash() {
+        return assetDefHash;
+    }
+
+    public Program getProgram() {
+        return program;
+    }
+
+    public void setAssetDefHash(Hash assetDefHash) {
+        this.assetDefHash = assetDefHash;
+    }
+
+    public void setProgram(Program program) {
+        this.program = program;
     }
 }

@@ -1,6 +1,5 @@
 package io.bytom.api;
 
-import io.bytom.common.Utils;
 import io.bytom.types.*;
 import java.io.IOException;
 import java.util.Map;
@@ -61,12 +60,6 @@ public abstract class BaseInput {
             throw new IllegalArgumentException("the root private key of input must be specified.");
         }
     }
-
-    @Override
-    public String toString() {
-        return Utils.serializer.toJson(this);
-    }
-
 
     public AssetAmount getAssetAmount() {
         return new AssetAmount(new AssetID(this.assetId), this.amount);

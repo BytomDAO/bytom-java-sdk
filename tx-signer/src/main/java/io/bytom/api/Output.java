@@ -10,27 +10,27 @@ public class Output {
     /**
      * The number of units of the asset being controlled.
      */
-    public Long amount;
+    private Long amount;
 
     /**
      * The id of the asset being controlled.
      */
-    public String assetId;
+    private String assetId;
 
     /**
      * The control program which must be satisfied to transfer this output.
      */
-    public String controlProgram;
+    private String controlProgram;
 
     /**
      * The id of the output.
      */
-    public String id;
+    private String id;
 
     /**
      * The output's position in a transaction's list of outputs.
      */
-    public Integer position;
+    private Integer position;
 
     public Output(String assetId, Long amount, String controlProgram) {
         this.assetId = assetId;
@@ -90,6 +90,10 @@ public class Output {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Integer getPosition() {

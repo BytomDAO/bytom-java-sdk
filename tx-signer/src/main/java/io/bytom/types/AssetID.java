@@ -6,8 +6,7 @@ public class AssetID {
 
     private String hexValue;
 
-    public AssetID() {
-    }
+    public AssetID() {}
 
     public AssetID(String hexValue) {
         this.hexValue = hexValue;

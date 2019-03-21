@@ -6,17 +6,15 @@ import java.util.List;
 
 public class Mux extends Entry {
 
-    public ValueSource[] sources;
+    private ValueSource[] sources;
 
-    public Program program;
+    private Program program;
 
-    public List<ValueDestination> witnessDestinations = new ArrayList<>();
+    private List<ValueDestination> witnessDestinations = new ArrayList<>();
 
-    public Mux() {
-    }
+    public Mux() {}
 
     public Mux(ValueSource[] sources, Program program) {
-        this();
         this.sources = sources;
         this.program = program;
     }
@@ -30,5 +28,29 @@ public class Mux extends Entry {
     public void writeForHash(ByteArrayOutputStream out) {
         mustWriteForHash(out, this.sources);
         mustWriteForHash(out, this.program);
+    }
+
+    public ValueSource[] getSources() {
+        return sources;
+    }
+
+    public void setSources(ValueSource[] sources) {
+        this.sources = sources;
+    }
+
+    public Program getProgram() {
+        return program;
+    }
+
+    public void setProgram(Program program) {
+        this.program = program;
+    }
+
+    public List<ValueDestination> getWitnessDestinations() {
+        return witnessDestinations;
+    }
+
+    public void setWitnessDestinations(List<ValueDestination> witnessDestinations) {
+        this.witnessDestinations = witnessDestinations;
     }
 }

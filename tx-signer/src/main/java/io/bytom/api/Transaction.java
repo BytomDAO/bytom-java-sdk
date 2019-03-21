@@ -51,7 +51,7 @@ public class Transaction {
         this.timeRange = builder.timeRange;
 
         this.validate();
-        this.mapTransaction();
+        this.mapTx();
         this.sign();
     }
 
@@ -138,10 +138,12 @@ public class Transaction {
             throw new IllegalArgumentException("the size range of transaction must be specified.");
         }
 
-        inputs.forEach(BaseInput::validate);
+        for (BaseInput input : inputs) {
+            input.validate();
+        }
     }
 
-    private void mapTransaction() {
+    private void mapTx() {
         Map<Hash, Entry> entryMap = new HashMap<>();
         ValueSource[] muxSources = new ValueSource[inputs.size()];
         List<InputEntry> inputEntries = new ArrayList<>();
@@ -160,31 +162,31 @@ public class Transaction {
             Mux mux = new Mux(muxSources, new Program(1, new byte[]{0x51}));
             Hash muxID = addEntry(entryMap, mux);
             for (InputEntry inputEntry : inputEntries) {
-                inputEntry.setDestination(muxID, inputEntry.ordinal, entryMap);
+                inputEntry.setDestination(muxID, inputEntry.getOrdinal(), entryMap);
             }
 
             List<Hash> resultIDList = new ArrayList<>();
             for (int i = 0; i < outputs.size(); i++) {
                 Output output = outputs.get(i);
 
-                AssetAmount amount = new AssetAmount(new AssetID(output.assetId), output.amount);
+                AssetAmount amount = new AssetAmount(new AssetID(output.getAssetId()), output.getAmount());
                 ValueSource src = new ValueSource(muxID, amount, i);
 
                 Hash resultID;
-                if (output.controlProgram.startsWith("6a")) {
+                if (output.getControlProgram().startsWith("6a")) {
                     Retirement retirement = new Retirement(src, i);
                     resultID = addEntry(entryMap, retirement);
                 } else {
-                    Program prog = new Program(1, Hex.decode(output.controlProgram));
-                    OutputEntry oup = new OutputEntry(src, prog, i);
+                    Program program = new Program(1, Hex.decode(output.getControlProgram()));
+                    OutputEntry oup = new OutputEntry(src, program, i);
                     resultID = addEntry(entryMap, oup);
                 }
 
                 resultIDList.add(resultID);
-                output.id = resultID.toString();
+                output.setId(resultID.toString());
 
-                ValueDestination destination = new ValueDestination(resultID, src.value, 0);
-                mux.witnessDestinations.add(destination);
+                ValueDestination destination = new ValueDestination(resultID, src.getValue(), 0);
+                mux.getWitnessDestinations().add(destination);
             }
 
             TxHeader txHeader = new TxHeader(version, size, timeRange, resultIDList.toArray(new Hash[]{}));

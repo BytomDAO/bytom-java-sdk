@@ -3,8 +3,9 @@ package io.bytom.types;
 import java.io.ByteArrayOutputStream;
 
 public class Retirement extends Entry {
-    public ValueSource valueSource;
-    public int ordinal;
+
+    private ValueSource valueSource;
+    private int ordinal;
 
     public Retirement(ValueSource valueSource, int ordinal) {
         this.valueSource = valueSource;
@@ -20,5 +21,21 @@ public class Retirement extends Entry {
     @Override
     public void writeForHash(ByteArrayOutputStream out) {
         mustWriteForHash(out, valueSource);
+    }
+
+    public ValueSource getValueSource() {
+        return valueSource;
+    }
+
+    public void setValueSource(ValueSource valueSource) {
+        this.valueSource = valueSource;
+    }
+
+    public int getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
     }
 }

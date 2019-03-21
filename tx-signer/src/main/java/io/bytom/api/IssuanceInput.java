@@ -45,10 +45,8 @@ public class IssuanceInput extends BaseInput {
         Hash assetDefHash = new Hash(this.rawAssetDefinition);
         AssetAmount value = this.getAssetAmount();
 
-        Issue issuance = new Issue(nonceHash, value, index);
         Program pro = new Program(this.getVmVersion(), Hex.decode(this.getProgram()));
-        issuance.assetDefinition = new AssetDefinition(assetDefHash, pro);
-        return issuance;
+        return new Issue(nonceHash, value, index, new AssetDefinition(assetDefHash, pro));
     }
 
     @Override
@@ -56,11 +54,9 @@ public class IssuanceInput extends BaseInput {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         //assetVersion
         Utils.writeVarint(1, stream);
-        //写入 type nonce assetId amount
+
         ByteArrayOutputStream issueInfo = new ByteArrayOutputStream();
-        //写入 input.type==00 issue
         Utils.writeVarint(ISSUANCE_INPUT_TYPE, issueInfo);
-        //写入 8个字节的随机数
         Utils.writeVarStr(Hex.decode(nonce), issueInfo);
         issueInfo.write(Hex.decode(getAssetId()));
         Utils.writeVarint(getAmount(), issueInfo);
@@ -68,13 +64,10 @@ public class IssuanceInput extends BaseInput {
         stream.write(issueInfo.toByteArray());
 
         ByteArrayOutputStream issueInfo1 = new ByteArrayOutputStream();
-        //未知
         Utils.writeVarint(1, issueInfo1);
-        //写入assetDefine
         Utils.writeVarStr(Hex.decode(rawAssetDefinition), issueInfo1);
-        //vm.version
+        // vm version
         Utils.writeVarint(1, issueInfo1);
-        //controlProgram
         Utils.writeVarStr(Hex.decode(getProgram()), issueInfo1);
 
         //inputWitness

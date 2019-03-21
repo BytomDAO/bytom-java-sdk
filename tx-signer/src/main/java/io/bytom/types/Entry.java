@@ -1,12 +1,13 @@
 package io.bytom.types;
 
+import io.bytom.exception.WriteForHashException;
 import io.bytom.util.OutputUtil;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
-import org.bouncycastle.util.encoders.Hex;
-
+import java.beans.PropertyDescriptor;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public abstract class Entry {
 
@@ -17,7 +18,7 @@ public abstract class Entry {
     public void mustWriteForHash(ByteArrayOutputStream out, Object data) {
         try {
             if (data == null) {
-                return;
+                throw new WriteForHashException("The field needs to be written to hash is null");
             }
             if (data instanceof Byte) {
                 OutputUtil.writeByte(out, (byte) data);
@@ -41,13 +42,16 @@ public abstract class Entry {
                 }
             } else {
                 Class<?> cls = data.getClass();
-                Field[] fields = cls.getFields();
+                Field[] fields = cls.getDeclaredFields();
                 for (Field field : fields) {
-                    mustWriteForHash(out, field.get(data));
+                    PropertyDescriptor descriptor = new PropertyDescriptor(field.getName(), cls);
+                    Method readMethod = descriptor.getReadMethod();
+                    mustWriteForHash(out, readMethod.invoke(data));
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new WriteForHashException(e);
         }
     }
 
@@ -64,6 +68,7 @@ public abstract class Entry {
             hasher.write(digest256.digest(bh.toByteArray()));
             return new Hash(digest256.digest(hasher.toByteArray()));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             try {

@@ -2,15 +2,30 @@ package io.bytom.types;
 
 public class AssetAmount {
 
-    public AssetID assetID;
+    private AssetID assetID;
 
-    public long amount;
+    private Long amount;
 
-    public AssetAmount() {
-    }
+    public AssetAmount() {}
 
     public AssetAmount(AssetID assetID, long amount) {
         this.assetID = assetID;
+        this.amount = amount;
+    }
+
+    public AssetID getAssetID() {
+        return assetID;
+    }
+
+    public void setAssetID(AssetID assetID) {
+        this.assetID = assetID;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 }

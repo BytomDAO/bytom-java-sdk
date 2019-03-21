@@ -5,13 +5,13 @@ import java.util.Map;
 
 public class Spend extends InputEntry {
 
-    public Hash spentOutputID;
+    private Hash spentOutputID;
 
-    public int ordinal;
+    private int ordinal;
 
-    public ValueDestination witnessDestination;
+    private ValueDestination witnessDestination;
 
-    public byte[][] witnessArguments;
+    private byte[][] witnessArguments;
 
     public Spend(Hash spentOutputID, int ordinal) {
         this.spentOutputID = spentOutputID;
@@ -21,7 +21,7 @@ public class Spend extends InputEntry {
     @Override
     public void setDestination(Hash id, long pos, Map<Hash, Entry> entryMap) {
         OutputEntry spendOutput = (OutputEntry) entryMap.get(this.spentOutputID);
-        this.witnessDestination = new ValueDestination(id, spendOutput.source.value, pos);
+        this.witnessDestination = new ValueDestination(id, spendOutput.getSource().getValue(), pos);
     }
 
     @Override
@@ -32,5 +32,39 @@ public class Spend extends InputEntry {
     @Override
     public void writeForHash(ByteArrayOutputStream out) {
         mustWriteForHash(out, this.spentOutputID);
+    }
+
+    public Hash getSpentOutputID() {
+        return spentOutputID;
+    }
+
+    public void setSpentOutputID(Hash spentOutputID) {
+        this.spentOutputID = spentOutputID;
+    }
+
+    @Override
+    public int getOrdinal() {
+        return ordinal;
+    }
+
+    @Override
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    public ValueDestination getWitnessDestination() {
+        return witnessDestination;
+    }
+
+    public void setWitnessDestination(ValueDestination witnessDestination) {
+        this.witnessDestination = witnessDestination;
+    }
+
+    public byte[][] getWitnessArguments() {
+        return witnessArguments;
+    }
+
+    public void setWitnessArguments(byte[][] witnessArguments) {
+        this.witnessArguments = witnessArguments;
     }
 }

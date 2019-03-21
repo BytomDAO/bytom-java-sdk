@@ -8,8 +8,7 @@ public class Hash {
 
     private String hexValue;
 
-    public Hash() {
-    }
+    public Hash() {}
 
     public Hash(String hexValue) {
         this.hexValue = hexValue;

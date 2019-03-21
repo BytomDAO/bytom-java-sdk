@@ -4,16 +4,15 @@ import java.io.ByteArrayOutputStream;
 
 public class TxHeader extends Entry {
 
-    public long version;
+    private long version;
 
-    public long serializedSize;
+    private long serializedSize;
 
-    public long timeRange;
+    private long timeRange;
 
-    public Hash[] resultIDs;
+    private Hash[] resultIDs;
 
-    public TxHeader() {
-    }
+    public TxHeader() {}
 
     public TxHeader(long version, long serializedSize, long timeRange, Hash[] resultIDs) {
         this.version = version;
@@ -32,5 +31,37 @@ public class TxHeader extends Entry {
         mustWriteForHash(out, this.version);
         mustWriteForHash(out, this.timeRange);
         mustWriteForHash(out, this.resultIDs);
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    public long getSerializedSize() {
+        return serializedSize;
+    }
+
+    public void setSerializedSize(long serializedSize) {
+        this.serializedSize = serializedSize;
+    }
+
+    public long getTimeRange() {
+        return timeRange;
+    }
+
+    public void setTimeRange(long timeRange) {
+        this.timeRange = timeRange;
+    }
+
+    public Hash[] getResultIDs() {
+        return resultIDs;
+    }
+
+    public void setResultIDs(Hash[] resultIDs) {
+        this.resultIDs = resultIDs;
     }
 }

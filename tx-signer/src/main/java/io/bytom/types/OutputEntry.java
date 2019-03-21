@@ -4,11 +4,11 @@ import java.io.ByteArrayOutputStream;
 
 public class OutputEntry extends Entry {
 
-    public ValueSource source;
+    private ValueSource source;
 
-    public Program controlProgram;
+    private Program controlProgram;
 
-    public Integer ordinal;
+    private Integer ordinal;
 
     public OutputEntry() {
         this.source = new ValueSource();
@@ -31,5 +31,29 @@ public class OutputEntry extends Entry {
     public void writeForHash(ByteArrayOutputStream out) {
         mustWriteForHash(out, this.source);
         mustWriteForHash(out, this.controlProgram);
+    }
+
+    public ValueSource getSource() {
+        return source;
+    }
+
+    public void setSource(ValueSource source) {
+        this.source = source;
+    }
+
+    public Program getControlProgram() {
+        return controlProgram;
+    }
+
+    public void setControlProgram(Program controlProgram) {
+        this.controlProgram = controlProgram;
+    }
+
+    public Integer getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(Integer ordinal) {
+        this.ordinal = ordinal;
     }
 }

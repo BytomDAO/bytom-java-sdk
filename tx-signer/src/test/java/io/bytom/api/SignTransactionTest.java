@@ -108,9 +108,7 @@ public class SignTransactionTest {
         out.reset();
         ValueSource valueSource = new ValueSource(new Hash(hash), null, 1);
         Program program = new Program(1, new byte[]{1});
-        Mux mux = new Mux();
-        mux.sources = new ValueSource[]{valueSource};
-        mux.program = program;
+        Mux mux = new Mux(new ValueSource[]{valueSource}, program);
         entry.mustWriteForHash(out, mux);
         assert Hex.toHexString(out.toByteArray()).equals("01d8ab56a5c9296f591db071a8b63f395e1485b12d4b105b49fee287c03888331f010000000000000001000000000000000101");
     }
@@ -120,9 +118,7 @@ public class SignTransactionTest {
         String hash = "d8ab56a5c9296f591db071a8b63f395e1485b12d4b105b49fee287c03888331f";
         ValueSource valueSource = new ValueSource(new Hash(hash), null, 1);
         Program program = new Program(1, new byte[]{1});
-        Mux mux = new Mux();
-        mux.sources = new ValueSource[]{valueSource};
-        mux.program = program;
+        Mux mux = new Mux(new ValueSource[]{valueSource}, program);
         String entryID = mux.entryID().toString();
         assert entryID.equals("ebd967df33a3373ab85521fba24c22bf993c73f46fa96254b0c86646093184e9");
     }
