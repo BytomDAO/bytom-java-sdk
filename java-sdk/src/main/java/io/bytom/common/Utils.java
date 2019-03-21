@@ -1,4 +1,4 @@
-package io.bytom.offline.common;
+package io.bytom.common;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

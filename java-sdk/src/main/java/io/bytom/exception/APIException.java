@@ -1,4 +1,4 @@
-package io.bytom.offline.exception;
+package io.bytom.exception;
 
 import com.google.gson.annotations.SerializedName;
 

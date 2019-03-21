@@ -1,7 +1,7 @@
 package io.bytom;
 
-import io.bytom.offline.common.Configuration;
-import io.bytom.offline.exception.BytomException;
+import io.bytom.common.Configuration;
+import io.bytom.exception.BytomException;
 import io.bytom.http.Client;
 import org.apache.log4j.Logger;
 

@@ -1,4 +1,4 @@
-package io.bytom.offline.common;
+package io.bytom.common;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

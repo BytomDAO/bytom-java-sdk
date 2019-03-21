@@ -1,8 +1,8 @@
 package io.bytom.api;
 
 import com.google.gson.annotations.SerializedName;
-import io.bytom.offline.common.Utils;
-import io.bytom.offline.exception.JSONException;
+import io.bytom.common.Utils;
+import io.bytom.exception.JSONException;
 
 /**
  * Receivers are used to facilitate payments between accounts on different
