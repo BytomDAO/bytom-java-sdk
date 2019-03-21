@@ -1,4 +1,4 @@
-package io.bytom.offline.exception;
+package io.bytom.exception;
 
 import com.squareup.okhttp.Response;
 

@@ -1,4 +1,4 @@
-package io.bytom.offline.exception;
+package io.bytom.exception;
 
 /**
  * BadURLException wraps errors due to malformed URLs.

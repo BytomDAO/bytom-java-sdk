@@ -1,4 +1,4 @@
-package io.bytom.offline.exception;
+package io.bytom.exception;
 
 /**
  * Base exception class for the Chain Core SDK.

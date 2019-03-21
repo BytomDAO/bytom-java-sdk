@@ -1,6 +1,6 @@
 package io.bytom.http;
 
-import io.bytom.offline.exception.*;
+import io.bytom.exception.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

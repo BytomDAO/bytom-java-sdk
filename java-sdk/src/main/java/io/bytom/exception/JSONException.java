@@ -1,4 +1,4 @@
-package io.bytom.offline.exception;
+package io.bytom.exception;
 
 /**
  * JSONException wraps errors due to marshaling/unmarshaling json payloads.
