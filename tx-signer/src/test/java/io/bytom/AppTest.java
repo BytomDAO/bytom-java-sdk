@@ -11,7 +11,10 @@ public class AppTest {
 
     @Test
     public void testSpendBIP44() {
-        SpendInput input = new SpendInput(btmAssetID, 9800000000L, "0014cb9f2391bafe2bc1159b2c4c8a0f17ba1b4dd94e");
+        SpendInput input = new SpendInput();
+        input.setAssetId(btmAssetID);
+        input.setAmount(9800000000L);
+        input.setProgram("0014cb9f2391bafe2bc1159b2c4c8a0f17ba1b4dd94e");
         input.setSourcePosition(2);
         input.setSourceID("4b5cb973f5bef4eadde4c89b92ee73312b940e84164da0594149554cc8a2adea");
         input.setChange(true);

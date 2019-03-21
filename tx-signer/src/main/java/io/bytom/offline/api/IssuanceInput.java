@@ -79,7 +79,7 @@ public class IssuanceInput extends BaseInput {
         Utils.writeVarint(1, stream);
         Utils.writeVarStr(Hex.decode(getProgram()), stream);
         Utils.writeVarList(witnessComponent.toByteArray(), stream);
-        return new byte[0];
+        return stream.toByteArray();
     }
 
     @Override

@@ -194,6 +194,7 @@ public class Transaction {
             this.txID = txID.toString();
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new MapTransactionException(e);
         }
     }
