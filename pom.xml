@@ -19,7 +19,11 @@
             </plugin>
         </plugins>
     </build>
-    <packaging>jar</packaging>
+    <modules>
+        <module>java-sdk</module>
+        <module>tx-signer</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>bytom-sdk-java</name>
     <url>https://github.com/Bytom</url>
