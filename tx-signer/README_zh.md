@@ -5,9 +5,10 @@
 
 本文不会对以上技术细节进行讨论，而是利用bytomd全节点查询可用的utxo构建交易，对交易进行签名并序列化后，同样使用bytomd提交交易。
 
+
 ## 准备工作
 
-#### 将Maven依赖引入到你的项目中
+### 将Maven依赖引入到你的项目中
 1. 获取SDK源码  
   
    ```
@@ -34,11 +35,12 @@
         <version>1.0.0</version>
     </dependency>
     ```
-    
+
+
 ## 构建交易
 
-#### 普通交易
-**1.** 查询可用的utxo
+### 普通交易
+1. 查询可用的utxo
 
 在本文中，以下将全部使用全节点来查询可用的utxo，你也可以构建一套自己的utxo维护方案。
 ```java
@@ -69,7 +71,7 @@ List<UnspentOutput> outputs = builder.list(client);
 
 ```
 
-**2.** 构建交易
+2. 构建交易
 
 现在需要往`0014c832e1579b4f96dc12dcfff39e8fe69a62d3f516`这个control program转100个BTM。代码如下：
 
@@ -107,7 +109,7 @@ String rawTransaction = tx.rawTransaction();
 对交易调用build方法后，自动会对交易进行本地的验证和签名操作。注意，在本地只是做简单的字段验证，本地验证通过并不代表交易合法。最后对交易调用rawTransaction方法返回交易序列化后的字符串。
 
 
-**3. 提交交易**
+3. 提交交易
 
 本文利用bytomd全节点来提交交易：
 ```java
@@ -118,12 +120,12 @@ Transaction.SubmitResponse response = client.request("submit-transaction", body,
 交易提交成功后，response返回交易ID。
 
 
-#### 发行资产交易
-**1. 查询可用的utxo**
+### 发行资产交易
+1. 查询可用的utxo
 
 发行资产时，需要使用BTM作为手续费，因此第一步同样需要查询当前账户下可用的utxo，由于上面已经提到，这里不再赘述。
 
-**2. 查询需要发行的资产信息**
+2. 查询需要发行的资产信息
 
 例如，需要发行的资产id为`7b38dc897329a288ea31031724f5c55bcafec80468a546955023380af2faad14`
 
@@ -157,7 +159,7 @@ List<Asset> assets = builder.list(client);
 }
 ```
 
-**3. 构建交易**
+3. 构建交易
 
 现在需要发行1000个棒棒鸡资产：
 
@@ -195,20 +197,20 @@ Transaction tx = new Transaction.Builder()
                 .build();
 ```
 
-**4. 提交交易**
+4. 提交交易
 
 提交交易的方式与普通交易一致。
 
 
-#### 销毁资产交易
+### 销毁资产交易
 
 销毁资产跟发行资产类似，同样需要BTM作为手续费。
 
-**1. 查询可用的utxo**
+1. 查询可用的utxo
 
 查询方式与普通交易一致。
 
-**2. 构建交易**
+2. 构建交易
 
 这里以销毁一个BTM为例，假设查询得到一个100BTM的utxo：
 
@@ -237,6 +239,6 @@ String rawTransaction = transaction.rawTransaction();
 
 ```
 
-**4. 提交交易**
+3. 提交交易
 
 提交交易的方式与普通交易一致。
