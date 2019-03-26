@@ -14,8 +14,8 @@ There are various ways to install and use this sdk. We'll provide three ways to 
 ```xml
 <dependency>
     <groupId>io.bytom</groupId>
-    <artifactId>bytom-sdk</artifactId>
-    <version>1.0.1</version>
+    <artifactId>java-sdk</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
 

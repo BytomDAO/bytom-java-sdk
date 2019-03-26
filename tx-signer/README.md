@@ -1,6 +1,6 @@
 
 
-# tx_signer  
+# tx-signer  
   
 Java implementation of signing transaction offline.
   
