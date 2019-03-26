@@ -11,19 +11,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class UnspentOutput {
-    /**
-     * The id of the account controlling this output (possibly null if a control program
-     * is specified).
-     */
-    @SerializedName("account_id")
-    public String accountId;
-
-    /**
-     * The alias of the account controlling this output (possibly null if a control
-     * program is specified).
-     */
-    @SerializedName("account_alias")
-    public String accountAlias;
 
     /**
      * The id of the asset being controlled.
@@ -103,8 +90,61 @@ public class UnspentOutput {
          */
         public String id;
 
+        /**
+         * The id of the account controlling this output (possibly null if a control program
+         * is specified).
+         */
+        @SerializedName("account_id")
+        public String accountId;
+
+        /**
+         * The alias of the account controlling this output (possibly null if a control
+         * program is specified).
+         */
+        @SerializedName("account_alias")
+        public String accountAlias;
+
+        public Boolean unconfirmed;
+
+        @SerializedName("smart_contract")
+        public Boolean smartContract;
+
+        public Integer from;
+
+        public Integer count;
+
         public QueryBuilder setId(String id) {
             this.id = id;
+            return this;
+        }
+
+        public QueryBuilder setAccountId(String accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public QueryBuilder setAccountAlias(String accountAlias) {
+            this.accountAlias = accountAlias;
+            return this;
+        }
+
+        public QueryBuilder setSmartContract(boolean smartContract) {
+            this.smartContract = smartContract;
+            return this;
+        }
+
+        public QueryBuilder setUnconfirmed(boolean unconfirmed) {
+            this.unconfirmed = unconfirmed;
+            return this;
+        }
+
+        public QueryBuilder setFrom(Integer from) {
+            this.from = from;
+            return this;
+        }
+
+        public QueryBuilder setCount(Integer count) {
+            this.count = count;
             return this;
         }
 

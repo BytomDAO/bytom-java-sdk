@@ -301,7 +301,7 @@ public class Asset {
          */
         public List<Asset> list(Client client) throws BytomException {
             Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Asset.class});
-            List<Asset> assetList = client.request("list-assets", null, listType);
+            List<Asset> assetList = client.request("list-assets", this, listType);
             logger.info("list-assets:");
             logger.info("size of assetList:"+assetList.size());
             logger.info(assetList);

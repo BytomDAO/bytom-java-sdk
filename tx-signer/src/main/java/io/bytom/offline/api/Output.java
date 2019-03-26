@@ -32,10 +32,15 @@ public class Output {
      */
     private Integer position;
 
-    public Output(String assetId, Long amount, String controlProgram) {
-        this.assetId = assetId;
+    public Output(String assetID, long amount, String controlProgram) {
+        this.assetId = assetID;
         this.amount = amount;
         this.controlProgram = controlProgram;
+    }
+
+    public static Output newRetireOutput(String assetID, long amount, String arbitrary) {
+        String retireProgram = "6a" + Integer.toString(Hex.decode(arbitrary).length,16) + arbitrary;
+        return new Output(assetID, amount, retireProgram);
     }
 
     public byte[] serializeOutput() throws IOException {

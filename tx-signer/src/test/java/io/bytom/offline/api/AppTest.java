@@ -1,7 +1,5 @@
-package io.bytom;
+package io.bytom.offline.api;
 
-import io.bytom.offline.api.*;
-import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
 public class AppTest {
@@ -93,7 +91,6 @@ public class AppTest {
     @Test
     public void testRetire() {
         String arbitrary = "77656c636f6d65efbc8ce6aca2e8bf8ee69da5e588b0e58e9fe5ad90e4b896e7958c";
-        String retireControlProgram = "6a"+Integer.toString(Hex.decode(arbitrary).length,16)+arbitrary;
         String assetId1 = "207265909236260b30942a6b00e30ceb769e0e58156b6482bac64117619c9dcf";
 
         SpendInput input1 = new SpendInput(btmAssetID, 289100000L, "0014f1dc52048f439ac7fd74f8106a21da78f00de48f");
@@ -111,7 +108,7 @@ public class AppTest {
         input2.setSourcePosition(1);
 
         Output output1 = new Output(btmAssetID, 279100000L, "001414d362694eacfa110dc20dec77d610d22340f95b");
-        Output output2 = new Output(assetId1, 10000000000L, retireControlProgram);
+        Output output2 = Output.newRetireOutput(assetId1, 10000000000L, arbitrary);
         Output output3 = new Output(assetId1, 60000000000L, "0014bb8a039726df1b649738e9973db14a4b4fd4becf");
 
         Transaction transaction = new Transaction.Builder()

@@ -1,4 +1,4 @@
-package io.bytom.api;
+package io.bytom.offline.api;
 
 import io.bytom.offline.common.Signer;
 import org.bouncycastle.util.encoders.Hex;
