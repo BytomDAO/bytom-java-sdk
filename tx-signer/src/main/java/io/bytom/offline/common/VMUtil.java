@@ -5,13 +5,14 @@ import java.io.IOException;
 
 public class VMUtil {
 
-    private static final byte OP_0 = (byte) 0x00;
-    private static final byte OP_1 = (byte) 0x51;
-    private static final byte OP_PUSHDATA1 = (byte) 0x4c;
-    private static final byte OP_PUSHDATA2 = (byte) 0x4d;
-    private static final byte OP_PUSHDATA4 = (byte) 0x43;
-    private static final byte OP_TXSIGHASH = (byte) 0xae;
-    private static final byte OP_CHECKMULTISIG  = (byte) 0xad;
+    public static final byte OP_0 = (byte) 0x00;
+    public static final byte OP_1 = (byte) 0x51;
+    public static final byte OP_PUSHDATA1 = (byte) 0x4c;
+    public static final byte OP_PUSHDATA2 = (byte) 0x4d;
+    public static final byte OP_PUSHDATA4 = (byte) 0x43;
+    public static final byte OP_TXSIGHASH = (byte) 0xae;
+    public static final byte OP_CHECKMULTISIG  = (byte) 0xad;
+    public static final byte OP_FAIL = (byte) 0x6a;
 
     public static byte[] p2spMultiSigProgram(byte[][] pubKeys, int nRequired) {
         checkMultiSigParams(nRequired, pubKeys.length);
@@ -37,7 +38,7 @@ public class VMUtil {
         }
     }
 
-    private static byte[] pushDataBytes(byte[] data) {
+    public static byte[] pushDataBytes(byte[] data) {
         int len = data.length;
         if (len == 0) {
             return new byte[] {OP_0};
