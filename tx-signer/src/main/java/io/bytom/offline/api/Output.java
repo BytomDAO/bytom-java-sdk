@@ -1,6 +1,7 @@
 package io.bytom.offline.api;
 
 import io.bytom.offline.common.Utils;
+import io.bytom.offline.common.VMUtil;
 import org.bouncycastle.util.encoders.Hex;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class Output {
     }
 
     public static Output newRetireOutput(String assetID, long amount, String arbitrary) {
-        String retireProgram = "6a" + Integer.toString(Hex.decode(arbitrary).length,16) + arbitrary;
+        String retireProgram = Hex.toHexString(new byte[]{VMUtil.OP_FAIL}) + Hex.toHexString(VMUtil.pushDataBytes(Hex.decode(arbitrary)));
         return new Output(assetID, amount, retireProgram);
     }
 
