@@ -98,6 +98,7 @@ public class AppTest {
         input1.setChange(true);
         input1.setControlProgramIndex(41);
         input1.setSourceID("0b2cff11d1d056d95237a5f2d06059e5395e86f60e69c1e8201ea624911c0c65");
+        input1.setKeyIndex(1);
         input1.setSourcePosition(0);
 
         SpendInput input2 = new SpendInput(assetId1, 70000000000L, "0014bb8a039726df1b649738e9973db14a4b4fd4becf");
@@ -105,6 +106,7 @@ public class AppTest {
         input2.setChange(true);
         input2.setControlProgramIndex(26);
         input2.setSourceID("be0ac837e832c34a02968e54dab4f95cbeceb9fb01cd378310f6ea32219ee29b");
+        input2.setKeyIndex(1);
         input2.setSourcePosition(1);
 
         Output output1 = new Output(btmAssetID, 279100000L, "001414d362694eacfa110dc20dec77d610d22340f95b");

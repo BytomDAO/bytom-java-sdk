@@ -52,7 +52,7 @@ public class SpendInput extends BaseInput {
 
         byte[] privateChild;
         if (bipProtocol == BIPProtocol.BIP44) {
-            privateChild = DerivePrivateKey.bip44derivePrvKey(rootPrvKey, AccountKeySpace, change, controlProgramIndex);
+            privateChild = DerivePrivateKey.bip44derivePrvKey(rootPrvKey, getKeyIndex(), change, controlProgramIndex);
         } else {
             privateChild = DerivePrivateKey.bip32derivePrvKey(rootPrvKey, getKeyIndex(), AccountKeySpace, controlProgramIndex);
         }
