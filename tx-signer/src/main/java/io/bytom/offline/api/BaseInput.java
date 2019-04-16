@@ -70,6 +70,9 @@ public abstract class BaseInput {
         if (program == null) {
             throw new IllegalArgumentException("the program id of input must be specified.");
         }
+        if (keyIndex == null) {
+            throw new IllegalArgumentException("the key index of input must be specified.");
+        }
         if (witnessComponent.getRootPrivateKey() == null) {
             throw new IllegalArgumentException("the root private key of input must be specified.");
         }
