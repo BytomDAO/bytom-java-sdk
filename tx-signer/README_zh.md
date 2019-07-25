@@ -26,13 +26,13 @@
     <dependency>
         <groupId>io.bytom</groupId>
         <artifactId>java-sdk</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.2</version>
     </dependency>
  
     <dependency>
         <groupId>io.bytom</groupId>
         <artifactId>tx-signer</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.2</version>
     </dependency>
     ```
 

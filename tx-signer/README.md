@@ -25,7 +25,7 @@ Java implementation of signing transaction offline.
     <dependency>
         <groupId>io.bytom</groupId>
         <artifactId>tx-signer</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.2</version>
     </dependency>
     ```
   
