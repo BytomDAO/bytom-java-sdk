@@ -36,7 +36,7 @@ public class Block {
     @SerializedName("transaction_status_hash")
     public String transactionStatusHash;
 
-    public List<BlockTx> transactions;
+    public List<Transaction> transactions;
 
 
     private static Logger logger = Logger.getLogger(Block.class);
@@ -166,121 +166,6 @@ public class Block {
 
             return blockHashRate;
         }
-
-    }
-
-    public static class BlockTx {
-        /**
-         * Unique identifier, or transaction hash, of a transaction.
-         */
-        private String id;
-
-        /**
-         * version
-         */
-        private Integer version;
-
-        /**
-         * size
-         */
-        private Integer size;
-        /**
-         * time_range
-         */
-        @SerializedName("time_range")
-        private Integer timeRange;
-
-        /**
-         * status
-         */
-        @SerializedName("status_fail")
-        private boolean statusFail;
-
-        /**
-         * List of specified inputs for a transaction.
-         */
-        @SerializedName("inputs")
-        private List<AnnotatedInput> inputs;
-
-        /**
-         * List of specified outputs for a transaction.
-         */
-        @SerializedName("outputs")
-        private List<AnnotatedOutput> outputs;
-    }
-
-    public static class AnnotatedInput {
-
-        /**
-         * The number of units of the asset being issued or spent.
-         */
-        private Integer amount;
-
-        /**
-         * inputs param
-         */
-        private String arbitrary;
-
-        /**
-         * The definition of the asset being issued or spent (possibly null).
-         */
-        @SerializedName("asset_definition")
-        private Map<String, Object> assetDefinition;
-
-        /**
-         * The id of the asset being issued or spent.
-         */
-        @SerializedName("asset_id")
-        private String assetId;
-
-        /**
-         * The type of the input.<br>
-         * Possible values are "issue" and "spend".
-         */
-        private String type;
-    }
-
-    public static class AnnotatedOutput {
-
-        /**
-         * The number of units of the asset being controlled.
-         */
-        private long amount;
-
-        /**
-         * The definition of the asset being controlled (possibly null).
-         */
-        @SerializedName("asset_definition")
-        private Map<String, Object> assetDefinition;
-
-        /**
-         * The id of the asset being controlled.
-         */
-        @SerializedName("asset_id")
-        public String assetId;
-
-        /**
-         * The control program which must be satisfied to transfer this output.
-         */
-        @SerializedName("control_program")
-        private String controlProgram;
-
-        /**
-         * The id of the output.
-         */
-        @SerializedName("id")
-        private String id;
-
-        /**
-         * The output's position in a transaction's list of outputs.
-         */
-        private Integer position;
-
-        /**
-         * The type the output.<br>
-         * Possible values are "control" and "retire".
-         */
-        private String type;
 
     }
 
