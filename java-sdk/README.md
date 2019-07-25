@@ -15,13 +15,13 @@ There are various ways to install and use this sdk. We'll provide three ways to 
 <dependency>
     <groupId>io.bytom</groupId>
     <artifactId>java-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
 ### Gradle/Grails
 ```xml
-compile 'io.bytom:bytom-sdk:1.0.1'
+compile 'io.bytom:bytom-sdk:1.0.2'
 ```
 
 ### Building from source code
