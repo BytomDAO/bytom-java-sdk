@@ -7,23 +7,6 @@ at [Bytom wiki](https://github.com/Bytom/bytom/wiki/API-Reference)
 
 ## Installation
 
-There are various ways to install and use this sdk. We'll provide three ways to get it. Note that the bytom-sdk requires JAVA 7 or newer.
-
-### Apache Maven
-
-```xml
-<dependency>
-    <groupId>io.bytom</groupId>
-    <artifactId>java-sdk</artifactId>
-    <version>1.0.2</version>
-</dependency>
-```
-
-### Gradle/Grails
-```xml
-compile 'io.bytom:bytom-sdk:1.0.2'
-```
-
 ### Building from source code
 
 To clone, compile, and install in your local maven repository (or copy the artifacts from the target/ directory to wherever you need them):
