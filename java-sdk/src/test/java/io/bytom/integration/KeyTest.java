@@ -33,8 +33,7 @@ public class KeyTest {
 
     @Test
     public void testClientKeyList() throws Exception {
-        //client = TestUtils.generateClient();
-        client = new Client("http://127.0.0.1:9888/");
+        client = TestUtils.generateClient();
         List<Key> keyList = Key.list(client);
     }
 

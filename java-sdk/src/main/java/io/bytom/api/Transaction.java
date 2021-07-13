@@ -48,12 +48,6 @@ public class Transaction {
     public int blockHeight;
 
     /**
-     * whether the state of the request has failed.
-     */
-    @SerializedName("status_fail")
-    public boolean statusFail;
-
-    /**
      * List of specified inputs for a transaction.
      */
     public List<Input> inputs;
@@ -104,6 +98,11 @@ public class Transaction {
          */
         public Template build(Client client) throws BytomException {
             return client.request("build-transaction", this, Template.class);
+        }
+
+        public List<Template> buildChainTx(Client client) throws BytomException {
+            Type listType = new ParameterizedTypeImpl(List.class, new Class[]{Template.class});
+            return client.request("build-chain-transactions", this, listType);
         }
 
         /**
@@ -275,7 +274,6 @@ public class Transaction {
 
             return templateResult;
         }
-
     }
 
     /**

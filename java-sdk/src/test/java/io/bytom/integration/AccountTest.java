@@ -26,10 +26,6 @@ public class AccountTest {
         List<String> root_xpubs = new ArrayList<>();
         root_xpubs.add("c4b25825e92cd8623de4fd6a35952ad0efb2ed215fdb1b40754f0ed12eff7827d147d1e8b003601ba2f78a4a84dcc77e93ed282633f2679048c5d5ac5ea10cb5");
 
-
-//        Key.Builder builder = new Key.Builder().setAlias(alias).setPassword(password);
-//        key = Key.create(client, builder);
-
         Account.Builder builder = new Account.Builder().setAlias(alias).setQuorum(quorum).setRootXpub(root_xpubs);
         account = Account.create(client, builder);
 
@@ -47,9 +43,9 @@ public class AccountTest {
     public void testAccountDelete() throws Exception {
         client = TestUtils.generateClient();
         List<Account> accountList = Account.list(client);
-        String alias = accountList.get(accountList.size()-1).alias;
+        Account lastAccount = accountList.get(accountList.size()-1);
         //delete the last Account Object
-        Account.delete(client, alias);
+        Account.deleteByAccountAlias(client, lastAccount.alias);
     }
 
     @Test

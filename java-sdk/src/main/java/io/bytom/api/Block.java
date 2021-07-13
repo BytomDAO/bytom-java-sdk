@@ -7,7 +7,6 @@ import io.bytom.http.Client;
 import org.apache.log4j.Logger;
 
 import java.util.List;
-import java.util.Map;
 
 public class Block {
 
@@ -24,17 +23,8 @@ public class Block {
 
     public Integer timestamp;
 
-    public Integer nonce;
-
-    public long bits;
-
-    public String difficulty;
-
     @SerializedName("transaction_merkle_root")
     public String transactionsMerkleRoot;
-
-    @SerializedName("transaction_status_hash")
-    public String transactionStatusHash;
 
     public List<Transaction> transactions;
 
@@ -133,40 +123,6 @@ public class Block {
             return blockHeader;
         }
 
-        /**
-         * Call get-difficulty api
-         *
-         * @param client
-         * @return
-         * @throws BytomException
-         */
-        public BlockDifficulty getBlockDifficulty(Client client) throws BytomException {
-            BlockDifficulty blockDifficulty =
-                    client.request("get-difficulty", this, BlockDifficulty.class);
-
-            logger.info("get-difficulty:");
-            logger.info(blockDifficulty.toJson());
-
-            return blockDifficulty;
-        }
-
-        /**
-         * Call get-hash-rate api
-         *
-         * @param client
-         * @return
-         * @throws BytomException
-         */
-        public BlockHashRate getHashRate(Client client) throws BytomException {
-            BlockHashRate blockHashRate =
-                    client.request("get-hash-rate", this, BlockHashRate.class);
-
-            logger.info("get-hash-rate:");
-            logger.info(blockHashRate.toJson());
-
-            return blockHashRate;
-        }
-
     }
 
     public static class BlockHeader {
@@ -183,27 +139,4 @@ public class Block {
 
     }
 
-    public static class BlockDifficulty {
-        public String hash;
-        public Integer height;
-        public Integer bits;
-        public String difficulty;
-
-        public String toJson() {
-            return Utils.serializer.toJson(this);
-        }
-
-
-    }
-
-    public static class BlockHashRate {
-        public String hash;
-        public Integer height;
-        public Integer hash_rate;
-
-        public String toJson() {
-            return Utils.serializer.toJson(this);
-        }
-
-    }
 }

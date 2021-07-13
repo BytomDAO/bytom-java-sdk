@@ -23,19 +23,17 @@ public class BlockTest {
 
     static Block block;
     static Block.BlockHeader blockHeader;
-    static Block.BlockDifficulty blockDifficulty;
-    static Block.BlockHashRate blockHashRate;
 
     @Test
     public void testBlockCountGet() throws Exception {
         int count = Block.getBlockCount(client);
-        Assert.assertEquals(158, count);
+        System.out.println(count);
     }
 
     @Test
     public void testBlockHashGet() throws Exception {
         String blockHash = Block.getBlockHash(client);
-        Assert.assertNotNull(blockHash);
+        System.out.println(blockHash);
     }
 
     @Test
@@ -59,27 +57,4 @@ public class BlockTest {
                 .setBlockHash(blockHash)
                 .getBlockHeader(client);
     }
-
-    @Test
-    public void testBlockDifficulty() throws Exception {
-        int height = Block.getBlockCount(client);
-        String blockHash = Block.getBlockHash(client);
-
-        blockDifficulty = new Block.QueryBuilder()
-                .setBlockHeight(height)
-                .setBlockHash(blockHash)
-                .getBlockDifficulty(client);
-    }
-
-    @Test
-    public void testBlockHashRate() throws Exception {
-        int height = Block.getBlockCount(client);
-        String blockHash = Block.getBlockHash(client);
-
-        blockHashRate = new Block.QueryBuilder()
-                .setBlockHeight(height)
-                .setBlockHash(blockHash)
-                .getHashRate(client);
-    }
-
 }

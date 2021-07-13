@@ -62,7 +62,7 @@ public class TransactionTest {
         logger.info("receiver-address:" + receiverAddress.toJson());
 
         senderAsset = new Asset.QueryBuilder().list(client).get(0);
-        receiverAsset = new Asset.QueryBuilder().list(client).get(1);
+        receiverAsset = new Asset.QueryBuilder().list(client).get(0);
         logger.info("senderAsset:" + senderAsset.toJson());
         logger.info("receiverAsset:" + receiverAsset.toJson());
     }

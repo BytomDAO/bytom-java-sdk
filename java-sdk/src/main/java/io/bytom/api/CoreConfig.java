@@ -60,6 +60,12 @@ public class CoreConfig {
         public boolean mining;
 
         /**
+         * nodeXPub, the node xpub.
+         */
+        @SerializedName("node_xpub")
+        public String nodeXPub;
+
+        /**
          * peer_count, current count of connected peers.
          */
         @SerializedName("peer_count")
@@ -76,6 +82,12 @@ public class CoreConfig {
          */
         @SerializedName("highest_block")
         public long highestBlock;
+
+        /**
+         * finalized_block, finalized block of the connected peers.
+         */
+        @SerializedName("finalized_block")
+        public long finalizedBlock;
 
         /**
          * network_id, network id.

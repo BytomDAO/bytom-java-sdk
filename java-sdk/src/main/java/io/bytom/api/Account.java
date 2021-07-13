@@ -71,12 +71,25 @@ public class Account {
     /**
      * delete-account
      * @param client client object that makes requests to the core
-     * @param account_info account_info
+     * @param account_alias account_alias
      * @throws BytomException BytomException
      */
-    public static void delete(Client client, String account_info) throws BytomException {
+    public static void deleteByAccountAlias(Client client, String account_alias) throws BytomException {
         Map<String, String> req = new HashMap<>();
-        req.put("account_info", account_info);
+        req.put("account_alias", account_alias);
+        client.request("delete-account", req);
+    }
+
+    /**
+     * delete-account
+     * @param client client object that makes requests to the core
+     * @param account_id account_id
+     * @throws BytomException BytomException
+     */
+
+    public static void deleteByAccountID(Client client,String account_id) throws BytomException {
+        Map<String, String> req = new HashMap<>();
+        req.put("account_id", account_id);
         client.request("delete-account", req);
     }
 

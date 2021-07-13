@@ -35,6 +35,4 @@ public class CoreConfigTest {
         Assert.assertNotNull(gasRate);
     }
 
-
-
 }
