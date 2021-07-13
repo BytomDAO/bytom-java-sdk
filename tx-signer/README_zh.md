@@ -14,27 +14,6 @@
    ```
    git clone https://github.com/Bytom/bytom-java-sdk.git  
    ```  
-  
-2. 打包成JAR包并安装到本地的Maven仓库
-  
-   ```  
-   $ mvn clean install -DskipTests  
-   ```  
-  
-3. 在项目的POM文件中添加依赖。其中，第一个依赖是bytomd api的封装，可用于查询可用的utxo以及提交交易；第二个依赖用于构建交易以及对交易进行离线签名。
-    ```xml
-    <dependency>
-        <groupId>io.bytom</groupId>
-        <artifactId>java-sdk</artifactId>
-        <version>1.0.2</version>
-    </dependency>
- 
-    <dependency>
-        <groupId>io.bytom</groupId>
-        <artifactId>tx-signer</artifactId>
-        <version>1.0.2</version>
-    </dependency>
-    ```
 
 
 ## 构建交易
