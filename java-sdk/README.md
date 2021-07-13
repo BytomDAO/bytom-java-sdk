@@ -62,7 +62,7 @@ Client client = Client.generateClient();
     * [`Secondly sign the transaction`](#secondly-sign-the-transaction)
     * [`Finally submit the transaction`](#finally-submit-the-transaction)
 
-> For more details, see [API methods](https://github.com/Bytom/java-sdk/blob/master/doc/index.md#api-methods)
+> For more details, see [API methods](https://github.com/Bytom/bytom-java-sdk/blob/master/java-sdk/doc/index.md#api-methods)
 
 ### Create a key
 
@@ -113,7 +113,7 @@ receiverAsset = builder.create(client);
 
 ### Issue asset
 
-For more transaction details, see [transactions](https://github.com/Bytom/java-sdk/blob/master/doc/transactions.md)
+For more transaction details, see [transactions](https://github.com/Bytom/bytom-java-sdk/blob/master/java-sdk/doc/transactions.md)
 
 #### Firstly build the transaction
 
