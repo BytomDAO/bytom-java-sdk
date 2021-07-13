@@ -19,6 +19,8 @@ public class SpendInput extends BaseInput {
 
     private BIPProtocol bipProtocol = BIPProtocol.BIP44;
 
+    StateData stateData = new StateData();
+
     public SpendInput() {}
 
     public SpendInput(String assetID, long amount, String controlProgram) {
@@ -40,7 +42,7 @@ public class SpendInput extends BaseInput {
         Hash sourceID = new Hash(this.sourceID);
         ValueSource src = new ValueSource(sourceID, assetAmount, this.sourcePosition);
 
-        OutputEntry prevOut = new OutputEntry(src, pro, 0);
+        Output prevOut = new Output(src, pro, 0,stateData.toByteArray());
         Hash prevOutID = prevOut.entryID();
         entryMap.put(prevOutID, prevOut);
         return new Spend(prevOutID, index);
@@ -82,6 +84,7 @@ public class SpendInput extends BaseInput {
         // vm version
         Utils.writeVarint(1, spendCommitSteam);
         Utils.writeVarStr(Hex.decode(getProgram()), spendCommitSteam);
+        Utils.writeVarList(stateData.toByteArray(), spendCommitSteam);
         Utils.writeExtensibleString(spendCommitSteam.toByteArray(), stream);
         return stream.toByteArray();
     }
@@ -128,5 +131,9 @@ public class SpendInput extends BaseInput {
 
     public void setBipProtocol(BIPProtocol bipProtocol) {
         this.bipProtocol = bipProtocol;
+    }
+
+    public void appendStateData(String stateDataStr){
+        stateData.appendStateData(stateDataStr);
     }
 }

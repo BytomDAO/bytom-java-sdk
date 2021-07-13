@@ -11,6 +11,8 @@ public abstract class BaseInput {
 
     static final int ISSUANCE_INPUT_TYPE = 0;
     static final int SPEND_INPUT_TYPE = 1;
+    static final int Coinbase_INPUT_TYPE = 2;
+    static final int Veto_INPUT_TYPE = 3;
 
     static final byte AssetKeySpace = 0;
     static final byte AccountKeySpace = 1;
@@ -52,7 +54,7 @@ public abstract class BaseInput {
 
     public byte[] serializeInput() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        // assert version
+        // asset version
         Utils.writeVarint(1, stream);
         Utils.writeExtensibleString(serializeInputCommitment(), stream);
         Utils.writeExtensibleString(serializeInputWitness(), stream);
@@ -132,5 +134,9 @@ public abstract class BaseInput {
 
     public void setKeyIndex(int keyIndex) {
         this.keyIndex = keyIndex;
+    }
+
+    public void appendWitnessComponent(String witness){
+        witnessComponent.appendWitness(witness);
     }
 }

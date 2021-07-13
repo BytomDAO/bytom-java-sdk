@@ -2,12 +2,12 @@ package io.bytom.offline.api;
 
 import io.bytom.offline.common.Utils;
 import io.bytom.offline.common.VMUtil;
+import io.bytom.offline.util.AssetIdUtil;
 import org.bouncycastle.util.encoders.Hex;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class Output {
-
+public class OriginalOutput {
     /**
      * The number of units of the asset being controlled.
      */
@@ -28,27 +28,28 @@ public class Output {
      */
     private String id;
 
-    /**
-     * The output's position in a transaction's list of outputs.
-     */
-    private Integer position;
+    StateData stateData = new StateData();
 
-    public Output(String assetID, long amount, String controlProgram) {
+    public OriginalOutput() {
+    }
+
+    public OriginalOutput(String assetID, long amount, String controlProgram) {
         this.assetId = assetID;
         this.amount = amount;
         this.controlProgram = controlProgram;
     }
 
-    public static Output newRetireOutput(String assetID, long amount, String arbitrary) {
-        String retireProgram = Hex.toHexString(new byte[]{VMUtil.OP_FAIL}) + Hex.toHexString(VMUtil.pushDataBytes(Hex.decode(arbitrary)));
-        return new Output(assetID, amount, retireProgram);
+    public OriginalOutput(String rawAssetDefinition,String program) {
+        this.assetId = AssetIdUtil.computeAssetID(rawAssetDefinition,program);
+        this.controlProgram = program;
     }
 
     public byte[] serializeOutput() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-        //assetVersion
-        Utils.writeVarint(1, stream); //AssetVersion是否默认为1
+        // asset version
+        Utils.writeVarint(1, stream);
+        //outputType
+        Utils.writeVarint(0, stream); //outputType
         //outputCommit
         ByteArrayOutputStream outputCommitSteam = new ByteArrayOutputStream();
         //assetId
@@ -59,6 +60,8 @@ public class Output {
         Utils.writeVarint(1, outputCommitSteam); //db中获取vm_version
         //controlProgram
         Utils.writeVarStr(Hex.decode(controlProgram), outputCommitSteam);
+        //stateData
+        Utils.writeVarList(this.stateData.toByteArray(), outputCommitSteam);
 
         Utils.writeExtensibleString(outputCommitSteam.toByteArray(), stream);
 
@@ -66,6 +69,7 @@ public class Output {
         Utils.writeVarint(0, stream);
         return stream.toByteArray();
     }
+
 
     public Long getAmount() {
         return amount;
@@ -99,11 +103,7 @@ public class Output {
         this.id = id;
     }
 
-    public Integer getPosition() {
-        return position;
-    }
-
-    public void setPosition(Integer position) {
-        this.position = position;
+    public void appendStateData(String stateDataStr){
+        stateData.appendStateData(stateDataStr);
     }
 }

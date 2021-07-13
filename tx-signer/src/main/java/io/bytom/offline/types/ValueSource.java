@@ -11,11 +11,17 @@ public class ValueSource {
 
     public ValueSource() {}
 
+    public ValueSource(Hash ref, AssetAmount value) {
+        this.ref = ref;
+        this.value = value;
+    }
+
     public ValueSource(Hash ref, AssetAmount value, long position) {
         this.ref = ref;
         this.value = value;
         this.position = position;
     }
+
 
     public Hash getRef() {
         return ref;
