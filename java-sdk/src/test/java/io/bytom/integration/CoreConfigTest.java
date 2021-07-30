@@ -30,6 +30,12 @@ public class CoreConfigTest {
     }
 
     @Test
+    public void testChainStatus() throws Exception {
+        CoreConfig.ChainStatus chainStatus = CoreConfig.getChainStatus(client);
+        Assert.assertNotNull(chainStatus);
+    }
+
+    @Test
     public void testGasRate() throws Exception {
         gasRate = CoreConfig.getGasRate(client);
         Assert.assertNotNull(gasRate);
