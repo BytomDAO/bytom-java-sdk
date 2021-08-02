@@ -5,6 +5,7 @@ import io.bytom.offline.common.ExpandedPrivateKey;
 import io.bytom.offline.common.Signer;
 import io.bytom.offline.common.Utils;
 import io.bytom.offline.types.*;
+import io.bytom.offline.util.AssetIdUtil;
 import io.bytom.offline.util.SHA3Util;
 import org.bouncycastle.util.encoders.Hex;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +19,15 @@ public class IssuanceInput extends BaseInput {
 
     private String rawAssetDefinition;
 
-    public IssuanceInput() {}
+    public IssuanceInput(){
+
+    }
+
+    public IssuanceInput(String rawAssetDefinition,String issuanceProgram) {
+        this.rawAssetDefinition = rawAssetDefinition;
+        this.setProgram(issuanceProgram);
+        this.setAssetId(AssetIdUtil.computeAssetID(rawAssetDefinition,issuanceProgram));
+    }
 
     public IssuanceInput(String assetID, Long amount, String issuanceProgram) {
         this.setAssetId(assetID);
@@ -66,7 +75,10 @@ public class IssuanceInput extends BaseInput {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Utils.writeVarint(ISSUANCE_INPUT_TYPE, stream);
         Utils.writeVarStr(Hex.decode(nonce), stream);
-        stream.write(Hex.decode(getAssetId()));
+        if (this.getAssetId()==null){
+            this.setAssetId(AssetIdUtil.computeAssetID(rawAssetDefinition,this.getProgram()));
+        }
+        stream.write(Hex.decode(this.getAssetId()));
         Utils.writeVarint(getAmount(), stream);
         return stream.toByteArray();
     }
@@ -84,12 +96,15 @@ public class IssuanceInput extends BaseInput {
 
     @Override
     public void validate() {
-        super.validate();
         if (nonce == null) {
             throw new IllegalArgumentException("the nonce of issuance input must be specified.");
         }
         if (rawAssetDefinition == null) {
             throw new IllegalArgumentException("the nonce of issuance input must be specified.");
+        }
+
+        if (this.getProgram() == null) {
+            throw new IllegalArgumentException("the program of issuance must be specified.");
         }
     }
 

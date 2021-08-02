@@ -33,7 +33,13 @@ public class AccessTokenTest {
 
     @Test
     public void testTokenCheck() throws Exception {
-        String secret = "5e37378eb59de6b10e60f2247ebf71c4955002e75e0cd31ede3bf48813a0a799";
+        String secret = "dad13ed9f34ffd063cd34abb2320fbbb5c768db4588e319f4444109944b65218";
         AccessToken.check(client, "sheng", secret);
+    }
+
+    @Test
+    public void testDeleteCheck() throws Exception {
+        String secret = "dad13ed9f34ffd063cd34abb2320fbbb5c768db4588e319f4444109944b65218";
+        AccessToken.delete(client, "sheng");
     }
 }

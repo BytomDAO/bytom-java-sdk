@@ -12,22 +12,7 @@ Java implementation of signing transaction offline.
   
    ```
    git clone https://github.com/Bytom/bytom-java-sdk.git  
-   ```  
-  
-2. install to maven repository
-  
-   ```  
-   $ mvn clean install -DskipTests  
-   ```  
-  
-3. add dependency
-    ```xml
-    <dependency>
-        <groupId>io.bytom</groupId>
-        <artifactId>tx-signer</artifactId>
-        <version>1.0.2</version>
-    </dependency>
-    ```
+   ```
   
 ## Example
 

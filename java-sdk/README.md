@@ -7,23 +7,6 @@ at [Bytom wiki](https://github.com/Bytom/bytom/wiki/API-Reference)
 
 ## Installation
 
-There are various ways to install and use this sdk. We'll provide three ways to get it. Note that the bytom-sdk requires JAVA 7 or newer.
-
-### Apache Maven
-
-```xml
-<dependency>
-    <groupId>io.bytom</groupId>
-    <artifactId>java-sdk</artifactId>
-    <version>1.0.2</version>
-</dependency>
-```
-
-### Gradle/Grails
-```xml
-compile 'io.bytom:bytom-sdk:1.0.2'
-```
-
 ### Building from source code
 
 To clone, compile, and install in your local maven repository (or copy the artifacts from the target/ directory to wherever you need them):
@@ -62,7 +45,7 @@ Client client = Client.generateClient();
     * [`Secondly sign the transaction`](#secondly-sign-the-transaction)
     * [`Finally submit the transaction`](#finally-submit-the-transaction)
 
-> For more details, see [API methods](https://github.com/Bytom/java-sdk/blob/master/doc/index.md#api-methods)
+> For more details, see [API methods](https://github.com/Bytom/bytom-java-sdk/blob/master/java-sdk/doc/index.md#api-methods)
 
 ### Create a key
 
@@ -113,7 +96,7 @@ receiverAsset = builder.create(client);
 
 ### Issue asset
 
-For more transaction details, see [transactions](https://github.com/Bytom/java-sdk/blob/master/doc/transactions.md)
+For more transaction details, see [transactions](https://github.com/Bytom/bytom-java-sdk/blob/master/java-sdk/doc/transactions.md)
 
 #### Firstly build the transaction
 

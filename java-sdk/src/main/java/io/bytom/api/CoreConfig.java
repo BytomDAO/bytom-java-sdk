@@ -60,22 +60,22 @@ public class CoreConfig {
         public boolean mining;
 
         /**
+         * nodeXPub, the node xpub.
+         */
+        @SerializedName("node_xpub")
+        public String nodeXPub;
+
+        /**
          * peer_count, current count of connected peers.
          */
         @SerializedName("peer_count")
         public int peerCount;
 
         /**
-         * current_block, current block height in the node's blockchain.
+         * highest_height, current highest block of the connected peers.
          */
-        @SerializedName("current_block")
-        public long currentBlock;
-
-        /**
-         * highest_block, current highest block of the connected peers.
-         */
-        @SerializedName("highest_block")
-        public long highestBlock;
+        @SerializedName("highest_height")
+        public long highestHeight;
 
         /**
          * network_id, network id.
@@ -88,6 +88,64 @@ public class CoreConfig {
          */
         @SerializedName("version")
         public String version;
+
+        public String toJson() {
+            return Utils.serializer.toJson(this);
+        }
+    }
+
+    /**
+     * Call chain-status api
+     *
+     * @param client
+     * @return
+     * @throws BytomException
+     */
+    public static ChainStatus getChainStatus(Client client) throws BytomException {
+        ChainStatus chainStatus = client.request("chain-status", null, ChainStatus.class);
+
+        logger.info("chain-status:");
+        logger.info(chainStatus.toJson());
+
+        return chainStatus;
+    }
+
+    public static class ChainStatus {
+        /**
+         * current_height, current block height in the node's blockchain.
+         */
+        @SerializedName("current_height")
+        public long currentHeight;
+
+        /**
+         * current_hash, current block hash in the node's blockchain.
+         */
+        @SerializedName("current_hash")
+        public String currentHash;
+
+        /**
+         * finalized_height, finalized block height in the node's blockchain.
+         */
+        @SerializedName("finalized_height")
+        public long finalizedHeight;
+
+        /**
+         * finalized_hash, finalized block hash in the node's blockchain.
+         */
+        @SerializedName("finalized_hash")
+        public String finalizedHash;
+
+        /**
+         * justified_height, justified block height in the node's blockchain.
+         */
+        @SerializedName("justified_height")
+        public long justifiedHeight;
+
+        /**
+         * justified_hash, justified block hash in the node's blockchain.
+         */
+        @SerializedName("justified_hash")
+        public String justifiedHash;
 
         public String toJson() {
             return Utils.serializer.toJson(this);

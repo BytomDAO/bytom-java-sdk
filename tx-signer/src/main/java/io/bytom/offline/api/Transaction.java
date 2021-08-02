@@ -41,7 +41,7 @@ public class Transaction {
     /**
      * List of specified outputs for a transaction.
      */
-    private List<Output> outputs;
+    private List<OriginalOutput> outputs;
 
     public Transaction(Builder builder) {
         this.inputs = builder.inputs;
@@ -64,7 +64,7 @@ public class Transaction {
         private Integer timeRange;
 
         private List<BaseInput> inputs;
-        private List<Output> outputs;
+        private List<OriginalOutput> outputs;
 
         public Builder() {
             this.inputs = new ArrayList<>();
@@ -76,7 +76,7 @@ public class Transaction {
             return this;
         }
 
-        public Builder addOutput(Output output) {
+        public Builder addOutput(OriginalOutput output) {
             this.outputs.add(output);
             return this;
         }
@@ -86,12 +86,17 @@ public class Transaction {
             return this;
         }
 
+        public Builder setSize(int size) {
+            this.size = size;
+            return this;
+        }
+
         public Transaction build() {
             return new Transaction(this);
         }
     }
 
-    private void sign() {
+    public void sign() {
         for (BaseInput input : inputs) {
             try {
                 input.buildWitness(txID);
@@ -117,7 +122,7 @@ public class Transaction {
             }
 
             Utils.writeVarint(outputs.size(), stream);
-            for (Output output : outputs) {
+            for (OriginalOutput output : outputs) {
                 stream.write(output.serializeOutput());
             }
         } catch (IOException e) {
@@ -167,7 +172,7 @@ public class Transaction {
 
             List<Hash> resultIDList = new ArrayList<>();
             for (int i = 0; i < outputs.size(); i++) {
-                Output output = outputs.get(i);
+                OriginalOutput output = outputs.get(i);
 
                 AssetAmount amount = new AssetAmount(new AssetID(output.getAssetId()), output.getAmount());
                 ValueSource src = new ValueSource(muxID, amount, i);
@@ -178,7 +183,7 @@ public class Transaction {
                     resultID = addEntry(entryMap, retirement);
                 } else {
                     Program program = new Program(1, Hex.decode(output.getControlProgram()));
-                    OutputEntry oup = new OutputEntry(src, program, i);
+                    Output oup = new Output(src, program, i,output.stateData.toByteArray());
                     resultID = addEntry(entryMap, oup);
                 }
 
@@ -225,7 +230,7 @@ public class Transaction {
         return inputs;
     }
 
-    public List<Output> getOutputs() {
+    public List<OriginalOutput> getOutputs() {
         return outputs;
     }
 }
